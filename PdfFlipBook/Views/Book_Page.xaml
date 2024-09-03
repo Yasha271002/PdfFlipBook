@@ -1,0 +1,135 @@
+﻿<Page x:Class="PdfFlipBook.Views.Book_Page"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PdfFlipBook.Views"
+      xmlns:wpfMitsuControls="clr-namespace:WPFMitsuControls;assembly=WPFMitsuControls"
+      xmlns:termControls="clr-namespace:TermControls;assembly=TermControls"
+      mc:Ignorable="d" 
+      Loaded="Book_Page_OnLoaded"
+      d:DesignHeight="2160" d:DesignWidth="3840"
+      Title="Book_Page"
+      DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+    <Grid  Width="3810" Height="2160">
+        <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
+                               Width="3800" 
+                               Height="2040"
+                               VerticalAlignment="Top" 
+                               Name="Book" 
+                               MouseLeftButtonUp="Book_OnMouseLeftButtonUp" 
+                               MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
+        <wpfMitsuControls:Book.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="4" BorderBrush="Gray" Background="White" >
+                        <ContentControl>
+                            <ContentControl.Content>
+                                <Image Source="{Binding Source}"></Image>
+                            </ContentControl.Content>
+                        </ContentControl>
+                    </Border>
+                </DataTemplate>
+            </wpfMitsuControls:Book.ItemTemplate>
+        
+        </wpfMitsuControls:Book>
+<Button Height="180"
+        Width="180"
+        VerticalAlignment="Top"
+        Command="{Binding BackCommand}"
+        HorizontalAlignment="Right"
+        Margin="40" Panel.ZIndex="1000">
+    <Button.Template>
+        <ControlTemplate>
+            <Border Background="White" CornerRadius="15">
+                <Image Source="../Images/close (2).png" Margin="20"></Image>
+            </Border>
+        </ControlTemplate>
+    </Button.Template>
+</Button>
+        <Button Height="80" VerticalAlignment="Bottom"
+                Command="{Binding InsertPageCommand}"
+                Width="1000"
+                Margin="0,0,0,10">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border Background="LightGray" CornerRadius="10"
+                            BorderBrush="Gray"
+                            BorderThickness="5">
+                        <TextBlock TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   FontFamily="Arial"
+                                   Text="ПЕРЕЙТИ К ОПРЕДЕЛЕННОЙ СТРАНИЦЕ"
+                                   FontSize="40"></TextBlock>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Grid Background="#DDFFFFFF" Name="InsertGrid" Visibility="Collapsed" Panel.ZIndex="2000" >
+
+            <Button Height="180"
+                    Width="180"
+                    VerticalAlignment="Top"
+                    Command="{Binding CloseInsertCommand}"
+                    HorizontalAlignment="Right"
+                    Margin="0,181,1252,0" Panel.ZIndex="3000">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="White" CornerRadius="15" BorderBrush="DimGray" BorderThickness="8">
+                            <Image Source="../Images/close (2).png" Margin="20"></Image>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Height="280" VerticalAlignment="Bottom"
+                    Command="{Binding ToPageCommand}"
+                    Width="1000"
+                    Margin="0,0,0,400">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="White" CornerRadius="30"
+                                BorderBrush="Gray"
+                                BorderThickness="5">
+                            <TextBlock TextAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Bold"
+                                       FontFamily="Arial"
+                                       Text="ПЕРЕЙТИ"
+                                       FontSize="100"></TextBlock>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <TextBlock Text="Данная страница отсутствует"
+                       TextAlignment="Center"
+                       VerticalAlignment="Top"
+                       Name="TB"
+                       Opacity="0"
+                       HorizontalAlignment="Center"
+                       Margin="0,340,0,0"
+                       FontSize="60"></TextBlock>
+            <Grid Width="500" Height="1000" Margin="0,-200,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="84*" />
+                <RowDefinition Height="349*" />
+            </Grid.RowDefinitions>
+               
+                <Border BorderBrush="DimGray" Background="White" BorderThickness="10" CornerRadius="20"></Border>
+            <TextBox Name="KK" Margin="20" VerticalAlignment="Center" FontSize="80" TextAlignment="Center"  Text="{Binding Text, ElementName=onScreenKeyboard}"  />
+            
+            <termControls:OnScreenKeyboard Focusable="False"  x:Name="onScreenKeyboard" Command="{Binding ButtonClickCommand,ElementName=m}" Grid.Row="1" />
+        </Grid>
+            <Button Command="{Binding DeleteCommand}" Width="140" Height="140" Margin="2181,506,1485,1514">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Grid>
+                            <Image Source="../Images/button-70x70.png"></Image>
+                            <Image Source="../Images/backspace.png" Margin="20"></Image>
+                        </Grid>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Grid>
+</Page>

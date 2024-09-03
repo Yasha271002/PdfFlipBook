@@ -11,6 +11,5 @@ namespace PdfFlipBook.Models
     {
         public string Title { get; set; }
         public DisposableImage Icon { get; set; }
-
     }
 }

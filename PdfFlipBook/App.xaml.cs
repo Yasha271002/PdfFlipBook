@@ -11,6 +11,7 @@ using System.Windows;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Models;
 using PdfFlipBook.Views;
+using PdfFlipBook.Views.Pages;
 
 namespace PdfFlipBook
 {

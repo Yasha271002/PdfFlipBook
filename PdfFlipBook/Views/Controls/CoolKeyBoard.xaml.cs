@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Input;using PdfFlipBook.Utilities;
+using System.Windows.Input;
+using PdfFlipBook.Utilities;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace MSPBanck.Controls
+namespace PdfFlipBook.Views.Controls
 {
     /// <summary>
     /// Логика взаимодействия для CoolKeyBoard.xaml
@@ -54,17 +54,6 @@ namespace MSPBanck.Controls
             addButton5.Tag = "б";
             addButton6.Tag = "ю";
             backButton.Tag = "Удалить";
-            addButton8.Tag = "ё";
-            addButton9 .Tag= "1";
-            addButton10.Tag= "2";
-            addButton11.Tag= "3";
-            addButton12.Tag= "4";
-            addButton13.Tag= "5";
-            addButton14.Tag= "6";
-            addButton15.Tag= "7";
-            addButton16.Tag= "8";
-            addButton17.Tag= "9";
-            addButton18.Tag= "0";
             //addButton19.Tag= ")";
             //addButton20.Tag="=";
             //addButton7.Tag = "?";
@@ -191,17 +180,6 @@ namespace MSPBanck.Controls
                         addButton4.Tag = "Э";
                         addButton5.Tag = "Б";
                         addButton6.Tag = "Ю";
-                        addButton8.Tag = "Ё";
-                        addButton9.Tag = "1";
-                        addButton10.Tag = "2";
-                        addButton11.Tag = "3";
-                        addButton12.Tag = "4";
-                        addButton13.Tag = "5";
-                        addButton14.Tag = "6";
-                        addButton15.Tag = "7";
-                        addButton16.Tag = "8";
-                        addButton17.Tag = "9";
-                        addButton18.Tag = "0";
                         //addButton19.Tag = ")";
                         //addButton20.Tag = "=";
                         //addButton7.Tag = "?";
@@ -282,17 +260,7 @@ namespace MSPBanck.Controls
                         addButton4.Tag = "э";
                         addButton5.Tag = "б";
                         addButton6.Tag = "ю";
-                        addButton8.Tag = "ё";
-                        addButton9.Tag = "1";
-                        addButton10.Tag = "2";
-                        addButton11.Tag = "3";
-                        addButton12.Tag = "4";
-                        addButton13.Tag = "5";
-                        addButton14.Tag = "6";
-                        addButton15.Tag = "7";
-                        addButton16.Tag = "8";
-                        addButton17.Tag = "9";
-                        addButton18.Tag = "0";
+                       
                         //addButton19.Tag = ")";
                         //addButton20.Tag = "=";
                         //addButton7.Tag = "?";
@@ -381,17 +349,6 @@ namespace MSPBanck.Controls
                     addButton5.Tag = "\\";
                     addButton6.Tag = "/";
                     backButton.Tag = "Удалить";
-                    addButton8.Tag = "ё";
-                    addButton9.Tag = "1";
-                    addButton10.Tag = "2";
-                    addButton11.Tag = "3";
-                    addButton12.Tag = "4";
-                    addButton13.Tag = "5";
-                    addButton14.Tag = "6";
-                    addButton15.Tag = "7";
-                    addButton16.Tag = "8";
-                    addButton17.Tag = "9";
-                    addButton18.Tag = "0";
                 }
                 else
                 {
@@ -410,19 +367,6 @@ namespace MSPBanck.Controls
                         addButton6.Visibility = Visibility.Collapsed;
                         langButton.Tag = "RUS";
                         backButton.Tag = "Delete";
-                        addButton8.Tag = "`";
-                        addButton9.Tag = "1";
-                        addButton10.Tag = "2";
-                        addButton11.Tag = "3";
-                        addButton12.Tag = "4";
-                        addButton13.Tag = "5";
-                        addButton14.Tag = "6";
-                        addButton15.Tag = "7";
-                        addButton16.Tag = "8";
-                        addButton17.Tag = "9";
-                        addButton18.Tag = "0";
-                        addButton19.Tag = "-";
-                        addButton20.Tag = "_";
                         addButton1.Tag = "[";
                         addButton2.Tag = "]";
                         addButton3.Tag = ":";
@@ -539,17 +483,6 @@ namespace MSPBanck.Controls
                             addButton4.Tag = "Э";
                             addButton5.Tag = "Б";
                             addButton6.Tag = "Ю";
-                            addButton8.Tag = "Ё";
-                            addButton9.Tag = "1";
-                            addButton10.Tag = "2";
-                            addButton11.Tag = "3";
-                            addButton12.Tag = "4";
-                            addButton13.Tag = "5";
-                            addButton14.Tag = "6";
-                            addButton15.Tag = "7";
-                            addButton16.Tag = "8";
-                            addButton17.Tag = "9";
-                            addButton18.Tag = "0";
                             //addButton19.Tag = ")";
                             //addButton20.Tag = "=";
                             //addButton7.Tag = "?";
@@ -589,17 +522,7 @@ namespace MSPBanck.Controls
                             addButton4.Tag = "э";
                             addButton5.Tag = "б";
                             addButton6.Tag = "ю";
-                            addButton8.Tag = "ё";
-                            addButton9.Tag = "1";
-                            addButton10.Tag = "2";
-                            addButton11.Tag = "3";
-                            addButton12.Tag = "4";
-                            addButton13.Tag = "5";
-                            addButton14.Tag = "6";
-                            addButton15.Tag = "7";
-                            addButton16.Tag = "8";
-                            addButton17.Tag = "9";
-                            addButton18.Tag = "0";
+                            
                             //addButton19.Tag = ")";
                             //addButton20.Tag = "=";
                             //addButton7.Tag = "?";
@@ -623,19 +546,6 @@ namespace MSPBanck.Controls
                 addButton6.Visibility = Visibility.Collapsed;
                 langButton.Tag = "RUS";
                 backButton.Tag = "Delete";
-                addButton8.Tag = "`";
-                addButton9.Tag = "1";
-                addButton10.Tag = "2";
-                addButton11.Tag = "3";
-                addButton12.Tag = "4";
-                addButton13.Tag = "5";
-                addButton14.Tag = "6";
-                addButton15.Tag = "7";
-                addButton16.Tag = "8";
-                addButton17.Tag = "9";
-                addButton18.Tag = "0";
-                addButton19.Tag = "-";
-                addButton20.Tag = "_";
                 addButton1.Tag = "[";
                 addButton2.Tag = "]";
                 addButton3.Tag = ":";
@@ -758,17 +668,6 @@ namespace MSPBanck.Controls
                     addButton4.Tag = "Э";
                     addButton5.Tag = "Б";
                     addButton6.Tag = "Ю";
-                    addButton8.Tag = "Ё";
-                    addButton9.Tag = "1";
-                    addButton10.Tag = "2";
-                    addButton11.Tag = "3";
-                    addButton12.Tag = "4";
-                    addButton13.Tag = "5";
-                    addButton14.Tag = "6";
-                    addButton15.Tag = "7";
-                    addButton16.Tag = "8";
-                    addButton17.Tag = "9";
-                    addButton18.Tag = "0";
                     //addButton19.Tag = ")";
                     //addButton20.Tag = "=";
                     //addButton7.Tag = "?";
@@ -808,17 +707,6 @@ namespace MSPBanck.Controls
                     addButton4.Tag = "э";
                     addButton5.Tag = "б";
                     addButton6.Tag = "ю";
-                    addButton8.Tag = "ё";
-                    addButton9.Tag = "1";
-                    addButton10.Tag = "2";
-                    addButton11.Tag = "3";
-                    addButton12.Tag = "4";
-                    addButton13.Tag = "5";
-                    addButton14.Tag = "6";
-                    addButton15.Tag = "7";
-                    addButton16.Tag = "8";
-                    addButton17.Tag = "9";
-                    addButton18.Tag = "0";
                     //addButton19.Tag = ")";
                     //addButton20.Tag = "=";
                     //addButton7.Tag = "?";

@@ -23,6 +23,7 @@ using iDiTect.Converter;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
 using PdfFlipBook.Views;
+using PdfFlipBook.Views.Pages;
 using WPFMitsuControls;
 using Image = System.Drawing.Image;
 using Path = System.IO.Path;
@@ -46,19 +47,19 @@ namespace PdfFlipBook
 
 
             //this.Cursor = Cursors.None; 
-            Process process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "taskkill",
-                Arguments = "/F /IM explorer.exe",
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden
-            });
-            process?.WaitForExit();
-            Closing += (e, a) =>
-            {
-                Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
-            };
+            //Process process = Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = "taskkill",
+            //    Arguments = "/F /IM explorer.exe",
+            //    CreateNoWindow = true,
+            //    UseShellExecute = false,
+            //    WindowStyle = ProcessWindowStyle.Hidden
+            //});
+            //process?.WaitForExit();
+            //Closing += (e, a) =>
+            //{
+            //    Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
+            //};
 
         }
 

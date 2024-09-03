@@ -152,23 +152,55 @@
     <Compile Include="Helper\DpiHelper.cs" />
     <Compile Include="Models\BookFolder.cs" />
     <Compile Include="Utilities\AlignableWrapPanel.cs" />
-    <Compile Include="Views\Book_Page.xaml.cs">
+    <Compile Include="Views\Pages\Book_Page.xaml.cs">
       <DependentUpon>Book_Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\CoolKeyBoard.xaml.cs">
+    <Compile Include="Views\Controls\CoolKeyBoard.xaml.cs">
       <DependentUpon>CoolKeyBoard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Razdel_Page.xaml.cs">
+    <Compile Include="Views\Pages\Razdel_Page.xaml.cs">
       <DependentUpon>Razdel_Page.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Start_Page.xaml.cs">
+    <Compile Include="Views\Pages\Start_Page.xaml.cs">
       <DependentUpon>Start_Page.xaml</DependentUpon>
     </Compile>
-    <Page Include="Views\Book_Page.xaml">
+    <Page Include="Resources\CommonBrushes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\CoolKeyBoard.xaml">
+    <Page Include="Resources\Styles\CheckBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\ScrollViewerRazdelStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\TextBlockStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\TextBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Templates\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Templates\RadioButtonTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Templates\TextBoxTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\Book_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\CoolKeyBoard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -188,11 +220,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\Razdel_Page.xaml">
+    <Page Include="Views\Pages\Razdel_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Start_Page.xaml">
+    <Page Include="Views\Pages\Start_Page.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

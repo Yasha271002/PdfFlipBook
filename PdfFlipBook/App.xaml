@@ -4,40 +4,19 @@
              xmlns:local="clr-namespace:PdfFlipBook"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <GeometryGroup x:Key="Loading">
-            <PathGeometry Figures="m12 24c-6.617 0-12-5.383-12-12s5.383-12 12-12 12 5.383 12 12-5.383 12-12 12zm0-23c-6.065 0-11 4.935-11 11s4.935 11 11 11 11-4.935 11-11-4.935-11-11-11z"/>
-            <PathGeometry Figures="m12.005 24c-3.645 0-6.5-5.271-6.5-12s2.855-12 6.5-12 6.5 5.271 6.5 12-2.856 12-6.5 12zm0-23c-2.981 0-5.5 5.038-5.5 11s2.519 11 5.5 11 5.5-5.038 5.5-11-2.519-11-5.5-11z"/>
-            <PathGeometry Figures="m12.005 18.5c-6.729 0-12-2.855-12-6.5s5.271-6.5 12-6.5 12 2.855 12 6.5-5.272 6.5-12 6.5zm0-12c-5.963 0-11 2.519-11 5.5s5.037 5.5 11 5.5 11-2.519 11-5.5-5.037-5.5-11-5.5z"/>
-        </GeometryGroup>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/CommonBrushes.xaml"/>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border BorderBrush="#b4b4b4" BorderThickness="1">
-                            <Grid>
-                                <ScrollViewer Margin="0"
-                                              x:Name="PART_ContentHost" />
-                                <TextBlock Text="{TemplateBinding TextBox.Tag}" Foreground="#b4b4b4">
+                <ResourceDictionary Source="Resources/Styles/CheckBoxStyle.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/TextBoxStyle.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ScrollViewerRazdelStyle.xaml"/>
 
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                            <Setter Property="Padding" Value="5"></Setter>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox},Path=Text}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"></Setter>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <FontFamily x:Key="Noto Sans">pack://application:,,,/Fonts/#Noto Sans</FontFamily>
+                <ResourceDictionary Source="Resources/Templates/Icons.xaml"/>
+                <ResourceDictionary Source="Resources/Templates/RadioButtonTemplate.xaml"/>
+                <ResourceDictionary Source="Resources/Templates/TextBoxTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

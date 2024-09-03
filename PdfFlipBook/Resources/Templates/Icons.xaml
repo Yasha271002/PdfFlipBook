@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <GeometryGroup x:Key="Loading">
+        <PathGeometry Figures="m12 24c-6.617 0-12-5.383-12-12s5.383-12 12-12 12 5.383 12 12-5.383 12-12 12zm0-23c-6.065 0-11 4.935-11 11s4.935 11 11 11 11-4.935 11-11-4.935-11-11-11z"/>
+        <PathGeometry Figures="m12.005 24c-3.645 0-6.5-5.271-6.5-12s2.855-12 6.5-12 6.5 5.271 6.5 12-2.856 12-6.5 12zm0-23c-2.981 0-5.5 5.038-5.5 11s2.519 11 5.5 11 5.5-5.038 5.5-11-2.519-11-5.5-11z"/>
+        <PathGeometry Figures="m12.005 18.5c-6.729 0-12-2.855-12-6.5s5.271-6.5 12-6.5 12 2.855 12 6.5-5.272 6.5-12 6.5zm0-12c-5.963 0-11 2.519-11 5.5s5.037 5.5 11 5.5 11-2.519 11-5.5-5.037-5.5-11-5.5z"/>
+    </GeometryGroup>
+</ResourceDictionary>

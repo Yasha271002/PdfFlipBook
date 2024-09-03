@@ -6,34 +6,25 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using iDiTect.Converter;
-using PdfFlipBook.Models;
-using PdfFlipBook.Utilities;
-using IronPdf;
-using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
 using PdfFlipBook.Annotations;
+using PdfFlipBook.Models;
+using PdfFlipBook.Utilities;
 using Image = System.Drawing.Image;
 
-namespace PdfFlipBook.Views
+namespace PdfFlipBook.Views.Pages
 {
     /// <summary>
     /// Логика взаимодействия для Start_Page.xaml

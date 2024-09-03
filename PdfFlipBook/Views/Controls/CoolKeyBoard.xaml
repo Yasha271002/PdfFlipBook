@@ -1,0 +1,245 @@
+﻿<UserControl x:Class="PdfFlipBook.Views.Controls.CoolKeyBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"  
+             x:Name="KeyBoard" Focusable="False">
+    <UserControl.RenderTransform>
+        <TranslateTransform/>
+    </UserControl.RenderTransform>
+    <UserControl.Resources>
+        <!--<converters:KeyBoardLanguageConverter x:Key="BoardLanguageConverter"/>-->
+        <!--<converters:KeyBoardLanguageConverter x:Key="BoardLanguageConverter"></converters:KeyBoardLanguageConverter>-->
+        <Style TargetType="StackPanel">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Focusable" Value="False"/>
+            <!--<Setter Property="Template" Value="{StaticResource KeyBoardButton}"/>-->
+            <Setter Property="FontSize" Value="35"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="FontFamily" Value="/MSPBanck;component/Fonts/#PF Din Text Pro"/>
+            <Setter Property="Background" >
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FFFFFF" Offset="0"/>
+                        <GradientStop Color="#A8A8A8" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter> 
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Path=SendKeysCommand}"/>
+            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content}"/>
+            <Setter Property="Foreground" Value="#595959"/>
+            <Setter Property="Content">
+                <Setter.Value>
+                    <!--<MultiBinding Converter="{StaticResource BoardLanguageConverter}">-->
+                    <!--<Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=UserControl}" Path="ChoosedCulture"/>-->
+                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                    <!--</MultiBinding>-->
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="FontSize" Value="35"/>
+            <Setter Property="FontFamily" Value="/MSPBanck;component/Fonts/#PF Din Text Pro"/>
+            <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Path=SendKeysCommand}"/>
+            <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content}"/>
+            <Setter Property="Content">
+                <Setter.Value>
+                    <!--<MultiBinding Converter="{StaticResource BoardLanguageConverter}">-->
+                    <!--<Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=UserControl}" Path="ChoosedCulture"/>-->
+                    <Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+                    <!--</MultiBinding>-->
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Padding="0" Background="#f7f7f7" CornerRadius="40" BorderBrush="White" Focusable="False">
+        <StackPanel Orientation="Vertical">
+            <Grid VerticalAlignment="Center" Focusable="False" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="1">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Width" Value="136"/>
+                            <Setter Property="Height" Value="124"/>
+                            <Setter Property="FontFamily" Value="/MSPBanck;component/Fonts/#PF Din Text Pro"/>
+                            <Setter Property="FontSize" Value="35"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button  Name="qButton"/>
+                    <Button  Name="wButton"/>
+                    <Button  Name="eButton"/>
+                    <Button  Name="rButton"/>
+                    <Button  Name="tButton"/>
+                    <Button  Name="yButton"/>
+                    <Button  Name="uButton"/>
+                    <Button  Name="iButton"/>
+                    <Button  Name="oButton"/>
+                    <Button  Name="pButton"/>
+                    <Button  Name="addButton1"/>
+                    <Button  Name="addButton2"/>
+                    <Button Width="235" Name="backButton" FontSize="36" Command="{Binding DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}"/>
+                    <Button Width="93" Tag="+" Visibility="Collapsed"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Width" Value="136"/>
+                            <Setter Property="Height" Value="124"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}" Width="160" FontSize="36"  Name="langButton"/>
+                    <Button Name="aButton" />
+                    <Button Name="sButton" />
+                    <Button Name="dButton" />
+                    <Button Name="fButton" />
+                    <Button Name="gButton" />
+                    <Button Name="hButton" />
+                    <Button Name="jButton" />
+                    <Button Name="kButton" />
+                    <Button Name="lButton" />
+                    <Button Name="addButton3" />
+                    <Button Name="addButton4"/>
+                    <Button Width="200"
+                            Command="{Binding EnterCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Border>
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FFFFFF" Offset="0"/>
+                                            <GradientStop Color="#A8A8A8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Image Source="/Images/enter-arrow.png"
+                                           Margin="30"></Image>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Margin="0,0,0,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Width" Value="136"/>
+                            <Setter Property="Height" Value="124"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <ToggleButton Width="162" Visibility="Collapsed" Background="Black" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftPressed, Mode=TwoWay}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid>
+                                    <Border Background="Black" x:Name="Border" BorderThickness="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}" Value="true">
+                                                        <Setter Property="Opacity" Value="1"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+
+                    <ToggleButton Name="shiftButton" Visibility="Visible" Width="160"  Tag="CapsLock" IsChecked="{Binding CapsPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftCommand}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid>
+                                    <Border  x:Name="Border" BorderBrush="Black"  Width="{TemplateBinding Width}" Height="130">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Setters>
+                                                    <Setter Property="Background" >
+                                                        <Setter.Value>
+                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                                                <GradientStop Color="#A8A8A8" Offset="1"/>
+                                                            </LinearGradientBrush>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style.Setters>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}" Value="True">
+                                                        <Setter Property="Background" Value="CornflowerBlue"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Image Source="/Images/shift.png" Height="52"></Image>
+
+                                        <!--<TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>-->
+                                    </Border>
+                                </Grid>
+
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                    <Button Command="{Binding SymbolsCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}" Width="120" FontSize="36"  Name="symbolButton"/>
+                    <Button  Name="zButton"/>
+                    <Button  Name="xButton"/>
+                    <Button  Name="cButton"/>
+                    <Button  Name="vButton"/>
+                    <Button  Name="bButton"/>
+                    <Button  Name="nButton"/>
+                    <Button  Name="mButton"/>
+                    <Button Name="addButton5" />
+                    <Button Name="addButton6" />
+                    <Button Name="addButton7" Visibility="Collapsed"/>
+                    <ToggleButton Width="162" Visibility="Hidden" Background="Black" IsChecked="{Binding ShiftPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid>
+                                    <Border Background="Black" x:Name="Border" BorderThickness="0" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}" Value="true">
+                                                        <Setter Property="Opacity" Value="0.75"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+                                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                </StackPanel>
+                <StackPanel Grid.Row="4">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Width" Value="136"/>
+                            <Setter Property="Height" Value="124"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Visibility="Hidden" Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}" Width="190" Tag="RUS/KZ"/>
+                    <Button Width="1100" Tag=" "/>
+                    <Button Width="380" Visibility="Hidden" Tag="@"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Border>
+</UserControl>
+

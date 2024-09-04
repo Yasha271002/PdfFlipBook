@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using iDiTect.Converter;
+using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
 using PdfFlipBook.Views;
@@ -34,11 +37,12 @@ namespace PdfFlipBook
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public MainWindow()
         {
             InitializeComponent();
+
             App.CurrentApp.IsLoading = true;
             // UpdatePhotos();
             Frame1.NavigationService?.Navigate(App.CurrentApp.SP, UriKind.Relative);
@@ -63,6 +67,24 @@ namespace PdfFlipBook
 
         }
 
+        public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
+            "AllPages", typeof(ObservableCollection<DisposableImage>), typeof(MainWindow), new PropertyMetadata(default(ObservableCollection<DisposableImage>)));
+
+        public ObservableCollection<DisposableImage> AllPages
+        {
+            get { return (ObservableCollection<DisposableImage>)GetValue(AllPagesProperty); }
+            set { SetValue(AllPagesProperty, value); }
+        }
+
+        public static readonly DependencyProperty PagesProperty = DependencyProperty.Register(
+            "Pages", typeof(List<string>), typeof(MainWindow), new PropertyMetadata(default(List<string>)));
+
+        public List<string> Pages
+        {
+            get { return (List<string>)GetValue(PagesProperty); }
+            set { SetValue(PagesProperty, value); }
+        }
+
         public static readonly DependencyProperty AllPhotosProperty = DependencyProperty.Register(
             "AllPhotos", typeof(List<string>), typeof(MainWindow), new PropertyMetadata(default(List<string>)));
 
@@ -72,7 +94,17 @@ namespace PdfFlipBook
             set { SetValue(AllPhotosProperty, value); }
         }
 
-       
+        private SettingsModel _settings;
+
+        public SettingsModel Settings
+        {
+            get => _settings;
+            set
+            {
+                _settings = value;
+                OnPropertyChanged();
+            }
+        }
 
         public static byte[] converterDemo(System.Drawing.Image x)
         {
@@ -117,25 +149,6 @@ namespace PdfFlipBook
             
         }
 
-
-public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
-            "AllPages", typeof(ObservableCollection<DisposableImage>), typeof(MainWindow), new PropertyMetadata(default(ObservableCollection<DisposableImage>)));
-
-        public ObservableCollection<DisposableImage> AllPages
-        {
-            get { return (ObservableCollection<DisposableImage>) GetValue(AllPagesProperty); }
-            set { SetValue(AllPagesProperty, value); }
-        }
-
-        public static readonly DependencyProperty PagesProperty = DependencyProperty.Register(
-            "Pages", typeof(List<string>), typeof(MainWindow), new PropertyMetadata(default(List<string>)));
-
-        public List<string> Pages
-        {
-            get { return (List<string>) GetValue(PagesProperty); }
-            set { SetValue(PagesProperty, value); }
-        }
-
         //private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         //{
         //    MessageBox.Show(Book.CurrentSheetIndex.ToString());
@@ -175,6 +188,44 @@ public static readonly DependencyProperty AllPagesProperty = DependencyProperty.
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
+            var helper = new JsonHelper();
+            var jsonPath = "Settings/Settings.json";
+            var directoryPath = "Settings";
+
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            if (!File.Exists(jsonPath))
+            {
+                var settings = new SettingsModel
+                {
+                    InactivityTime = 60,
+                    IntervalSwitchPage = 5,
+                    Password = "1234",
+                    RepeatOrNextPage = false,
+                };
+                helper.WriteJsonToFile(jsonPath, settings, false);
+            }
+            else
+            {
+                var settings = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
+                Settings = settings;
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

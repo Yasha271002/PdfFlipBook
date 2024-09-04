@@ -250,6 +250,8 @@ namespace PdfFlipBook.Views.Pages
         public Start_Page()
         {
             InitializeComponent();
+            AuthorBookRB.IsChecked = true;
+
             ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
@@ -642,35 +644,34 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private ICommand _searchCommand;
-
         public ICommand SearchCommand =>
-            _searchCommand ?? (_searchCommand = new Command(c =>
+            _searchCommand ??= new Command(c =>
             {
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
-                //if (AuthorBookRB.IsChecked == true)
-                //{
-                    ActualBooks = AllBooks.Where(x => x.Title.ToLower().Contains(NameTB.Text.ToLower())).ToList();
-                //}
-                //else
-                //{
-                //    ActualBooks = AllBooks.Where(x => x.Text.ToLower().Contains(NameTB.Text.ToLower())).ToList();
-                //}
-                
-                    foreach (var actualBook in ActualBooks.ToArray())
+
+                string searchQuery = NameTB.Text.ToLower();
+
+                if (AuthorBookRB.IsChecked == true)
+                {
+                    ActualBooks = AllBooks.Where(x => x.Author.ToLower().Contains(searchQuery)).ToList();
+                }
+                else if(TextBookRB.IsChecked == true)
+                {
+                    ActualBooks = AllBooks.Where(x => x.Title.ToLower().Contains(searchQuery)).ToList();
+                }
+
+                foreach (var actualBook in ActualBooks.ToArray())
+                {
+                    if (actualBook.Icon.Source == null)
                     {
-                        if (actualBook.Icon.Source == null)
-                            actualBook.Icon =
-                                new DisposableImage(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" +
-                                                                       actualBook.Title)[0]);
-                        ActualBooks.Add(actualBook);
-
+                        actualBook.Icon = new DisposableImage(
+                            Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + actualBook.Title)[0]
+                        );
                     }
-                
-
-
-
-            }));
+                    ActualBooks.Add(actualBook);
+                }
+            });
 
         private void NameTB_OnGotFocus(object sender, RoutedEventArgs e)
         {

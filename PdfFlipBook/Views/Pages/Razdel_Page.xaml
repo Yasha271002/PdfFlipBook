@@ -8,6 +8,7 @@
       xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
       xmlns:polusVerninskoe="clr-namespace:PolusVerninskoe"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
+      xmlns:properties="clr-namespace:PdfFlipBook.Properties"
       mc:Ignorable="d" 
       
       Unloaded="Razdel_Page_OnUnloaded"
@@ -26,19 +27,18 @@
                           VirtualizingStackPanel.IsVirtualizing="True"
                           ScrollViewer.CanContentScroll="True"
                           Visibility="Visible"
-                          MaxWidth="3760"
+                          MaxWidth="3526"
                           Name="BooksItemsControl"
                           HorizontalAlignment="Center"
                           ScrollViewer.IsDeferredScrollingEnabled="True"
                           controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
                           controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
                           controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
-                          controls:VirtualizingWrapPanel.CacheLength ="0,0" Height="1920"
-                          Margin="0,300,0,0"
-            >
+                          controls:VirtualizingWrapPanel.CacheLength ="0,0" Height="1860"
+                          Margin="0,240,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3560"></polusVerninskoe:AlignableWrapPanel>
+                    <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="{Binding WrapPanelWidths}"></polusVerninskoe:AlignableWrapPanel>
 
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
@@ -46,18 +46,15 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Button Panel.ZIndex="200" Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
-                    Path=BookCommand}" CommandParameter="{Binding Title}">
+                    Path=BookCommand}" x:Name="Button" CommandParameter="{Binding Title}">
                         <Button.Template>
                             <ControlTemplate>
+                                <Border HorizontalAlignment="Center" Width="{Binding BorderWidth, Mode=OneWay}" Height="{Binding BorderHeight, Mode=OneWay}" Margin="20" Background="Transparent" CornerRadius="10" >
+                                    <Grid  Background="#60000000" >
+                                        <StackPanel Orientation="Vertical" ClipToBounds="True" >
 
-
-                                <Border HorizontalAlignment="Center" Width="540" Height="590" Margin="20" Background="Transparent" CornerRadius="10" >
-
-                                    <Grid Width="540" Background="#60000000">
-                                        <StackPanel Orientation="Vertical" ClipToBounds="True">
-
-                                            <Image Width="454"
-                                                   Height="390" 
+                                            <Image Width="{Binding ImageWidth, Mode=OneWay}"
+                                                   Height="{Binding ImageHeight, Mode=OneWay}" 
                                                    Stretch="Uniform" 
                                                    Margin="15"
                                                    RenderOptions.BitmapScalingMode="Fant"
@@ -67,7 +64,8 @@
 
                                             <ScrollViewer Width="470" Margin="10,10,10,10" VerticalAlignment="Center" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
                                                 <TextBlock Text="{Binding Book}" FontSize="34" 
-                                                   Width="470" TextWrapping="WrapWithOverflow"
+                                                           TextWrapping="WrapWithOverflow"
+                                                           MaxWidth="400"
                                                    VerticalAlignment="Center"
                                                    Foreground="White"
                                                    FontWeight="Bold"
@@ -94,7 +92,7 @@
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer Style="{DynamicResource ScrollViewerStyle}" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Visible" >
+                                  VerticalScrollBarVisibility="Visible" Height="{Binding ScrollViewerHeights, Mode=OneWay}">
                         <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"></ItemsPresenter>
 
                     </ScrollViewer>
@@ -124,6 +122,29 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
+        
+        <Border Margin="2979 60 0 0"
+                VerticalAlignment="Top"
+                Background="#FFFFFF"
+                Width="704" Height="120"
+                CornerRadius="10">
+            <Grid>
+                <TextBlock Text="Расположение"
+                           FontSize="50" FontFamily="{DynamicResource Montserrat}"
+                           FontWeight="Normal" Foreground="#808080"
+                           VerticalAlignment="Center"
+                           Margin="32 0 0 0"/>
+                <ComboBox Width="217" Height="77"
+                          x:Name="ComboBoxGridSize"
+                          HorizontalAlignment="Right"
+                          Margin="0 0 30 0"
+                          DisplayMemberPath="Size"
+                          SelectedItem="{Binding SelectedGridSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                </ComboBox>
+
+            </Grid>
+        </Border>
+
         <TextBlock Text="{Binding ActualRazdel}"
                    Foreground="White"
                    FontFamily="{StaticResource Montserrat}"

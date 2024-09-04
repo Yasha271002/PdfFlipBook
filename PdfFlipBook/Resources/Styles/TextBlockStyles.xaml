@@ -21,4 +21,16 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+
+    <Style TargetType="TextBlock" x:Key="SettingsTextBlock" BasedOn="{StaticResource TitleTextBlockStyle}">
+        <Setter Property="FontSize" Value="100" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="#808080" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="SettingsButtonText" BasedOn="{StaticResource TitleTextBlockStyle}">
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
 </ResourceDictionary>

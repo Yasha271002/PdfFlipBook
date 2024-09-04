@@ -12,10 +12,12 @@
                 <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/TextBoxStyle.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/ScrollViewerRazdelStyle.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/BorderStyle.xaml"/>
 
                 <ResourceDictionary Source="Resources/Templates/Icons.xaml"/>
                 <ResourceDictionary Source="Resources/Templates/RadioButtonTemplate.xaml"/>
                 <ResourceDictionary Source="Resources/Templates/TextBoxTemplate.xaml"/>
+                <ResourceDictionary Source="Resources/Templates/ButtonTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

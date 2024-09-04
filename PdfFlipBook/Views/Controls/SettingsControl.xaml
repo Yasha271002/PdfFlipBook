@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="PdfFlipBook.Views.Controls.SettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PdfFlipBook.Views.Controls"
+             mc:Ignorable="d">
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border Style="{DynamicResource SettingBorderStyle}"
+                Background="White" Opacity="0.4"
+                Width="3526"
+                Height="1368"/>
+        <StackPanel VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
+            <Border Style="{DynamicResource SettingBorderStyle}"
+                    Background="White" Height="226">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Text="Время бездействия"
+                        Margin="32"
+                        Style="{DynamicResource SettingsTextBlock}" />
+                    <TextBox></TextBox>
+                </StackPanel>
+            </Border>
+            <Border Style="{DynamicResource SettingBorderStyle}"
+                    Background="White" Margin="0 128"
+                    Height="226">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Text="Интервал перелистывания страниц"
+                        Style="{DynamicResource SettingsTextBlock}"
+                        Margin="32"/>
+                    <TextBox></TextBox>
+                </StackPanel>
+            </Border>
+            <Border Style="{DynamicResource SettingBorderStyle}"
+                    Background="White" Height="404">
+                <StackPanel>
+                    <TextBlock
+                        Text="Действие после окончания книги"
+                        Style="{DynamicResource SettingsTextBlock}"
+                        HorizontalAlignment="Left" Margin="32 32 0 16"/>
+                    <StackPanel Orientation="Horizontal" Height="186" Background="#E4E4E4" Width="3206"
+                                Margin="32 16 32 32">
+                        <Button />
+                        <Button />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

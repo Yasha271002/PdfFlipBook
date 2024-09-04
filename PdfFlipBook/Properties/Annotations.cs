@@ -207,7 +207,7 @@ namespace PdfFlipBook.Annotations
   ///   public event PropertyChangedEventHandler PropertyChanged;
   /// 
   ///   [NotifyPropertyChangedInvocator]
-  ///   protected virtual void NotifyChanged(string propertyName) { ... }
+  ///   protected virtual void NotifyChanged(string ListGridSize) { ... }
   ///
   ///   string _name;
   /// 

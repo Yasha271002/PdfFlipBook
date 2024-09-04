@@ -1,0 +1,41 @@
+﻿<Page x:Class="PdfFlipBook.Views.Pages.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:PdfFlipBook.Views.Pages"
+      xmlns:controls="clr-namespace:PdfFlipBook.Views.Controls"
+      xmlns:pages="clr-namespace:PdfFlipBook.ViewModel.Pages"
+      mc:Ignorable="d"
+      d:DesignWidth="3874" d:DesignHeight="2160"
+      Title="SettingsPage">
+    <Page.DataContext>
+        <pages:SettingsPageViewModel/>
+    </Page.DataContext>
+    <Page.Background>
+        <ImageBrush ImageSource="../../Images/wood-86 1.png" />
+    </Page.Background>
+    <Grid>
+        <Button Width="400" Height="120"
+                Margin="157 60"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                FontSize="50"
+                Foreground="#808080"
+                Template="{DynamicResource SettingButtonBack}"
+                Content="На главную" />
+
+        <controls:SettingsControl SettingsModel="{Binding SettingsModel}" Visibility="Collapsed"/>
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="1620">
+            <TextBox Template="{DynamicResource BlueBox}"
+                      Height="250"/>
+            <Button Template="{DynamicResource SettingButtonBack}"
+                     Height="120"
+                     Margin="32"
+                     Content="Войти"
+                     FontSize="50"
+                     Foreground="#808080"/>
+        </StackPanel>
+    </Grid>
+</Page>

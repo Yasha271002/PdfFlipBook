@@ -264,11 +264,11 @@
                     Width="1200" Height="48" Margin="0 298 0 0"
                     VerticalAlignment="Top" Orientation="Horizontal">
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36"/>
+                         Width="36" Height="36" x:Name="AuthorBookRB"/>
             <TextBlock Foreground="White" Text="По автору или названию" 
                        FontSize="40" FontWeight="Bold" Margin="32 0 0 0"/>
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36" Margin="70 0 0 0"/>
+                         Width="36" Height="36" Margin="70 0 0 0" x:Name="TextBookRB"/>
             <TextBlock Foreground="White" Text="По тексту"
                        FontSize="40" FontWeight="Bold" Margin="32 0 0 0"/>
         </StackPanel>
@@ -298,7 +298,6 @@
                     Margin="0,250,0,0">
         <RadioButton Style="{DynamicResource CircleCheckbox}"
                   Width="60"
-                  Name="AuthorBookRB"
                   IsChecked="True"
                   GroupName="MyGroup"
                   Height="60" ></RadioButton>

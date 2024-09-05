@@ -1,5 +1,4 @@
-﻿using PdfFlipBook.ViewModel.Pages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PdfFlipBook.Views.Pages
+namespace PdfFlipBook.Views.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для SettingsPage.xaml
+    /// Логика взаимодействия для PainPadControl.xaml
     /// </summary>
-    public partial class SettingsPage : Page
+    public partial class PainPadControl : UserControl
     {
-        public SettingsPage()
+        public PainPadControl()
         {
             InitializeComponent();
         }

@@ -6,36 +6,56 @@
       xmlns:local="clr-namespace:PdfFlipBook.Views.Pages"
       xmlns:controls="clr-namespace:PdfFlipBook.Views.Controls"
       xmlns:pages="clr-namespace:PdfFlipBook.ViewModel.Pages"
+      xmlns:helper="clr-namespace:PdfFlipBook.Helper"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d"
-      d:DesignWidth="3874" d:DesignHeight="2160"
-      Title="SettingsPage">
-    <Page.DataContext>
-        <pages:SettingsPageViewModel/>
-    </Page.DataContext>
+      d:DesignHeight="2160" d:DesignWidth="3840"
+      Title="SettingsPage"
+      d:DataContext="{d:DesignInstance pages:SettingsPageViewModel}">
     <Page.Background>
         <ImageBrush ImageSource="../../Images/wood-86 1.png" />
     </Page.Background>
-    <Grid>
-        <Button Width="400" Height="120"
-                Margin="157 60"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                FontSize="50"
-                Foreground="#808080"
-                Template="{DynamicResource SettingButtonBack}"
-                Content="На главную" />
+    <Viewbox>
+        <ScrollViewer>
+            <Grid Width="3840" Height="2160">
+                <Button Width="400" Height="120"
+                        Margin="157 60"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        FontSize="50"
+                        Foreground="#808080"
+                        Command="{Binding WriteJsonFileAndBackCommand}"
+                        Template="{DynamicResource SettingButtonBack}"
+                        Content="На главную" />
 
-        <controls:SettingsControl SettingsModel="{Binding SettingsModel}" Visibility="Collapsed"/>
+                <controls:SettingsControl
+                    Visibility="{Binding PageSettings.ShowSettings, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged,
+                    Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <controls:PasswordSettingsControl
+                    Visibility="{Binding PageSettings.ShowSettings, Mode=TwoWay, 
+                    UpdateSourceTrigger=PropertyChanged, 
+                    Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="GotFocus">
+                            <b:InvokeCommandAction Command="{Binding GotFocusCommand}" CommandParameter="Password"/>
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
+                </controls:PasswordSettingsControl>
 
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="1620">
-            <TextBox Template="{DynamicResource BlueBox}"
-                      Height="250"/>
-            <Button Template="{DynamicResource SettingButtonBack}"
-                     Height="120"
-                     Margin="32"
-                     Content="Войти"
-                     FontSize="50"
-                     Foreground="#808080"/>
-        </StackPanel>
-    </Grid>
+                <controls:PainPadControl VerticalAlignment="Bottom"
+                                         Margin="0 0 0 200"
+                                         Visibility="{Binding PageSettings.IsPinPadVisible,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="GotFocus">
+                            <b:InvokeCommandAction Command="{Binding GotFocusCommand}" />
+                        </b:EventTrigger>
+                        
+                    </b:Interaction.Triggers>
+                </controls:PainPadControl>
+            </Grid>
+        </ScrollViewer>
+
+    </Viewbox>
+
 </Page>

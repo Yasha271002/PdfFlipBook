@@ -14,39 +14,33 @@
         WindowState="Maximized"
         WindowStyle="None">
     <Grid>
-     
-      <Viewbox Width="{x:Static SystemParameters.PrimaryScreenWidth}"
-               Height="{x:Static SystemParameters.PrimaryScreenHeight}">
-          <Frame Name="Frame1"
-                 NavigationUIVisibility="Hidden"
-                
-                 Navigated="Frame1_OnNavigated"
-                 ></Frame>
-      </Viewbox>
-
-        <Viewbox >
+        <Viewbox>
             <Grid Width="3840" Height="2160">
-            <Border Panel.ZIndex="100000" Background="White" Width="Auto" Height="Auto">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Source={x:Static local:App.CurrentApp}, Path=IsLoading}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-           
-            
-               
-                <TextBlock Margin="30" Foreground="Black"
-                          VerticalAlignment="Center"
-                           FontSize="160"
-                           TextAlignment="Center"
-                           Text="Пожалуйста, подождите..."></TextBlock>
-            
-        </Border>
+                <Frame Name="Frame1"
+                       NavigationUIVisibility="Hidden"
+                       Navigated="Frame1_OnNavigated" />
+                <Border Panel.ZIndex="100000" Background="White" Width="Auto" Height="Auto">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static local:App.CurrentApp}, Path=IsLoading}"
+                                             Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+
+                    <TextBlock Margin="30" Foreground="Black"
+                               VerticalAlignment="Center"
+                               FontSize="160"
+                               TextAlignment="Center"
+                               Text="Пожалуйста, подождите...">
+                    </TextBlock>
+
+                </Border>
             </Grid>
         </Viewbox>
 

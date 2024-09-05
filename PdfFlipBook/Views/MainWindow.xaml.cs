@@ -46,6 +46,7 @@ namespace PdfFlipBook
             App.CurrentApp.IsLoading = true;
             // UpdatePhotos();
             Frame1.NavigationService?.Navigate(App.CurrentApp.SP, UriKind.Relative);
+            NavigationManager.Frame1 = Frame1.NavigationService;
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
 
@@ -188,29 +189,7 @@ namespace PdfFlipBook
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            var helper = new JsonHelper();
-            var jsonPath = "Settings/Settings.json";
-            var directoryPath = "Settings";
-
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
-
-            if (!File.Exists(jsonPath))
-            {
-                var settings = new SettingsModel
-                {
-                    InactivityTime = 60,
-                    IntervalSwitchPage = 5,
-                    Password = "1234",
-                    RepeatOrNextPage = false,
-                };
-                helper.WriteJsonToFile(jsonPath, settings, false);
-            }
-            else
-            {
-                var settings = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
-                Settings = settings;
-            }
+            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

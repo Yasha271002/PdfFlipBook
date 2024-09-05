@@ -188,6 +188,8 @@
                    HorizontalAlignment="Left"
                    Margin="640,80,0,0"></TextBlock>-->
 
+        
+
         <Button 
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
@@ -326,5 +328,24 @@
                                 Panel.ZIndex="200"
                                 VerticalAlignment="Bottom"
                                 Margin="0,0,0,-800"></controls1:CoolKeyBoard>
+
+        <Button VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Width="200" Height="200"
+                Panel.ZIndex="3000" 
+                Command="{Binding NavigateOnSettingsPage}">
+            <Button.Style>
+                <Style TargetType="Button">
+
+                </Style>
+            </Button.Style>
+            <Button.Template>
+                <ControlTemplate>
+                    <Border Width="240" Height="240" Background="Transparent">
+
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
     </Grid>
 </Page>

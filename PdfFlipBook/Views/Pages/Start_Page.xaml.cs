@@ -20,7 +20,9 @@ using iTextSharp.text.pdf.parser;
 using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
 using PdfFlipBook.Annotations;
+using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
+using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
 using Image = System.Drawing.Image;
 
@@ -31,6 +33,54 @@ namespace PdfFlipBook.Views.Pages
     /// </summary>
     public partial class Start_Page : Page, INotifyPropertyChanged
     {
+
+        public static readonly DependencyProperty ActualBooksProperty = DependencyProperty.Register(
+            "ActualBooks", typeof(List<BookPDF>), typeof(Start_Page), new PropertyMetadata(default(List<BookPDF>)));
+
+        public List<BookPDF> ActualBooks
+        {
+            get { return (List<BookPDF>)GetValue(ActualBooksProperty); }
+            set { SetValue(ActualBooksProperty, value); }
+        }
+
+        public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
+            "ActualBack", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
+
+        public string ActualBack
+        {
+            get { return (string)GetValue(ActualBackProperty); }
+            set { SetValue(ActualBackProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty AllFoldersProperty = DependencyProperty.Register(
+            "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page), new PropertyMetadata(default(ObservableCollection<BookFolder>)));
+
+        public ObservableCollection<BookFolder> AllFolders
+        {
+            get { return (ObservableCollection<BookFolder>)GetValue(AllFoldersProperty); }
+            set { SetValue(AllFoldersProperty, value); }
+        }
+
+        public static readonly DependencyProperty PageCountProperty = DependencyProperty.Register(
+            "PageCount", typeof(int), typeof(Start_Page), new PropertyMetadata(default(int)));
+
+        public int PageCount
+        {
+            get { return (int)GetValue(PageCountProperty); }
+            set { SetValue(PageCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty ActualRazdelProperty = DependencyProperty.Register(
+            "ActualRazdel", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
+
+        public string ActualRazdel
+        {
+            get { return (string)GetValue(ActualRazdelProperty); }
+            set { SetValue(ActualRazdelProperty, value); }
+        }
+
+
         public static Bitmap ExtractPage(IPdfSource source, int pageNumber, float zoomFactor = 1.0f, string password = null)
         {
             var pageNumberIndex = Math.Max(0, pageNumber - 1); // pages start at index 0
@@ -355,28 +405,10 @@ namespace PdfFlipBook.Views.Pages
             return text.ToString();
         }
 
-        public static readonly DependencyProperty AllFoldersProperty = DependencyProperty.Register(
-            "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page), new PropertyMetadata(default(ObservableCollection<BookFolder>)));
-
-        public ObservableCollection<BookFolder> AllFolders
-        {
-            get { return (ObservableCollection<BookFolder>) GetValue(AllFoldersProperty); }
-            set { SetValue(AllFoldersProperty, value); }
-        }
-
-        public static readonly DependencyProperty PageCountProperty = DependencyProperty.Register(
-            "PageCount", typeof(int), typeof(Start_Page), new PropertyMetadata(default(int)));
-
-        public int PageCount
-        {
-            get { return (int) GetValue(PageCountProperty); }
-            set { SetValue(PageCountProperty, value); }
-        }
-
         private ICommand _bookCommand;
 
         public ICommand BookCommand =>
-            _bookCommand ?? (_bookCommand = new Command(c =>
+            _bookCommand ??= (_bookCommand = new Command(c =>
             {
                 NavigationService?.Navigate(new Book_Page(c.ToString()));
                 foreach (var actualBook in ActualBooks)
@@ -414,7 +446,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _hideKeyboardCommand;
 
         public ICommand HideKeyboardCommand =>
-            _hideKeyboardCommand ?? (_hideKeyboardCommand = new Command(c =>
+            _hideKeyboardCommand ??= (_hideKeyboardCommand = new Command(c =>
             {
                 HideButton.Visibility = Visibility.Collapsed;
                 FoldersItemsControl.Focus();
@@ -437,40 +469,20 @@ namespace PdfFlipBook.Views.Pages
         public ICommand RazdelCommand =>
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
-                //SearchOptionSP.Visibility = Visibility.Collapsed;
-                //LoupeImage.Visibility = Visibility.Collapsed;
-                //NameTB.Visibility = Visibility.Collapsed;
-                //BooksItemsControl.Visibility = Visibility.Visible;
-                //BackButton.Visibility = Visibility.Visible;
-                //FoldersItemsControl.Visibility = Visibility.Collapsed;
-                //if (ActualBooks != null)
-                //{
-                //    foreach (var actualBooks in ActualBooks)
-                //    {
-                //        actualBooks.Icon.Dispose();
-                //    }
-                //}
-                //foreach (var actualBook in ActualBooks)
-                //{
-                //    actualBook.Icon.Dispose();
-                //}
-
-                //NameTB.Text = "";
-                //SearchResultGrid.Visibility = Visibility.Collapsed;
-                //FoldersItemsControl.Visibility = Visibility.Visible;
-                //ActualBooks.Clear();
-                //ActualBooks = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
+
                 ActualRazdel = c.ToString();
-                App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList();
-                NavigationService?.Navigate(new Razdel_Page(ActualRazdel, App.CurrentApp.ActualBooks));
-               
+                var actualBooks = App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList();
+
+                // Вместо прямого вызова NavigationService используйте CommonCommands
+                var razdelData = Tuple.Create(ActualRazdel, actualBooks);
+                CommonCommands.NavigateCommand.Execute(razdelData);
             }));
 
         ////private ICommand _backCommand;
 
-        ////public ICommand BackCommand =>
+        ////public ICommand WriteJsonFileAndBackCommand =>
         ////    _backCommand ?? (_backCommand = new Command(c =>
         ////    {
         ////        ActualRazdel = "";
@@ -498,16 +510,9 @@ namespace PdfFlipBook.Views.Pages
             _sec = 0;
         }));
 
-        public static readonly DependencyProperty ActualRazdelProperty = DependencyProperty.Register(
-            "ActualRazdel", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
+        
 
-        public string ActualRazdel
-        {
-            get { return (string) GetValue(ActualRazdelProperty); }
-            set { SetValue(ActualRazdelProperty, value); }
-        }
-
-        public ICommand StartTimerCommand => _startTimerCommand ?? (_startTimerCommand = new Command(a =>
+        public ICommand StartTimerCommand => _startTimerCommand ??= (_startTimerCommand = new Command(a =>
         {
             _timer?.Stop();
             _sec = 0;
@@ -529,7 +534,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _stopTimer2Command;
         private ICommand _startTimer2Command;
 
-        public ICommand StopTimer2Command => _stopTimer2Command ?? (_stopTimer2Command = new Command(a =>
+        public ICommand StopTimer2Command => _stopTimer2Command ??= (_stopTimer2Command = new Command(a =>
         {
             _timer2.Tick -= Timer2;
             _timer2.Stop();
@@ -544,6 +549,13 @@ namespace PdfFlipBook.Views.Pages
             _timer2.Tick += Timer2;
             _timer2.Start();
         }));
+
+        private ICommand _navigateOnSettingsPage;
+        public ICommand NavigateOnSettingsPage =>
+            _navigateOnSettingsPage ??= (_navigateOnSettingsPage = new Command(c =>
+            {
+                CommonCommands.NavigateCommand.Execute(SettingsModel);
+            }));
 
         DispatcherTimer _timer2 = new DispatcherTimer();
         private int _sec2 = 0;
@@ -578,22 +590,17 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
-        public static readonly DependencyProperty ActualBooksProperty = DependencyProperty.Register(
-            "ActualBooks", typeof(List<BookPDF>), typeof(Start_Page), new PropertyMetadata(default(List<BookPDF>)));
 
-        public List<BookPDF> ActualBooks
+        private SettingsModel _settings;
+
+        public SettingsModel SettingsModel
         {
-            get { return (List<BookPDF>) GetValue(ActualBooksProperty); }
-            set { SetValue(ActualBooksProperty, value); }
-        }
-
-        public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
-            "ActualBack", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
-
-        public string ActualBack
-        {
-            get { return (string) GetValue(ActualBackProperty); }
-            set { SetValue(ActualBackProperty, value); }
+            get => _settings;
+            set
+            {
+                _settings = value;
+                OnPropertyChanged();
+            }
         }
 
 
@@ -605,6 +612,33 @@ namespace PdfFlipBook.Views.Pages
                 UpdatePhotos();
             }));
             App.CurrentApp.IsLoading = false;
+
+            var helper = new JsonHelper();
+            var jsonPath = "Settings/Settings.json";
+            var directoryPath = "Settings";
+
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            if (!File.Exists(jsonPath))
+            {
+                var settings = new SettingsModel
+                {
+                    InactivityTime = "60",
+                    IntervalSwitchPage = "5",
+                    Password = "1234",
+                    Repeat = false,
+                    NextPage = true
+                };
+                helper.WriteJsonToFile(jsonPath, settings, false);
+
+                SettingsModel = settings;
+            }
+            else
+            {
+                var settings = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
+                SettingsModel = settings;
+            }
 
             //List<BookPDF> AllBooks2 = new List<BookPDF>();
             //var pdfFolders = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\PDFs");

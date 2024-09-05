@@ -89,4 +89,120 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="InactivityTextBox" TargetType="TextBox">
+        <Border BorderBrush="DarkGray"
+                BorderThickness="4"
+                CornerRadius="15" Name="Border" ClipToBounds="True">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0.0,0" EndPoint="0.0,0">
+                                <GradientStopCollection>
+                                    <GradientStop Color="Transparent" Offset="0" />
+                                    <GradientStop Color="Transparent" Offset="1" />
+                                </GradientStopCollection>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Template="{DynamicResource CancelButton}"
+                        x:Name="Cancel"
+                        Command="{Binding EditSettingsCommand}" CommandParameter="Cancel"/>
+                <Button Grid.Column="2" Template="{DynamicResource CorrectButton}"
+                        x:Name="Correct" Command="{Binding EditSettingsCommand}" CommandParameter="Edit"/>
+                <TextBlock Grid.Column="1" Foreground="#808080" x:Name="Label1" VerticalAlignment="Center" FontSize="100"
+                           TextAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0"
+                           FontFamily="{StaticResource Montserrat}">
+                    <Run Text="{TemplateBinding Tag}" FontSize="65"  />
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Setters>
+                                <Setter Property="Opacity" Value="0" />
+                            </Style.Setters>
+                            <Style.Triggers>
+                                <Trigger Property="Opacity" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <ScrollViewer Grid.Column="1" Margin="30,0,30,0" VerticalAlignment="Center"
+                              x:Name="PART_ContentHost" />
+            </Grid>
+            <VisualStateManager.VisualStateGroups>
+                <VisualStateGroup x:Name="FocusStates">
+                    <VisualStateGroup.Transitions>
+                        <VisualTransition GeneratedDuration="0:0:0.3" />
+                        <VisualTransition GeneratedDuration="0" To="Pressed" />
+                    </VisualStateGroup.Transitions>
+                    <VisualState x:Name="Focused">
+                        <Storyboard>
+                            <ColorAnimationUsingKeyFrames
+                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                Storyboard.TargetName="Border">
+                                <EasingColorKeyFrame KeyTime="0" Value="White" />
+                            </ColorAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Unfocused">
+                        <Storyboard>
+                            <ColorAnimationUsingKeyFrames
+                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                Storyboard.TargetName="Border">
+                                <EasingColorKeyFrame KeyTime="0" Value="#FFFFFF" />
+                            </ColorAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Normal" />
+                </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+        </Border>
+        <ControlTemplate.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="Text" Value="" />
+                    <Condition Property="IsFocused" Value="False" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Label1" Storyboard.TargetProperty="Opacity"
+                                             To="1"
+                                             Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="Cancel" Storyboard.TargetProperty="Opacity"
+                                             To="0"
+                                             Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="Correct" Storyboard.TargetProperty="Opacity"
+                                             To="0"
+                                             Duration="0:0:0.1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.EnterActions>
+                <MultiTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="Label1" Storyboard.TargetProperty="Opacity"
+                                             To="0"
+                                             Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="Cancel" Storyboard.TargetProperty="Opacity"
+                                             To="1"
+                                             Duration="0:0:0.1" />
+                            <DoubleAnimation Storyboard.TargetName="Correct" Storyboard.TargetProperty="Opacity"
+                                             To="1"
+                                             Duration="0:0:0.1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiTrigger.ExitActions>
+            </MultiTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 </ResourceDictionary>

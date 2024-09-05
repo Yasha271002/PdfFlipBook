@@ -87,6 +87,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonControls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\CommonControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\Core.dll</HintPath>
+    </Reference>
     <Reference Include="iDiTect.Converter">
       <HintPath>C:\Users\spira\Downloads\iDiTect.Converter.Trial\iDiTect.Converter.Trial\bin\iDiTect.Converter.dll</HintPath>
     </Reference>
@@ -101,6 +109,9 @@
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.122\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="MoonPdfLib, Version=0.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -155,13 +166,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\BaseInactivityHelper.cs" />
+    <Compile Include="Helper\CommonCommands.cs" />
+    <Compile Include="Helper\Converters\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Helper\DpiHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
+    <Compile Include="Helper\NavigationManager.cs" />
+    <Compile Include="Helper\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Models\BookFolder.cs" />
     <Compile Include="Models\GridSizeModel.cs" />
+    <Compile Include="Models\PageSettingsModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Utilities\AlignableWrapPanel.cs" />
+    <Compile Include="Utilities\UserInactivity.cs" />
     <Compile Include="ViewModel\Pages\SettingsPageViewModel.cs" />
+    <Compile Include="Views\Controls\PainPadControl.xaml.cs">
+      <DependentUpon>PainPadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\PasswordSettingsControl.xaml.cs">
+      <DependentUpon>PasswordSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
@@ -217,6 +241,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Templates\TextBoxTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\PainPadControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\PasswordSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -318,5 +350,11 @@
     <Resource Include="Images\loupe.png" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\Cancel.png" />
+    <Resource Include="Images\Correct.png" />
+    <Content Include="Library\CommonControls.dll" />
+    <Content Include="Library\Core.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using PdfFlipBook.Annotations;
+using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
 
@@ -116,7 +117,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _bookCommand;
 
         public ICommand BookCommand =>
-            _bookCommand ?? (_bookCommand = new Command(c =>
+            _bookCommand ??= (_bookCommand = new Command(c =>
             {
                 // App.CurrentApp.IsLoading = true;
                 //int a = int.Parse(c.ToString())+1;
@@ -129,11 +130,13 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _backCommand;
 
         public ICommand BackCommand =>
-            _backCommand ?? (_backCommand = new Command(c =>
+            _backCommand ??= (_backCommand = new Command(c =>
             {
                 NavigationService?.Navigate(new Start_Page());
                 GC.Collect();
             }));
+        
+        
 
         public void GetBooks(List<BookPDF> actualBooks, string razdel)
         {

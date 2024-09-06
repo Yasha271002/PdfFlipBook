@@ -168,16 +168,23 @@
     </ApplicationDefinition>
     <Compile Include="Helper\BaseInactivityHelper.cs" />
     <Compile Include="Helper\CommonCommands.cs" />
+    <Compile Include="Helper\Converters\BoolToVisibilityHiddenConverter.cs" />
+    <Compile Include="Helper\Converters\IndexToCheckedConverter.cs" />
+    <Compile Include="Helper\Converters\IndexToCheckedMultiConverter.cs" />
     <Compile Include="Helper\Converters\InvertedBooleanToVisibilityConverter.cs" />
+    <Compile Include="Helper\Converters\VisibilityToPanningModeConverter.cs" />
+    <Compile Include="Helper\Converters\VisibilityToVerticalScrollBarVisibilityConverter.cs" />
     <Compile Include="Helper\DpiHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\NavigationManager.cs" />
     <Compile Include="Helper\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Models\BookFolder.cs" />
+    <Compile Include="Models\CountBooksModel.cs" />
     <Compile Include="Models\GridSizeModel.cs" />
     <Compile Include="Models\PageSettingsModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Utilities\AlignableWrapPanel.cs" />
+    <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="Utilities\UserInactivity.cs" />
     <Compile Include="ViewModel\Pages\SettingsPageViewModel.cs" />
     <Compile Include="Views\Controls\PainPadControl.xaml.cs">
@@ -213,6 +220,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\CheckBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\ComboBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

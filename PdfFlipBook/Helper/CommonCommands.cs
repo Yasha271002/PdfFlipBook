@@ -27,7 +27,8 @@ namespace PdfFlipBook.Helper
             Page? page = content switch
             {
                 SettingsModel settings => new SettingsPage{DataContext = new SettingsPageViewModel(settings)},
-                Tuple<string, List<BookPDF>> razdelData => new Razdel_Page(razdelData.Item1, razdelData.Item2),
+                Tuple<string, List<BookPDF>, SettingsModel> razdelData => new Razdel_Page(razdelData.Item1, razdelData.Item2, razdelData.Item3),
+                Tuple<string, SettingsModel> BookData => new Book_Page(BookData.Item1, BookData.Item2),
                 _ => null
             };
             return page;

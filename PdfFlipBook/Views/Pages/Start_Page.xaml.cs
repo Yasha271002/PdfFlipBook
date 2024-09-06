@@ -406,11 +406,12 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private ICommand _bookCommand;
-
         public ICommand BookCommand =>
-            _bookCommand ??= (_bookCommand = new Command(c =>
+            _bookCommand ?? (_bookCommand = new Command(c =>
             {
-                NavigationService?.Navigate(new Book_Page(c.ToString()));
+                var BookData = Tuple.Create(c.ToString(), SettingsModel);
+                ExecuteNavigation(BookData);
+
                 foreach (var actualBook in ActualBooks)
                 {
                     actualBook.Icon.Dispose();
@@ -424,23 +425,6 @@ namespace PdfFlipBook.Views.Pages
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
-                //App.CurrentApp.IsLoading = true;
-                ////int a = int.Parse(c.ToString())+1;
-                //NavigationService?.Navigate(new Book_Page(c.ToString()));
-
-                //if (AllBooks != null)
-                //{
-                //    foreach (var allBooks in AllBooks)
-                //    {
-                //       allBooks.Icon.Dispose();
-
-                //    }
-
-
-                //}
-
-                //GC.Collect();
-
             }));
 
         private ICommand _hideKeyboardCommand;
@@ -465,7 +449,6 @@ namespace PdfFlipBook.Views.Pages
             }));
 
         private ICommand _razdelCommand;
-
         public ICommand RazdelCommand =>
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
@@ -475,10 +458,14 @@ namespace PdfFlipBook.Views.Pages
                 ActualRazdel = c.ToString();
                 var actualBooks = App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList();
 
-                // Вместо прямого вызова NavigationService используйте CommonCommands
-                var razdelData = Tuple.Create(ActualRazdel, actualBooks);
-                CommonCommands.NavigateCommand.Execute(razdelData);
+                var razdelData = Tuple.Create(ActualRazdel, actualBooks, SettingsModel);
+                ExecuteNavigation(razdelData);
             }));
+
+        private void ExecuteNavigation(object data)
+        {
+            CommonCommands.NavigateCommand.Execute(data);
+        }
 
         ////private ICommand _backCommand;
 

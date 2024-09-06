@@ -8,6 +8,11 @@
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+            <converters:VisibilityToPanningModeConverter x:Key="VisibilityToPanningModeConverter"/>
+            <converters:VisibilityToVerticalScrollBarVisibilityConverter x:Key="VisibilityToVerticalScrollBarVisibilityConverter"/>
+            <converters:IndexToCheckedConverter x:Key="IndexToCheckedConverter"/>
+            <converters:IndexToCheckedMultiConverter x:Key="IndexToCheckedMultiConverter"/>
+            <converters:BoolToVisibilityHiddenConverter x:Key="BoolToVisibilityHiddenConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/CommonBrushes.xaml" />
 
@@ -16,6 +21,7 @@
                 <ResourceDictionary Source="Resources/Styles/TextBoxStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ScrollViewerRazdelStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles/BorderStyle.xaml" />
+                <ResourceDictionary Source="Resources/Styles/ComboBoxStyle.xaml" />
 
                 <ResourceDictionary Source="Resources/Templates/Icons.xaml" />
                 <ResourceDictionary Source="Resources/Templates/RadioButtonTemplate.xaml" />

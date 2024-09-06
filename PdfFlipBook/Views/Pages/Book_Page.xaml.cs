@@ -1,27 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using PdfFlipBook.Helper;
+using System.Windows.Threading;
 using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
+using System.Web.UI.WebControls;
+using PdfFlipBook.Models;
 
 namespace PdfFlipBook.Views.Pages
 {
     /// <summary>
     /// Логика взаимодействия для Book_Page.xaml
     /// </summary>
-    public partial class Book_Page : Page
+    public partial class Book_Page : Page, INotifyPropertyChanged
     {
-        public Book_Page(string bookTitle)
+        private DispatcherTimer _pageFlipTimer;
+        private readonly BaseInactivityHelper _inactivityHelper;
+
+        private SettingsModel _settingsModel;
+
+        public SettingsModel SettingsModel
+        {
+            get => _settingsModel;
+            set
+            {
+                _settingsModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Book_Page(string bookTitle, SettingsModel settings )
         {
             InitializeComponent();
             BookTitle = bookTitle;
             AllPages = new ObservableCollection<DisposableImage>();
+            SettingsModel = settings;
            
             AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle ).ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
             foreach (var s in AllPhotos)
@@ -37,8 +59,14 @@ namespace PdfFlipBook.Views.Pages
             }
             GC.Collect();
             App.CurrentApp.IsLoading = false;
+            _pageFlipTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(Convert.ToDouble(settings.IntervalSwitchPage))
+            };
+            _pageFlipTimer.Tick += OnPageFlipTimerTick;
 
-
+            _inactivityHelper = new BaseInactivityHelper(Convert.ToInt32(settings.InactivityTime));
+            _inactivityHelper.OnInactivity += OnInactivityDetected;
         }
 
         public static readonly DependencyProperty BookTitleProperty = DependencyProperty.Register(
@@ -185,7 +213,8 @@ namespace PdfFlipBook.Views.Pages
 
         private void Book_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
-           // App.CurrentApp.IsLoading = true;
+            // App.CurrentApp.IsLoading = true;
+            _inactivityHelper.OnInactivity += OnInactivityDetected;
         }
 
         public static readonly DependencyProperty AllPhotosProperty = DependencyProperty.Register(
@@ -210,7 +239,6 @@ namespace PdfFlipBook.Views.Pages
                    {
                        try
                        {
-                           
                                AllPages[index * 2 - 4].Dispose();
                                AllPages[index * 2 - 5].Dispose();
                                GC.Collect();
@@ -228,8 +256,6 @@ namespace PdfFlipBook.Views.Pages
                        {
 
                        }
-
-
                    }
                }
 
@@ -239,7 +265,6 @@ namespace PdfFlipBook.Views.Pages
                    {
                        try
                        {
-                          
                                AllPages[index * 2 + 3].Dispose();
                                AllPages[index * 2 + 4].Dispose();
                                GC.Collect();
@@ -258,17 +283,10 @@ namespace PdfFlipBook.Views.Pages
                        {
 
                        }
-
-
-
                    }
 
                }
            }
-
-
-            
-
         }
 
         public static readonly DependencyProperty StartPointXProperty = DependencyProperty.Register(
@@ -295,6 +313,85 @@ namespace PdfFlipBook.Views.Pages
         private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             StartPointX = e.GetPosition(this).X;
+        }
+
+        private void OnInactivityDetected(int inactivityTime)
+        {
+            _pageFlipTimer.Start();
+        }
+
+        private void OnPageFlipTimerTick(object sender, EventArgs e)
+        {
+            //FlipPage();
+        }
+
+        private void FlipPage()
+        {
+            int nextIndex = Book.CurrentSheetIndex + 1;
+
+            if (nextIndex >= AllPhotos.Count)
+            {
+                if (SettingsModel.Repeat)
+                {
+                    Book.CurrentSheetIndex = 0;
+                    nextIndex = 0;
+                }
+                else
+                {
+                    // Здесь можно добавить логику для перехода к другой книге, если нужно
+                    _pageFlipTimer.Stop();
+                    return;
+                }
+            }
+
+            UpdatePages(nextIndex);
+        }
+
+        private void UpdatePages(int index)
+        {
+            if (index >= AllPhotos.Count || index < 0) return;
+
+            AllPages.Clear();
+
+            int startIndex = index * 2;
+            int endIndex = Math.Min(startIndex + 6, AllPhotos.Count);
+
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                AllPages.Add(new DisposableImage(AllPhotos[i]));
+            }
+
+            if (AllPages.Count > 30)
+            {
+                for (int i = 30; i < AllPages.Count; i++)
+                {
+                    AllPages[i].Dispose();
+                }
+            }
+
+            GC.Collect();
+        }
+
+        private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            _pageFlipTimer.Stop();
+            _inactivityHelper.OnInactivity -= OnInactivityDetected;
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }

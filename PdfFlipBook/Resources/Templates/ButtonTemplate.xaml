@@ -9,4 +9,51 @@
                        Foreground="{TemplateBinding Foreground}"/>
         </Border>
     </ControlTemplate>
+
+    <ControlTemplate x:Key="ItemsControlButton" TargetType="Button">
+        <Border Style="{DynamicResource SettingBorderStyle}"
+                CornerRadius="10"
+                Background="White">
+            <ContentPresenter Width="31"/>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="RadioButton" x:Key="ItemsControlRadioButton">
+        <Border CornerRadius="10">
+            <TextBlock Text="{TemplateBinding Content}"
+                       FontSize="50"
+                       Foreground="#808080"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+            <Border.Style>
+                <Style BasedOn="{StaticResource SettingBorderStyle}" TargetType="Border">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Opacity" Value="0.5"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
+                                     Value="False">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.5" Duration="0:0:0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1" Duration="0:0:0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+    </ControlTemplate>
 </ResourceDictionary>

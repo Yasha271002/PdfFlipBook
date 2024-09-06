@@ -8,6 +8,7 @@
       xmlns:termControls="clr-namespace:TermControls;assembly=TermControls"
       mc:Ignorable="d" 
       Loaded="Book_Page_OnLoaded"
+      Unloaded="Book_Page_OnUnloaded"
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Book_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">

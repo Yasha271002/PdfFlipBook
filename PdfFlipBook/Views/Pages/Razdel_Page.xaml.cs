@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using Core;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
@@ -56,19 +58,33 @@ namespace PdfFlipBook.Views.Pages
             set { SetValue(ActualRazdelProperty, value); }
         }
 
-        public ObservableCollection<GridSizeModel> GridSizes { get; set; }
+        [CanBeNull] private ObservableCollection<GridSizeModel> _gridSizes;
+
+        public ObservableCollection<GridSizeModel> GridSizes
+        {
+            get => _gridSizes ??= new ObservableCollection<GridSizeModel>();
+            set
+            {
+                _gridSizes = value;
+                OnPropertyChanged();
+            }
+        }
 
         private GridSizeModel _selectedGridSize;
 
         public GridSizeModel SelectedGridSize
         {
             get { return _selectedGridSize; }
-            set { _selectedGridSize = value; OnPropertyChanged();
+            set
+            {
+                _selectedGridSize = value;
+                OnPropertyChanged();
                 UpdateItemTemplateSize(_selectedGridSize?.Size);
             }
         }
 
         private double _scrollViewerHeight;
+
         public double ScrollViewerHeights
         {
             get => _scrollViewerHeight;
@@ -80,6 +96,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _wrapPanelWidth;
+
         public double WrapPanelWidths
         {
             get => _wrapPanelWidth;
@@ -90,14 +107,72 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
-        public Razdel_Page(string razdel, List<BookPDF> actualBooks)
+        private bool _verticalScrollBarVisibility;
+
+        public bool VerticalScrollBarVisibility
+        {
+            get => _verticalScrollBarVisibility;
+            set
+            {
+                _verticalScrollBarVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _selectedBookIndex;
+
+        public int SelectedBookIndex
+        {
+            get => _selectedBookIndex;
+            set
+            {
+                if (_selectedBookIndex != value)
+                {
+                    _selectedBookIndex = value;
+                    OnPropertyChanged();
+                    ScrollToSelectedElements();
+                }
+            }
+        }
+
+
+        private List<CountBooksModel> _countBooks;
+
+        public List<CountBooksModel> CountBooks
+        {
+            get => _countBooks;
+            set
+            {
+                _countBooks = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private SettingsModel _settings;
+
+        public SettingsModel SettingsModel
+        {
+            get => _settings;
+            set
+            {
+                _settings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ScrollViewer _booksScrollViewer;
+        private ScrollViewer _radioScrollViewer;
+
+        public Razdel_Page(string razdel, List<BookPDF> actualBooks, SettingsModel settings)
         {
             InitializeComponent();
             ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
             ActualRazdel = razdel;
+            SettingsModel = settings;
 
             GetBooks(actualBooks, razdel);
+            LearnCountBooks(actualBooks);
 
             GridSizes = new ObservableCollection<GridSizeModel>
             {
@@ -108,11 +183,25 @@ namespace PdfFlipBook.Views.Pages
                 new GridSizeModel { Size = "6x2" },
                 new GridSizeModel { Size = "7x3" }
             };
-
             SelectedGridSize = GridSizes.FirstOrDefault();
-
-            ComboBoxGridSize.ItemsSource = GridSizes;
         }
+
+        private ICommand _moveUpCommand;
+        private ICommand _moveDownCommand;
+
+        public ICommand MoveUpCommand =>
+            _moveUpCommand ??= new Command(c =>
+            {
+                MoveUp();
+                GC.Collect();
+            });
+
+        public ICommand MoveDownCommand =>
+            _moveDownCommand ??= new Command(c =>
+            {
+                MoveDown();
+                GC.Collect();
+            });
 
         private ICommand _bookCommand;
 
@@ -121,12 +210,12 @@ namespace PdfFlipBook.Views.Pages
             {
                 // App.CurrentApp.IsLoading = true;
                 //int a = int.Parse(c.ToString())+1;
-                NavigationService?.Navigate(new Book_Page(c.ToString()));
-
+                var BookData = Tuple.Create(c.ToString(), SettingsModel);
+                CommonCommands.NavigateCommand.Execute(BookData);
                 GC.Collect();
             }));
 
-        
+
         private ICommand _backCommand;
 
         public ICommand BackCommand =>
@@ -135,8 +224,18 @@ namespace PdfFlipBook.Views.Pages
                 NavigationService?.Navigate(new Start_Page());
                 GC.Collect();
             }));
-        
-        
+
+        private void MoveUp()
+        {
+            if (SelectedBookIndex > 0)
+                SelectedBookIndex--;
+        }
+
+        private void MoveDown()
+        {
+            if (SelectedBookIndex < CountBooks.Count - 1)
+                SelectedBookIndex++;
+        }
 
         public void GetBooks(List<BookPDF> actualBooks, string razdel)
         {
@@ -171,6 +270,19 @@ namespace PdfFlipBook.Views.Pages
             GC.WaitForPendingFinalizers();
         }
 
+        private void LearnCountBooks(List<BookPDF> books)
+        {
+            CountBooks = new List<CountBooksModel>();
+            var index = 1;
+            for (int i = 0; i < books.Count; i++)
+            {
+                CountBooks.Add(new CountBooksModel
+                {
+                    Count = index.ToString()
+                });
+                index++;
+            }
+        }
 
         private void Razdel_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -184,6 +296,44 @@ namespace PdfFlipBook.Views.Pages
                 ActualBooks.Add(actualBook);
             }
         }
+
+        private void ScrollToSelectedElements()
+        {
+            if (_booksScrollViewer == null || _radioScrollViewer == null)
+            {
+                _booksScrollViewer = FindScrollViewer(BooksItemsControl);
+                _radioScrollViewer = FindScrollViewer(RadioScrollViewer);
+            }
+
+            if (_booksScrollViewer != null)
+            {
+                double booksOffset = SelectedBookIndex * 1553;
+                _booksScrollViewer.ScrollToVerticalOffset(booksOffset);
+            }
+
+            if (_radioScrollViewer != null)
+            {
+                double radioOffset = SelectedBookIndex * 91;
+                _radioScrollViewer.ScrollToVerticalOffset(radioOffset);
+            }
+        }
+
+        private ScrollViewer FindScrollViewer(DependencyObject parent)
+        {
+            if (parent is ScrollViewer)
+                return parent as ScrollViewer;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                var result = FindScrollViewer(child);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
         private void UpdateItemTemplateSize(string gridSize)
         {
             var BorderWidth = 0.0;
@@ -199,15 +349,17 @@ namespace PdfFlipBook.Views.Pages
             switch (gridSize)
             {
                 case "1x1":
-                    BorderWidth = 3526.0;
+                    BorderWidth = 1270.0;
                     BorderHeight = 1513.0;
 
                     ImageWidth = 1270.0;
                     ImageHeight = 1270.0;
 
-                    WrapPanelWidth = 3526.0;
+                    WrapPanelWidth = 1270;
 
                     ScrollViewerHeight = 1513.0;
+
+                    VerticalScrollBarVisibility = false;
                     break;
                 case "2x2":
                     BorderWidth = 658.0;
@@ -219,6 +371,8 @@ namespace PdfFlipBook.Views.Pages
                     WrapPanelWidth = 1474.0;
 
                     ScrollViewerHeight = 1860.0;
+
+                    VerticalScrollBarVisibility = true;
                     break;
                 case "3x3":
                     BorderWidth = 500.0;
@@ -230,6 +384,8 @@ namespace PdfFlipBook.Views.Pages
                     WrapPanelWidth = 1950.0;
 
                     ScrollViewerHeight = 1860.0;
+
+                    VerticalScrollBarVisibility = true;
                     break;
                 case "3x2":
                     BorderWidth = 658.0;
@@ -238,9 +394,11 @@ namespace PdfFlipBook.Views.Pages
                     ImageWidth = 600.0;
                     ImageHeight = 600.0;
 
-                    WrapPanelWidth = 2200.0;
+                    WrapPanelWidth = 2100.0;
 
                     ScrollViewerHeight = 1980.0;
+
+                    VerticalScrollBarVisibility = true;
                     break;
                 case "6x2":
                     BorderWidth = 539.0;
@@ -252,6 +410,8 @@ namespace PdfFlipBook.Views.Pages
                     WrapPanelWidth = 3526.0;
 
                     ScrollViewerHeight = 1540;
+
+                    VerticalScrollBarVisibility = true;
                     break;
                 case "7x3":
                     BorderWidth = 454.0;
@@ -263,6 +423,8 @@ namespace PdfFlipBook.Views.Pages
                     WrapPanelWidth = 3526.0;
 
                     ScrollViewerHeight = 1860.0;
+
+                    VerticalScrollBarVisibility = true;
                     break;
             }
 

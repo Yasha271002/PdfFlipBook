@@ -19,6 +19,7 @@
                                Height="2040"
                                VerticalAlignment="Top" 
                                Name="Book" 
+                               
                                MouseLeftButtonUp="Book_OnMouseLeftButtonUp" 
                                MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
         <wpfMitsuControls:Book.ItemTemplate>

@@ -244,7 +244,7 @@ namespace PdfFlipBook.Views.Pages
                     return;
                 }
             }
-            Book.AnimateToNextPage(true, PageIndex);
+            Book.AnimateToNextPage(false, PageIndex);
         }
 
         private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)

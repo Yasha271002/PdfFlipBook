@@ -15,6 +15,9 @@ using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
 using System.Web.UI.WebControls;
 using PdfFlipBook.Models;
+using System.Runtime.InteropServices;
+using PdfFlipBook.Helper.Singleton;
+using WPFMitsuControls;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -77,6 +80,28 @@ namespace PdfFlipBook.Views.Pages
         private DispatcherTimer _pageFlipTimer;
         private readonly BaseInactivityHelper _inactivityHelper;
 
+        private int _indexBook;
+        public int IndexBook
+        {
+            get => _indexBook;
+            set
+            {
+                _indexBook = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private int _pageIndex;
+        public int PageIndex
+        {
+            get => _pageIndex;
+            set
+            {
+                _pageIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
         private SettingsModel _settingsModel;
 
         public SettingsModel SettingsModel
@@ -89,10 +114,12 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
-        public Book_Page(string bookTitle, SettingsModel settings )
+        public Book_Page(string bookTitle, SettingsModel settings)
         {
             InitializeComponent();
+
             BookTitle = bookTitle;
+
             AllPages = new ObservableCollection<DisposableImage>();
             SettingsModel = settings;
            
@@ -101,6 +128,7 @@ namespace PdfFlipBook.Views.Pages
             {
                 AllPages.Add(new DisposableImage(s));
             }
+
             if(AllPages.Count>30)
             {
                 for (int i = 30; i < AllPages.Count; i++)
@@ -108,8 +136,12 @@ namespace PdfFlipBook.Views.Pages
                     AllPages[i].Dispose();
                 }
             }
+
             GC.Collect();
+
+
             App.CurrentApp.IsLoading = false;
+
             _pageFlipTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(Convert.ToDouble(settings.IntervalSwitchPage))
@@ -169,15 +201,102 @@ namespace PdfFlipBook.Views.Pages
 
         private ICommand _toPageCommand;
 
+        
+
+        private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            StartPointX = e.GetPosition(this).X;
+        }
+
+        private void OnInactivityDetected(int inactivityTime)
+        {
+            _pageFlipTimer.Start();
+        }
+
+        private void OnPageFlipTimerTick(object sender, EventArgs e)
+        {
+            FlipPage();
+        }
+
+        private void FlipPage()
+        {
+            PageIndex = Book.CurrentSheetIndex + 1;
+            var halfPhotosCount = (int)Math.Ceiling(AllPhotos.Count / 2.0);
+            IndexBook = GlobalSettings.Instance.Books.IndexOf(GlobalSettings.Instance.Books.FirstOrDefault(f => f.Title == BookTitle));
+
+            if (PageIndex >= halfPhotosCount)
+            {
+                if (SettingsModel.Repeat)
+                {
+                    Book.CurrentSheetIndex = 0;
+                    PageIndex = 0;
+                }
+                else
+                {
+                    PageIndex = 0;
+                    IndexBook++;
+                    if (IndexBook >= GlobalSettings.Instance.Books.Count)
+                        IndexBook = 0;
+
+                    var newTitle = GlobalSettings.Instance.Books[IndexBook].Title;
+                    ReloadBookPages(newTitle);
+
+                    return;
+                }
+            }
+            Book.AnimateToNextPage(true, PageIndex);
+        }
+
+        private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            _pageFlipTimer.Stop();
+            _inactivityHelper.OnInactivity -= OnInactivityDetected;
+        }
+
+        private void ReloadBookPages(string newBookTitle)
+        {
+            if (AllPages != null)
+            {
+                foreach (var page in AllPages)
+                {
+                    page.Dispose();
+                }
+                AllPages.Clear();
+            }
+
+            AllPhotos?.Clear();
+
+            BookTitle = newBookTitle;
+
+            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + newBookTitle)
+                .ToList()
+                .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+
+            foreach (var photoPath in AllPhotos)
+            {
+                AllPages.Add(new DisposableImage(photoPath));
+            }
+
+            if (AllPages.Count > 30)
+            {
+                for (int i = 30; i < AllPages.Count; i++)
+                {
+                    AllPages[i].Dispose();
+                }
+            }
+
+            GC.Collect();
+        }
+
         public ICommand ToPageCommand =>
             _toPageCommand ?? (_toPageCommand = new Command(c =>
             {
                 int page = int.Parse(KK.Text);
-                if ( page> AllPages.Count)
+                if (page > AllPages.Count)
                 {
                     var animation = new DoubleAnimation
                     {
-                        From=0,
+                        From = 0,
                         To = 1,
                         Duration = TimeSpan.FromSeconds(1.3),
                         AutoReverse = true
@@ -200,13 +319,12 @@ namespace PdfFlipBook.Views.Pages
                             AllPages[i].Dispose();
                         }
                     }
-                    GC.Collect();
                     var ostatok = page % 2;
                     if (ostatok == 1)
                         page--;
 
 
-                    Book.CurrentSheetIndex = page/2;
+                    Book.CurrentSheetIndex = page / 2;
                     int index = Book.CurrentSheetIndex;
                     try
                     {
@@ -238,7 +356,7 @@ namespace PdfFlipBook.Views.Pages
                     }
                     CloseInsertCommand.Execute(null);
                 }
-                
+
             }));
 
         private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -297,27 +415,6 @@ namespace PdfFlipBook.Views.Pages
 
             }
         }
-
-        private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            StartPointX = e.GetPosition(this).X;
-        }
-
-        private void OnInactivityDetected(int inactivityTime)
-        {
-            _pageFlipTimer.Start();
-        }
-
-        private void OnPageFlipTimerTick(object sender, EventArgs e)
-        {
-        }
-
-        private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            _pageFlipTimer.Stop();
-            _inactivityHelper.OnInactivity -= OnInactivityDetected;
-        }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -21,10 +21,9 @@ using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
-using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
-using Image = System.Drawing.Image;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -408,8 +407,9 @@ namespace PdfFlipBook.Views.Pages
 
         private ICommand _bookCommand;
         public ICommand BookCommand =>
-            _bookCommand ?? (_bookCommand = new Command(c =>
+            _bookCommand ??= (_bookCommand = new Command(c =>
             {
+                GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList());
                 var BookData = Tuple.Create(c.ToString(), SettingsModel);
                 ExecuteNavigation(BookData);
 
@@ -458,7 +458,7 @@ namespace PdfFlipBook.Views.Pages
 
                 ActualRazdel = c.ToString();
                 var actualBooks = App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList();
-
+                GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(actualBooks);
                 var razdelData = Tuple.Create(ActualRazdel, actualBooks, SettingsModel);
                 ExecuteNavigation(razdelData);
             }));
@@ -544,7 +544,7 @@ namespace PdfFlipBook.Views.Pages
         private void Timer2(object sender, EventArgs eventArgs)
         {
             _sec2++;
-            if (_sec2 < 7) return;
+            if (_sec2 < 4) return;
             CommonCommands.NavigateCommand.Execute(SettingsModel);
             _timer2.Stop();
 

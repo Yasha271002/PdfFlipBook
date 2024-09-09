@@ -7,6 +7,7 @@ using PdfFlipBook.Models;
 using PdfFlipBook.ViewModel.Pages;
 using PdfFlipBook.Views.Pages;
 using RelayCommand = Core.RelayCommand;
+using System.Collections.ObjectModel;
 
 namespace PdfFlipBook.Helper
 {
@@ -28,7 +29,7 @@ namespace PdfFlipBook.Helper
             {
                 SettingsModel settings => new SettingsPage{DataContext = new SettingsPageViewModel(settings)},
                 Tuple<string, List<BookPDF>, SettingsModel> razdelData => new Razdel_Page(razdelData.Item1, razdelData.Item2, razdelData.Item3),
-                Tuple<string, SettingsModel> BookData => new Book_Page(BookData.Item1, BookData.Item2),
+                Tuple<string, SettingsModel> bookData => new Book_Page(bookData.Item1, bookData.Item2),
                 _ => null
             };
             return page;

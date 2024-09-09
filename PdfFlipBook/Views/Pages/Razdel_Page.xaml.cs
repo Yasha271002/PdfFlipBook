@@ -10,10 +10,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Core;
+using IronPdf.Engines.WebKit.Settings;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
+using GlobalSettings = PdfFlipBook.Helper.Singleton.GlobalSettings;
 
 namespace PdfFlipBook.Views.Pages
 {

@@ -215,7 +215,6 @@ namespace PdfFlipBook.Views.Pages
                 GC.Collect();
             }));
 
-
         private ICommand _backCommand;
 
         public ICommand BackCommand =>

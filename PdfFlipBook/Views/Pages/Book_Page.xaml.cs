@@ -23,6 +23,57 @@ namespace PdfFlipBook.Views.Pages
     /// </summary>
     public partial class Book_Page : Page, INotifyPropertyChanged
     {
+        public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
+           "AllPages", typeof(ObservableCollection<DisposableImage>), typeof(Book_Page), new PropertyMetadata(default(ObservableCollection<DisposableImage>)));
+
+        public ObservableCollection<DisposableImage> AllPages
+        {
+            get { return (ObservableCollection<DisposableImage>)GetValue(AllPagesProperty); }
+            set { SetValue(AllPagesProperty, value); }
+        }
+
+        private void Book_Page_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // App.CurrentApp.IsLoading = true;
+            _inactivityHelper.OnInactivity += OnInactivityDetected;
+        }
+
+        public static readonly DependencyProperty AllPhotosProperty = DependencyProperty.Register(
+            "AllPhotos", typeof(List<string>), typeof(Book_Page), new PropertyMetadata(default(List<string>)));
+
+        public List<string> AllPhotos
+        {
+            get { return (List<string>)GetValue(AllPhotosProperty); }
+            set { SetValue(AllPhotosProperty, value); }
+        }
+
+        public static readonly DependencyProperty StartPointXProperty = DependencyProperty.Register(
+            "StartPointX", typeof(double), typeof(Book_Page), new PropertyMetadata(default(double)));
+
+        public double StartPointX
+        {
+            get { return (double)GetValue(StartPointXProperty); }
+            set { SetValue(StartPointXProperty, value); }
+        }
+
+        public static readonly DependencyProperty BookIndexProperty = DependencyProperty.Register(
+            "BookIndex", typeof(int), typeof(Book_Page), new PropertyMetadata(default(int)));
+
+        public int BookIndex
+        {
+            get { return (int)GetValue(BookIndexProperty); }
+            set { SetValue(BookIndexProperty, value); }
+        }
+
+        public static readonly DependencyProperty BookTitleProperty = DependencyProperty.Register(
+            "BookTitle", typeof(string), typeof(Book_Page), new PropertyMetadata(default(string)));
+
+        public string BookTitle
+        {
+            get { return (string)GetValue(BookTitleProperty); }
+            set { SetValue(BookTitleProperty, value); }
+        }
+
         private DispatcherTimer _pageFlipTimer;
         private readonly BaseInactivityHelper _inactivityHelper;
 
@@ -69,19 +120,10 @@ namespace PdfFlipBook.Views.Pages
             _inactivityHelper.OnInactivity += OnInactivityDetected;
         }
 
-        public static readonly DependencyProperty BookTitleProperty = DependencyProperty.Register(
-            "BookTitle", typeof(string), typeof(Book_Page), new PropertyMetadata(default(string)));
-
-        public string BookTitle
-        {
-            get { return (string) GetValue(BookTitleProperty); }
-            set { SetValue(BookTitleProperty, value); }
-        }
-
         private ICommand _backCommand;
 
         public ICommand BackCommand =>
-            _backCommand ?? (_backCommand = new Command(c =>
+            _backCommand ??= (_backCommand = new Command(c =>
             {
                 NavigationService?.GoBack();
                 if (AllPages != null)
@@ -98,7 +140,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _insertPageCommand;
 
         public ICommand InsertPageCommand =>
-            _insertPageCommand ?? (_insertPageCommand = new Command(c =>
+            _insertPageCommand ??= (_insertPageCommand = new Command(c =>
             {
                 InsertGrid.Visibility = Visibility.Visible;
             }));
@@ -106,7 +148,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _closeInsertCommand;
 
         public ICommand CloseInsertCommand =>
-            _closeInsertCommand ?? (_closeInsertCommand = new Command(c =>
+            _closeInsertCommand ??= (_closeInsertCommand = new Command(c =>
             {
                 InsertGrid.Visibility = Visibility.Collapsed;
                 KK.Text = string.Empty;
@@ -116,15 +158,12 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _deleteCommand;
 
         public ICommand DeleteCommand =>
-            _deleteCommand ?? (_deleteCommand = new Command(c =>
+            _deleteCommand ??= (_deleteCommand = new Command(c =>
             {
-                if (KK.Text != string.Empty)
-                {
-                    string qweq = KK.Text.Remove(KK.Text.Length - 1);
-                    KK.Text = qweq;
-                    onScreenKeyboard.Text = qweq;
-
-                }
+                if (KK.Text == string.Empty) return;
+                string qweq = KK.Text.Remove(KK.Text.Length - 1);
+                KK.Text = qweq;
+                onScreenKeyboard.Text = qweq;
             }));
 
 
@@ -202,112 +241,61 @@ namespace PdfFlipBook.Views.Pages
                 
             }));
 
-        public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
-            "AllPages", typeof(ObservableCollection< DisposableImage>), typeof(Book_Page), new PropertyMetadata(default(ObservableCollection< DisposableImage>)));
-
-        public ObservableCollection< DisposableImage> AllPages
-        {
-            get { return (ObservableCollection< DisposableImage>) GetValue(AllPagesProperty); }
-            set { SetValue(AllPagesProperty, value); }
-        }
-
-        private void Book_Page_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            // App.CurrentApp.IsLoading = true;
-            _inactivityHelper.OnInactivity += OnInactivityDetected;
-        }
-
-        public static readonly DependencyProperty AllPhotosProperty = DependencyProperty.Register(
-            "AllPhotos", typeof(List<string>), typeof(Book_Page), new PropertyMetadata(default(List<string>)));
-
-        public List<string> AllPhotos
-        {
-            get { return (List<string>) GetValue(AllPhotosProperty); }
-            set { SetValue(AllPhotosProperty, value); }
-        }
-
         private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             int index = Book.CurrentSheetIndex;
-           // MessageBox.Show(index.ToString());
-           var xPosition = e.GetPosition(this).X;
-           if (AllPages.Count > 30)
+            // MessageBox.Show(index.ToString());
+            var xPosition = e.GetPosition(this).X;
+            if (AllPages.Count <= 30) return;
+            if (xPosition < 1920)
             {
-                if (xPosition < 1920)
-               {
-                   if (StartPointX > 1920)
-                   {
-                       try
-                       {
-                               AllPages[index * 2 - 4].Dispose();
-                               AllPages[index * 2 - 5].Dispose();
-                               GC.Collect();
-                               AllPages.RemoveAt(index * 2 + 1);
-                               AllPages.Insert(index * 2 + 1, new DisposableImage(AllPhotos[index * 2 + 1]));
-                               AllPages.RemoveAt(index * 2 + 2);
-                               AllPages.Insert(index * 2 + 2, new DisposableImage(AllPhotos[index * 2 + 2]));
-                               AllPages.RemoveAt(index * 2 + 3);
-                               AllPages.Insert(index * 2 + 3, new DisposableImage(AllPhotos[index * 2 + 3]));
-                               AllPages.RemoveAt(index * 2 + 4);
-                               AllPages.Insert(index * 2 + 4, new DisposableImage(AllPhotos[index * 2 + 4]));
-                           
-                       }
-                       catch (Exception exception)
-                       {
+                if (!(StartPointX > 1920)) return;
+                try
+                {
+                    AllPages[index * 2 - 4].Dispose();
+                    AllPages[index * 2 - 5].Dispose();
+                    GC.Collect();
+                    AllPages.RemoveAt(index * 2 + 1);
+                    AllPages.Insert(index * 2 + 1, new DisposableImage(AllPhotos[index * 2 + 1]));
+                    AllPages.RemoveAt(index * 2 + 2);
+                    AllPages.Insert(index * 2 + 2, new DisposableImage(AllPhotos[index * 2 + 2]));
+                    AllPages.RemoveAt(index * 2 + 3);
+                    AllPages.Insert(index * 2 + 3, new DisposableImage(AllPhotos[index * 2 + 3]));
+                    AllPages.RemoveAt(index * 2 + 4);
+                    AllPages.Insert(index * 2 + 4, new DisposableImage(AllPhotos[index * 2 + 4]));
 
-                       }
-                   }
-               }
+                }
+                catch (Exception exception)
+                {
 
-               else
-               {
-                   if (StartPointX < 1920)
-                   {
-                       try
-                       {
-                               AllPages[index * 2 + 3].Dispose();
-                               AllPages[index * 2 + 4].Dispose();
-                               GC.Collect();
+                }
+            }
 
-                               AllPages.RemoveAt(index * 2 - 4);
-                               AllPages.Insert(index * 2 - 4, new DisposableImage(AllPhotos[index * 2 - 4]));
-                               AllPages.RemoveAt(index * 2 - 5);
-                               AllPages.Insert(index * 2 - 5, new DisposableImage(AllPhotos[index * 2 - 5]));
-                               AllPages.RemoveAt(index * 2 - 6);
-                               AllPages.Insert(index * 2 - 6, new DisposableImage(AllPhotos[index * 2 - 6]));
-                               AllPages.RemoveAt(index * 2 - 7);
-                               AllPages.Insert(index * 2 - 7, new DisposableImage(AllPhotos[index * 2 - 7]));
+            else
+            {
+                if (!(StartPointX < 1920)) return;
+                try
+                {
+                    AllPages[index * 2 + 3].Dispose();
+                    AllPages[index * 2 + 4].Dispose();
+                    GC.Collect();
 
-                        }
-                       catch (Exception exception)
-                       {
+                    AllPages.RemoveAt(index * 2 - 4);
+                    AllPages.Insert(index * 2 - 4, new DisposableImage(AllPhotos[index * 2 - 4]));
+                    AllPages.RemoveAt(index * 2 - 5);
+                    AllPages.Insert(index * 2 - 5, new DisposableImage(AllPhotos[index * 2 - 5]));
+                    AllPages.RemoveAt(index * 2 - 6);
+                    AllPages.Insert(index * 2 - 6, new DisposableImage(AllPhotos[index * 2 - 6]));
+                    AllPages.RemoveAt(index * 2 - 7);
+                    AllPages.Insert(index * 2 - 7, new DisposableImage(AllPhotos[index * 2 - 7]));
 
-                       }
-                   }
+                }
+                catch (Exception exception)
+                {
 
-               }
-           }
-        }
+                }
 
-        public static readonly DependencyProperty StartPointXProperty = DependencyProperty.Register(
-            "StartPointX", typeof(double), typeof(Book_Page), new PropertyMetadata(default(double)));
-
-        public double StartPointX
-        {
-            get { return (double) GetValue(StartPointXProperty); }
-            set { SetValue(StartPointXProperty, value); }
-        }
-
-
-
-
-        public static readonly DependencyProperty BookIndexProperty = DependencyProperty.Register(
-            "BookIndex", typeof(int), typeof(Book_Page), new PropertyMetadata(default(int)));
-
-        public int BookIndex
-        {
-            get { return (int) GetValue(BookIndexProperty); }
-            set { SetValue(BookIndexProperty, value); }
+            }
         }
 
         private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -322,54 +310,6 @@ namespace PdfFlipBook.Views.Pages
 
         private void OnPageFlipTimerTick(object sender, EventArgs e)
         {
-            //FlipPage();
-        }
-
-        private void FlipPage()
-        {
-            int nextIndex = Book.CurrentSheetIndex + 1;
-
-            if (nextIndex >= AllPhotos.Count)
-            {
-                if (SettingsModel.Repeat)
-                {
-                    Book.CurrentSheetIndex = 0;
-                    nextIndex = 0;
-                }
-                else
-                {
-                    // Здесь можно добавить логику для перехода к другой книге, если нужно
-                    _pageFlipTimer.Stop();
-                    return;
-                }
-            }
-
-            UpdatePages(nextIndex);
-        }
-
-        private void UpdatePages(int index)
-        {
-            if (index >= AllPhotos.Count || index < 0) return;
-
-            AllPages.Clear();
-
-            int startIndex = index * 2;
-            int endIndex = Math.Min(startIndex + 6, AllPhotos.Count);
-
-            for (int i = startIndex; i < endIndex; i++)
-            {
-                AllPages.Add(new DisposableImage(AllPhotos[i]));
-            }
-
-            if (AllPages.Count > 30)
-            {
-                for (int i = 30; i < AllPages.Count; i++)
-                {
-                    AllPages[i].Dispose();
-                }
-            }
-
-            GC.Collect();
         }
 
         private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)

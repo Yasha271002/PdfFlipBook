@@ -217,35 +217,6 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-
-
-        <Button 
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            Panel.ZIndex="3000" 
-            Width="200" 
-            Height="200">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseDown">
-                    <i:InvokeCommandAction Command="{Binding StartTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="PreviewMouseUp">
-                    <i:InvokeCommandAction Command="{Binding StopTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <Button.Style>
-                <Style TargetType="Button">
-
-                </Style>
-            </Button.Style>
-            <Button.Template>
-                <ControlTemplate>
-                    <Border Width="240" Height="240" Background="Transparent">
-
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
         <TextBox x:Name="NameTB"
                  Width="1600"
                  GotFocus="NameTB_OnGotFocus"
@@ -332,8 +303,15 @@
         <Button VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Width="200" Height="200"
-                Panel.ZIndex="3000" 
-                Command="{Binding NavigateOnSettingsPage}">
+                Panel.ZIndex="3000" >
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDown">
+                    <i:InvokeCommandAction Command="{Binding StartTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="PreviewMouseUp">
+                    <i:InvokeCommandAction Command="{Binding StopTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <Button.Style>
                 <Style TargetType="Button">
 

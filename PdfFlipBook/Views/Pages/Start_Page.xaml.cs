@@ -307,11 +307,12 @@ namespace PdfFlipBook.Views.Pages
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();
             foreach (string s in a)
-            { BookFolder BF = new BookFolder()
+            {
+                BookFolder BF = new BookFolder()
                 {
                     Title = s.Split('\\').Last(),
-                    Icon = new DisposableImage(Directory.GetFiles(s+"\\Logo\\")[0])
-            };
+                    Icon = new DisposableImage(Directory.GetFiles(s + "\\Logo\\")[0])
+                };
                 AllFolders.Add(BF);
             }
 
@@ -324,9 +325,9 @@ namespace PdfFlipBook.Views.Pages
         }
 
 
-        public  void UpdatePhotos()
+        public void UpdatePhotos()
         {
-            if(App.CurrentApp.AllBooks.Count==0)
+            if (App.CurrentApp.AllBooks.Count == 0)
             {
                 int pageCount;
                 List<BookPDF> AllBooks2 = new List<BookPDF>();
@@ -366,12 +367,12 @@ namespace PdfFlipBook.Views.Pages
                         DisposableImage icon = new DisposableImage(Directory.GetFiles(folderToImages)[0]);
                         string title = pdfFile.Split('\\').Last().Replace(".pdf", "");
                         BookPDF bpdf = new BookPDF()
-                            {Title = title, Icon = icon, FullPath = pdfFolder, Text = ReadPdfFile(pdfFile), Author = title.Split('.').First(), Book = title.Split('.').Last()};
+                        { Title = title, Icon = icon, FullPath = pdfFolder, Text = ReadPdfFile(pdfFile), Author = title.Split('.').First(), Book = title.Split('.').Last() };
                         AllBooks2.Add(bpdf);
 
                     }
 
-                   
+
                 }
                 AllBooks = AllBooks2;
                 App.CurrentApp.AllBooks = AllBooks2;
@@ -381,7 +382,7 @@ namespace PdfFlipBook.Views.Pages
                 AllBooks = App.CurrentApp.AllBooks;
             }
             App.CurrentApp.IsLoading = false;
-            return  ;
+            return;
         }
 
         public string ReadPdfFile(string fileName)
@@ -490,14 +491,14 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _stopTimerCommand;
         private ICommand _startTimerCommand;
 
-        public ICommand StopTimerCommand => _stopTimerCommand ?? (_stopTimerCommand = new Command(a =>
+        public ICommand StopTimerCommand => _stopTimerCommand ??= (_stopTimerCommand = new Command(a =>
         {
             _timer.Tick -= Timer;
             _timer.Stop();
             _sec = 0;
         }));
 
-        
+
 
         public ICommand StartTimerCommand => _startTimerCommand ??= (_startTimerCommand = new Command(a =>
         {
@@ -528,7 +529,7 @@ namespace PdfFlipBook.Views.Pages
             _sec2 = 0;
         }));
 
-        public ICommand StartTimer2Command => _startTimer2Command ?? (_startTimer2Command = new Command(a =>
+        public ICommand StartTimer2Command => _startTimer2Command ??= (_startTimer2Command = new Command(a =>
         {
             _timer2?.Stop();
             _sec2 = 0;
@@ -537,39 +538,23 @@ namespace PdfFlipBook.Views.Pages
             _timer2.Start();
         }));
 
-        private ICommand _navigateOnSettingsPage;
-        public ICommand NavigateOnSettingsPage =>
-            _navigateOnSettingsPage ??= (_navigateOnSettingsPage = new Command(c =>
-            {
-                CommonCommands.NavigateCommand.Execute(SettingsModel);
-            }));
-
         DispatcherTimer _timer2 = new DispatcherTimer();
         private int _sec2 = 0;
 
-        private async void Timer2(object sender, EventArgs eventArgs)
+        private void Timer2(object sender, EventArgs eventArgs)
         {
-            //TODO ниработаит
             _sec2++;
-            if (_sec2 >= 7)
-            {
-                App.CurrentApp.IsLoading = true;
-                await Task.Run((() =>
-                {
-                    UpdatePhotos();
-                }));
-                App.CurrentApp.IsLoading = false;
-                _timer2.Tick -= Timer2;
-                _timer2.Stop();
-                _sec2 = 0;
-            }
+            if (_sec2 < 7) return;
+            CommonCommands.NavigateCommand.Execute(SettingsModel);
+            _timer2.Stop();
+
         }
 
 
         private List<BookPDF> _allBooks;
         public List<BookPDF> AllBooks
         {
-            get => _allBooks??(_allBooks=new List<BookPDF>());
+            get => _allBooks ?? (_allBooks = new List<BookPDF>());
             set
             {
                 _allBooks = value;
@@ -656,7 +641,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void NameTB_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if(NameTB.Text.Length==0)
+            if (NameTB.Text.Length == 0)
             {
                 SearchResultGrid.Visibility = Visibility.Collapsed;
                 FoldersItemsControl.Visibility = Visibility.Visible;
@@ -677,7 +662,7 @@ namespace PdfFlipBook.Views.Pages
                 {
                     ActualBooks = AllBooks.Where(x => x.Author.ToLower().Contains(searchQuery)).ToList();
                 }
-                else if(TextBookRB.IsChecked == true)
+                else if (TextBookRB.IsChecked == true)
                 {
                     ActualBooks = AllBooks.Where(x => x.Title.ToLower().Contains(searchQuery)).ToList();
                 }
@@ -696,7 +681,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void NameTB_OnGotFocus(object sender, RoutedEventArgs e)
         {
-            if(CoolKeyBoard.Margin.Bottom<-200)
+            if (CoolKeyBoard.Margin.Bottom < -200)
             {
                 var sb = new Storyboard();
                 var animation = new ThicknessAnimation
@@ -714,6 +699,6 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
-       
+
     }
 }

@@ -121,6 +121,30 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
+        private bool _isFirstPage;
+
+        public bool IsFirstPage
+        {
+            get => _isFirstPage;
+            set
+            {
+                _isFirstPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isLastPage;
+
+        public bool IsLastPage
+        {
+            get => _isLastPage;
+            set
+            {
+                _isLastPage = value;
+                OnPropertyChanged();
+            }
+        }
+
         private int _selectedBookIndex;
 
         public int SelectedBookIndex
@@ -132,6 +156,8 @@ namespace PdfFlipBook.Views.Pages
                 {
                     _selectedBookIndex = value;
                     OnPropertyChanged();
+                    UpdatePageButtonsState();
+
                     ScrollToSelectedElements();
                 }
             }
@@ -176,6 +202,9 @@ namespace PdfFlipBook.Views.Pages
             GetBooks(actualBooks, razdel);
             LearnCountBooks(actualBooks);
 
+            IsFirstPage = true;
+            IsLastPage = true;
+
             GridSizes = new ObservableCollection<GridSizeModel>
             {
                 new GridSizeModel { Size = "1x1" },
@@ -186,6 +215,7 @@ namespace PdfFlipBook.Views.Pages
                 new GridSizeModel { Size = "7x3" }
             };
             SelectedGridSize = GridSizes.FirstOrDefault();
+            UpdatePageButtonsState();
         }
 
         private ICommand _moveUpCommand;
@@ -225,6 +255,25 @@ namespace PdfFlipBook.Views.Pages
                 NavigationService?.Navigate(new Start_Page());
                 GC.Collect();
             }));
+
+        private ICommand _selectBookCommand;
+
+        public ICommand SelectBookCommand =>
+            _selectBookCommand ??= new Command(c =>
+            {
+                if (int.TryParse(c.ToString(), out int selectedIndex))
+                {
+                    SelectedBookIndex = selectedIndex - 1;
+                    ScrollToSelectedElements();
+                }
+            });
+
+        private void UpdatePageButtonsState()
+        {
+            IsFirstPage = SelectedBookIndex != 0;
+
+            IsLastPage = SelectedBookIndex != CountBooks.Count - 1;
+        }
 
         private void MoveUp()
         {
@@ -306,16 +355,44 @@ namespace PdfFlipBook.Views.Pages
                 _radioScrollViewer = FindScrollViewer(RadioScrollViewer);
             }
 
-            if (_booksScrollViewer != null)
+            if (_booksScrollViewer == null) return;
+
+            double booksItemHeight = 1553;
+            int visibleItemsCount = (int)(_booksScrollViewer.ViewportHeight / booksItemHeight);
+
+            if (SelectedBookIndex < 2)
             {
-                double booksOffset = SelectedBookIndex * 1553;
-                _booksScrollViewer.ScrollToVerticalOffset(booksOffset);
+                _booksScrollViewer.ScrollToVerticalOffset(0);
+            }
+            else if (SelectedBookIndex >= CountBooks.Count - visibleItemsCount / 2)
+            {
+                double offset = (CountBooks.Count - visibleItemsCount) * booksItemHeight;
+                _booksScrollViewer.ScrollToVerticalOffset(offset);
+            }
+            else
+            {
+                double offset = (SelectedBookIndex - visibleItemsCount / 2) * booksItemHeight;
+                _booksScrollViewer.ScrollToVerticalOffset(offset);
             }
 
-            if (_radioScrollViewer != null)
+            if (_radioScrollViewer == null) return;
+
+            double radioItemHeight = 97;
+            int visibleRadioItemsCount = (int)(_radioScrollViewer.ViewportHeight / radioItemHeight);
+
+            if (SelectedBookIndex < 2)
             {
-                double radioOffset = SelectedBookIndex * 91;
-                _radioScrollViewer.ScrollToVerticalOffset(radioOffset);
+                _radioScrollViewer.ScrollToVerticalOffset(0);
+            }
+            else if (SelectedBookIndex >= CountBooks.Count - visibleRadioItemsCount / 2)
+            {
+                double offset = (CountBooks.Count - visibleRadioItemsCount) * radioItemHeight;
+                _radioScrollViewer.ScrollToVerticalOffset(offset);
+            }
+            else
+            {
+                double offset = (SelectedBookIndex - visibleRadioItemsCount / 2) * radioItemHeight;
+                _radioScrollViewer.ScrollToVerticalOffset(offset);
             }
         }
 

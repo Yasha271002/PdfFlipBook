@@ -103,9 +103,9 @@
             </ItemsControl.ItemTemplate>
             <ItemsControl.Template>
                 <ControlTemplate>
-                    <ScrollViewer 
+                    <ScrollViewer
                         x:Name="BooksScrollViewer"
-                        Style="{DynamicResource ScrollViewerStyle}" 
+                        Style="{DynamicResource ScrollViewerStyle}"
                         PanningMode="{Binding VerticalScrollBarVisibility, Converter={StaticResource VisibilityToPanningModeConverter}}"
                         HorizontalScrollBarVisibility="Hidden"
                         VerticalScrollBarVisibility="{Binding VerticalScrollBarVisibility, Converter={StaticResource VisibilityToVerticalScrollBarVisibilityConverter}}"
@@ -120,21 +120,23 @@
               Visibility="{Binding VerticalScrollBarVisibility, Mode=TwoWay,
             Converter={StaticResource BoolToVisibilityHiddenConverter}}">
             <Button VerticalAlignment="Top" Template="{DynamicResource ItemsControlButton}"
-                    Width="85" Height="85" Margin="0 0 0 6"
+                    Width="85" Height="85" Margin="0 -6 0 0"
                     ContentTemplate="{DynamicResource UpArrow}"
-                    Command="{Binding MoveUpCommand}"/>
+                    Command="{Binding MoveUpCommand}"
+                    Visibility="{Binding IsFirstPage, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <Button VerticalAlignment="Bottom" Template="{DynamicResource ItemsControlButton}"
                     Width="85" Height="85"
                     ContentTemplate="{DynamicResource DownArrow}"
-                    Margin="0 6 0 0"
-                    Command="{Binding MoveDownCommand}"/>
-            <ScrollViewer x:Name="RadioScrollViewer" VerticalAlignment="Center" 
+                    Margin="0 0 0 6"
+                    Command="{Binding MoveDownCommand}"
+                    Visibility="{Binding IsLastPage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <ScrollViewer x:Name="RadioScrollViewer" VerticalAlignment="Center"
                           VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
-                          Margin="0 85" PanningMode="None">
+                          Margin="0 85" PanningMode="VerticalOnly">
                 <ItemsControl ItemsSource="{Binding CountBooks}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical"/>
+                            <StackPanel Orientation="Vertical" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -142,11 +144,13 @@
                             <RadioButton Template="{DynamicResource ItemsControlRadioButton}"
                                          Content="{Binding Count}" Width="85" Height="85" Foreground="#808080"
                                          Margin="0 6" Focusable="False" GroupName="1"
-                                         IsEnabled="False">
+                                         Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                         CommandParameter="{Binding Count}">
                                 <RadioButton.IsChecked>
                                     <MultiBinding Converter="{StaticResource IndexToCheckedMultiConverter}">
-                                        <Binding RelativeSource="{RelativeSource AncestorType=Page}" Path="DataContext.SelectedBookIndex"/>
-                                        <Binding Path="Count"/>
+                                        <Binding RelativeSource="{RelativeSource AncestorType=Page}"
+                                                 Path="DataContext.SelectedBookIndex" />
+                                        <Binding Path="Count" />
                                     </MultiBinding>
                                 </RadioButton.IsChecked>
                             </RadioButton>
@@ -202,16 +206,16 @@
                           FocusVisualStyle="{x:Null}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" 
-                                        HorizontalAlignment="Center"
-                                        Height="120" Focusable="False"
-                                        FocusVisualStyle="{x:Null}">
+                            <Border
+                                HorizontalAlignment="Center"
+                                Height="120" Focusable="False"
+                                FocusVisualStyle="{x:Null}">
                                 <TextBlock Text="{Binding Size}"
                                            FontSize="50"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center" />
 
-                            </StackPanel>
+                            </Border>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                     <ComboBox.ItemContainerStyle>

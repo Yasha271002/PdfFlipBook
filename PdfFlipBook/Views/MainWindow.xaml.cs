@@ -107,6 +107,11 @@ namespace PdfFlipBook
             }
         }
 
+        private void OnManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
+        {
+            e.Handled = true;
+        }
+
         public static byte[] converterDemo(System.Drawing.Image x)
         {
             ImageConverter _imageConverter = new ImageConverter();

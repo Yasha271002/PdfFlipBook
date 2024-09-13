@@ -27,6 +27,7 @@ namespace PdfFlipBook
         public Start_Page SP = new Start_Page();
         private bool _isLoading;
 
+
         private List<BookPDF> _actualBooks;
         public List<BookPDF> ActualBooks
         {
@@ -80,6 +81,7 @@ namespace PdfFlipBook
                 OnPropertyChanged();
             }
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

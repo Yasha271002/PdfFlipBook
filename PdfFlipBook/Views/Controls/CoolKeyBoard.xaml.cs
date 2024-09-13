@@ -1437,6 +1437,7 @@ namespace PdfFlipBook.Views.Controls
             if ((shift || ShiftPressed || CapsPressed) && !cifra )
                 PressKey(Keys.LShiftKey, false);
 
+            
             PressKey(bukva, false);
             PressKey(bukva, true);
             if ((shift || ShiftPressed || CapsPressed)&& !cifra)

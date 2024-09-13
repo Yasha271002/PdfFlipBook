@@ -234,16 +234,20 @@
             </TextBox.Effect>
         </TextBox>
         <StackPanel 
-                    Width="1200" Height="48" Margin="0 298 0 0"
+                    Width="1200" Height="55" Margin="0 298 0 0"
                     VerticalAlignment="Top" Orientation="Horizontal">
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36" x:Name="AuthorBookRB"/>
+                         Width="36" Height="36" x:Name="AuthorBookRB"
+                         VerticalAlignment="Center"/>
             <TextBlock Foreground="White" Text="По автору или названию" 
+                       VerticalAlignment="Center"
                        FontSize="40" FontWeight="Bold" Margin="32 0 0 0"/>
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36" Margin="70 0 0 0" x:Name="TextBookRB"/>
+                         Width="36" Height="36" Margin="70 0 0 0" x:Name="TextBookRB"
+                         VerticalAlignment="Center"/>
             <TextBlock Foreground="White" Text="По тексту"
-                       FontSize="40" FontWeight="Bold" Margin="32 0 0 0"/>
+                       FontSize="40" FontWeight="Bold" Margin="32 0 0 0"
+                       VerticalAlignment="Center"/>
         </StackPanel>
         <Button Command="{Binding SearchCommand}"
                 Width="60" 

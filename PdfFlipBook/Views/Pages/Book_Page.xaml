@@ -22,7 +22,7 @@
                                
                                MouseLeftButtonUp="Book_OnMouseLeftButtonUp" 
                                MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
-        <wpfMitsuControls:Book.ItemTemplate>
+            <wpfMitsuControls:Book.ItemTemplate>
                 <DataTemplate>
                     <Border BorderThickness="4" BorderBrush="Gray" Background="White" >
                         <ContentControl>
@@ -33,26 +33,26 @@
                     </Border>
                 </DataTemplate>
             </wpfMitsuControls:Book.ItemTemplate>
-        
+
         </wpfMitsuControls:Book>
-<Button Height="180"
+        <Button Height="180"
         Width="180"
         VerticalAlignment="Top"
         Command="{Binding BackCommand}"
         HorizontalAlignment="Right"
         Margin="40" Panel.ZIndex="1000">
-    <Button.Template>
-        <ControlTemplate>
-            <Border Background="White" CornerRadius="15">
-                <Image Source="/Images/close (2).png" Margin="20"></Image>
-            </Border>
-        </ControlTemplate>
-    </Button.Template>
-</Button>
-        <Button Height="80" VerticalAlignment="Bottom"
+            <Button.Template>
+                <ControlTemplate>
+                    <Border Background="White" CornerRadius="15">
+                        <Image Source="/Images/close (2).png" Margin="20"></Image>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Height="80" VerticalAlignment="Top"
                 Command="{Binding InsertPageCommand}"
                 Width="1000"
-                Margin="0,0,0,10">
+                Margin="1405,2055,1405,0">
             <Button.Template>
                 <ControlTemplate>
                     <Border Background="LightGray" CornerRadius="10"
@@ -112,16 +112,16 @@
                        Margin="0,340,0,0"
                        FontSize="60"></TextBlock>
             <Grid Width="500" Height="1000" Margin="0,-200,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="84*" />
-                <RowDefinition Height="349*" />
-            </Grid.RowDefinitions>
-               
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="84*" />
+                    <RowDefinition Height="349*" />
+                </Grid.RowDefinitions>
+
                 <Border BorderBrush="DimGray" Background="White" BorderThickness="10" CornerRadius="20"></Border>
-            <TextBox Name="KK" Margin="20" VerticalAlignment="Center" FontSize="80" TextAlignment="Center"  Text="{Binding Text, ElementName=onScreenKeyboard}"  />
-            
-            <termControls:OnScreenKeyboard Focusable="False"  x:Name="onScreenKeyboard" Command="{Binding ButtonClickCommand,ElementName=m}" Grid.Row="1" />
-        </Grid>
+                <TextBox Name="KK" Margin="20" VerticalAlignment="Center" FontSize="80" TextAlignment="Center"  Text="{Binding Text, ElementName=onScreenKeyboard}"  />
+
+                <termControls:OnScreenKeyboard Focusable="False"  x:Name="onScreenKeyboard" Command="{Binding ButtonClickCommand,ElementName=m}" Grid.Row="1" />
+            </Grid>
             <Button Command="{Binding DeleteCommand}" Width="140" Height="140" Margin="2181,506,1485,1514">
                 <Button.Template>
                     <ControlTemplate>

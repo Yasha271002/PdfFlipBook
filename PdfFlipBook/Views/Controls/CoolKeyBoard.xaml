@@ -69,7 +69,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Border Style="{DynamicResource KeyboardBorder}"/>
+        <Border Style="{DynamicResource KeyboardBorder}" />
         <Border Padding="0" Background="Transparent" CornerRadius="40" BorderBrush="White" Focusable="False">
             <StackPanel Orientation="Vertical">
                 <Grid VerticalAlignment="Center" Focusable="False">
@@ -103,7 +103,7 @@
                         <Button Name="addButton1" />
                         <Button Name="addButton2" />
                         <Button Width="235" Name="backButton" FontSize="36"
-                            Command="{Binding DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" />
+                                Command="{Binding DeleteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}}" />
                         <Button Width="93" Tag="+" Visibility="Collapsed" />
                     </StackPanel>
                     <StackPanel Grid.Row="2">
@@ -114,8 +114,8 @@
                             </Style>
                         </StackPanel.Resources>
                         <Button
-                        Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
-                        Width="160" FontSize="36" Name="langButton" />
+                            Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
+                            Width="160" FontSize="36" Name="langButton" />
                         <Button Name="aButton" />
                         <Button Name="sButton" />
                         <Button Name="dButton" />
@@ -128,7 +128,9 @@
                         <Button Name="addButton3" />
                         <Button Name="addButton4" />
                         <Button Width="200"
-                            Command="{Binding EnterCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}">
+                                Visibility="Collapsed"
+                                IsEnabled="True"
+                                Command="{Binding EnterCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}">
                             <Button.Template>
                                 <ControlTemplate>
                                     <Border>
@@ -139,7 +141,7 @@
                                             </LinearGradientBrush>
                                         </Border.Background>
                                         <Image Source="/Images/enter-arrow.png"
-                                           Margin="30">
+                                               Margin="30">
                                         </Image>
                                     </Border>
                                 </ControlTemplate>
@@ -154,25 +156,25 @@
                             </Style>
                         </StackPanel.Resources>
                         <ToggleButton Width="162" Visibility="Collapsed" Background="Black"
-                                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftPressed, Mode=TwoWay}">
+                                      IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftPressed, Mode=TwoWay}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Grid>
                                         <Border Background="Black" x:Name="Border" BorderThickness="0"
-                                            Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                                Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <DataTrigger
-                                                        Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
-                                                        Value="true">
+                                                            Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
+                                                            Value="true">
                                                             <Setter Property="Opacity" Value="1" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
                                             <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" FontSize="25" />
+                                                       VerticalAlignment="Center" FontSize="25" />
                                         </Border>
                                     </Grid>
                                 </ControlTemplate>
@@ -180,13 +182,14 @@
                         </ToggleButton>
 
                         <ToggleButton Name="shiftButton" Visibility="Visible" Width="160" Tag="CapsLock"
-                                  IsChecked="{Binding CapsPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}"
-                                  Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftCommand}">
+                                      IsChecked="{Binding CapsPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}"
+                                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftCommand}"
+                                      Foreground="#595959">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Grid>
                                         <Border x:Name="Border" BorderBrush="Black" Width="{TemplateBinding Width}"
-                                            Height="130">
+                                                Height="130">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Setters>
@@ -201,14 +204,16 @@
                                                     </Style.Setters>
                                                     <Style.Triggers>
                                                         <DataTrigger
-                                                        Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
-                                                        Value="True">
+                                                            Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
+                                                            Value="True">
                                                             <Setter Property="Background" Value="CornflowerBlue" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <Image Source="/Images/shift.png" Height="52"></Image>
+                                            <ContentPresenter ContentTemplate="{DynamicResource ShiftIcons}"
+                                                              Height="52">
+                                            </ContentPresenter>
 
                                             <!--<TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>-->
                                         </Border>
@@ -218,8 +223,8 @@
                             </ToggleButton.Template>
                         </ToggleButton>
                         <Button
-                        Command="{Binding SymbolsCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
-                        Width="120" FontSize="36" Name="symbolButton" />
+                            Command="{Binding SymbolsCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
+                            Width="120" FontSize="36" Name="symbolButton" />
                         <Button Name="zButton" />
                         <Button Name="xButton" />
                         <Button Name="cButton" />
@@ -231,25 +236,25 @@
                         <Button Name="addButton6" />
                         <Button Name="addButton7" Visibility="Collapsed" />
                         <ToggleButton Width="162" Visibility="Hidden" Background="Black"
-                                  IsChecked="{Binding ShiftPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}">
+                                      IsChecked="{Binding ShiftPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Grid>
                                         <Border Background="Black" x:Name="Border" BorderThickness="0"
-                                            Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                                                Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
                                                         <DataTrigger
-                                                        Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
-                                                        Value="true">
+                                                            Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
+                                                            Value="true">
                                                             <Setter Property="Opacity" Value="0.75" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
                                             <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" FontSize="25" />
+                                                       VerticalAlignment="Center" FontSize="25" />
                                         </Border>
                                     </Grid>
                                 </ControlTemplate>
@@ -264,8 +269,8 @@
                             </Style>
                         </StackPanel.Resources>
                         <Button Visibility="Hidden"
-                            Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
-                            Width="190" Tag="RUS/KZ" />
+                                Command="{Binding SwitchLanguageCommand, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}}"
+                                Width="190" Tag="RUS/KZ" />
                         <Button Width="1100" Tag=" " />
                         <Button Width="380" Visibility="Hidden" Tag="@" />
                     </StackPanel>

@@ -9,6 +9,7 @@
       xmlns:polusVerninskoe="clr-namespace:PolusVerninskoe"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
       xmlns:properties="clr-namespace:PdfFlipBook.Properties"
+      ManipulationBoundaryFeedback="Razdel_Page_OnManipulationBoundaryFeedback"
       mc:Ignorable="d"
 
       Unloaded="Razdel_Page_OnUnloaded"

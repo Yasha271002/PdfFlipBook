@@ -521,5 +521,10 @@ namespace PdfFlipBook.Views.Pages
                 item.ScrollViewerHeight = ScrollViewerHeight;
             }
         }
+
+        private void Razdel_Page_OnManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

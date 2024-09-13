@@ -291,6 +291,7 @@ namespace PdfFlipBook.Views.Pages
         public ICommand ToPageCommand =>
             _toPageCommand ?? (_toPageCommand = new Command(c =>
             {
+                if (c is null) return;
                 int page = int.Parse(KK.Text);
                 if (page > AllPages.Count)
                 {

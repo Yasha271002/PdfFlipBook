@@ -206,7 +206,7 @@
                                                         <DataTrigger
                                                             Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
                                                             Value="True">
-                                                            <Setter Property="Background" Value="CornflowerBlue" />
+                                                            <Setter Property="Background" Value="White" />
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>

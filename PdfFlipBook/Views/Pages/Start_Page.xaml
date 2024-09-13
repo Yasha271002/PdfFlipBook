@@ -42,7 +42,7 @@
                           controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
                           controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
                           controls:VirtualizingWrapPanel.CacheLength ="0,0" Height="1920"
-                          Margin="0,400,0,0"
+                          Margin="0,320,0,0"
             >
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -95,7 +95,7 @@
                 <ItemsControl.Template>
                     <ControlTemplate>
                         <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Hidden">
+                                  VerticalScrollBarVisibility="Visible" Height="1700">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"></ItemsPresenter>
                         </ScrollViewer>
                     </ControlTemplate>
@@ -236,18 +236,15 @@
         <StackPanel 
                     Width="1200" Height="55" Margin="0 298 0 0"
                     VerticalAlignment="Top" Orientation="Horizontal">
-            <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36" x:Name="AuthorBookRB"
+            <RadioButton Tag="По автору или названию"
+                         Style="{DynamicResource StartPageRadioButtonTemplate}"
+                          x:Name="AuthorBookRB"
                          VerticalAlignment="Center"/>
-            <TextBlock Foreground="White" Text="По автору или названию" 
-                       VerticalAlignment="Center"
-                       FontSize="40" FontWeight="Bold" Margin="32 0 0 0"/>
+            
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
-                         Width="36" Height="36" Margin="70 0 0 0" x:Name="TextBookRB"
-                         VerticalAlignment="Center"/>
-            <TextBlock Foreground="White" Text="По тексту"
-                       FontSize="40" FontWeight="Bold" Margin="32 0 0 0"
-                       VerticalAlignment="Center"/>
+                         Margin="70 0 0 0" x:Name="TextBookRB"
+                         VerticalAlignment="Center"
+                         Tag="По тексту"/>
         </StackPanel>
         <Button Command="{Binding SearchCommand}"
                 Width="60" 

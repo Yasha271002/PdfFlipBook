@@ -661,21 +661,14 @@ namespace PdfFlipBook.Views.Pages
                 if (AuthorBookRB.IsChecked == true)
                 {
                     ActualBooks = AllBooks.Where(x => x.Author.ToLower().Contains(searchQuery)).ToList();
+                    if (ActualBooks.Count == 0)
+                    {
+                        ActualBooks = AllBooks.Where(x => x.Title.ToLower().Contains(searchQuery)).ToList();
+                    }
                 }
                 else if (TextBookRB.IsChecked == true)
                 {
-                    ActualBooks = AllBooks.Where(x => x.Title.ToLower().Contains(searchQuery)).ToList();
-                }
-
-                foreach (var actualBook in ActualBooks.ToArray())
-                {
-                    if (actualBook.Icon.Source == null)
-                    {
-                        actualBook.Icon = new DisposableImage(
-                            Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + actualBook.Title)[0]
-                        );
-                    }
-                    ActualBooks.Add(actualBook);
+                    ActualBooks = AllBooks.Where(x => x.Text.ToLower().Contains(searchQuery)).ToList();
                 }
             });
 

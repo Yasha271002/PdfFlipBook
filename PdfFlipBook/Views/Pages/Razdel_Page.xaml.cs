@@ -386,7 +386,7 @@ namespace PdfFlipBook.Views.Pages
             }
             else if (SelectedBookIndex >= CountBooks.Count - visibleRadioItemsCount / 2)
             {
-                double offset = (CountBooks.Count - visibleRadioItemsCount) * radioItemHeight;
+                double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight;
                 _radioScrollViewer.ScrollToVerticalOffset(offset);
             }
             else
@@ -472,7 +472,7 @@ namespace PdfFlipBook.Views.Pages
                     ImageWidth = 600.0;
                     ImageHeight = 600.0;
 
-                    WrapPanelWidth = 2100.0;
+                    WrapPanelWidth = 2450.0;
 
                     ScrollViewerHeight = 1980.0;
 

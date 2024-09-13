@@ -172,6 +172,7 @@
     <Compile Include="Helper\Converters\ImageConverter.cs" />
     <Compile Include="Helper\Converters\IndexToCheckedConverter.cs" />
     <Compile Include="Helper\Converters\IndexToCheckedMultiConverter.cs" />
+    <Compile Include="Helper\Converters\InvertBoolToVisibilityHiddenConverter.cs" />
     <Compile Include="Helper\Converters\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Helper\Converters\VisibilityToPanningModeConverter.cs" />
     <Compile Include="Helper\Converters\VisibilityToVerticalScrollBarVisibilityConverter.cs" />

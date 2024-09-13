@@ -25,7 +25,7 @@
             <wpfMitsuControls:Book.ItemTemplate>
                 <DataTemplate>
                     <Border BorderThickness="4" BorderBrush="Gray" Background="White" >
-                        <ContentControl>
+                        <ContentControl HorizontalAlignment="Center">
                             <ContentControl.Content>
                                 <Image Source="{Binding Source}"></Image>
                             </ContentControl.Content>

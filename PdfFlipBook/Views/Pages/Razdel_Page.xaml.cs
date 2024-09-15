@@ -73,7 +73,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private GridSizeModel _selectedGridSize;
-
         public GridSizeModel SelectedGridSize
         {
             get { return _selectedGridSize; }
@@ -86,7 +85,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _scrollViewerHeight;
-
         public double ScrollViewerHeights
         {
             get => _scrollViewerHeight;
@@ -98,7 +96,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _wrapPanelWidth;
-
         public double WrapPanelWidths
         {
             get => _wrapPanelWidth;
@@ -110,7 +107,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _verticalScrollBarVisibility;
-
         public bool VerticalScrollBarVisibility
         {
             get => _verticalScrollBarVisibility;
@@ -122,7 +118,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isFirstPage;
-
         public bool IsFirstPage
         {
             get => _isFirstPage;
@@ -134,7 +129,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isLastPage;
-
         public bool IsLastPage
         {
             get => _isLastPage;
@@ -146,7 +140,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private int _selectedBookIndex;
-
         public int SelectedBookIndex
         {
             get => _selectedBookIndex;
@@ -165,7 +158,6 @@ namespace PdfFlipBook.Views.Pages
 
 
         private List<CountBooksModel> _countBooks;
-
         public List<CountBooksModel> CountBooks
         {
             get => _countBooks;
@@ -177,13 +169,45 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private SettingsModel _settings;
-
         public SettingsModel SettingsModel
         {
             get => _settings;
             set
             {
                 _settings = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isDotsVisibility;
+        public bool IsDotsVisibility
+        {
+            get => _isDotsVisibility;
+            set
+            {
+                _isDotsVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _isLastBookCount;
+        public string IsLastBookCount
+        {
+            get => _isLastBookCount;
+            set
+            {
+                _isLastBookCount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private double _itemsControlHeight;
+        public double ItemsControlHeight
+        {
+            get => _itemsControlHeight;
+            set
+            {
+                _itemsControlHeight = value;
                 OnPropertyChanged();
             }
         }
@@ -202,8 +226,10 @@ namespace PdfFlipBook.Views.Pages
             GetBooks(actualBooks, razdel);
             LearnCountBooks(actualBooks);
 
-            IsFirstPage = true;
-            IsLastPage = true;
+            ItemsControlHeight = 480.0;
+
+            UpdatePageButtonsState();
+
 
             GridSizes = new ObservableCollection<GridSizeModel>
             {
@@ -270,7 +296,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void UpdatePageButtonsState()
         {
-            IsFirstPage = SelectedBookIndex != 0;
+            IsFirstPage = false || SelectedBookIndex != 0;
 
             IsLastPage = SelectedBookIndex != CountBooks.Count - 1;
         }
@@ -332,6 +358,8 @@ namespace PdfFlipBook.Views.Pages
                 });
                 index++;
             }
+
+            IsLastBookCount = CountBooks.Count.ToString();
         }
 
         private void Razdel_Page_OnLoaded(object sender, RoutedEventArgs e)
@@ -380,19 +408,25 @@ namespace PdfFlipBook.Views.Pages
             double radioItemHeight = 97;
             int visibleRadioItemsCount = (int)(_radioScrollViewer.ViewportHeight / radioItemHeight);
 
-            if (SelectedBookIndex < 2)
+            if (SelectedBookIndex < 5)
             {
                 _radioScrollViewer.ScrollToVerticalOffset(0);
+                ItemsControlHeight = 480.0;
+                IsDotsVisibility = false;
             }
-            else if (SelectedBookIndex >= CountBooks.Count - visibleRadioItemsCount / 2)
+            else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2)
             {
                 double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight;
                 _radioScrollViewer.ScrollToVerticalOffset(offset);
+                IsDotsVisibility = false;
+                ItemsControlHeight = 480;
             }
             else
             {
-                double offset = (SelectedBookIndex - visibleRadioItemsCount / 2) * radioItemHeight;
+                double offset = (SelectedBookIndex - visibleRadioItemsCount / 3) * radioItemHeight;
                 _radioScrollViewer.ScrollToVerticalOffset(offset);
+                ItemsControlHeight = 296;
+                IsDotsVisibility = true;
             }
         }
 

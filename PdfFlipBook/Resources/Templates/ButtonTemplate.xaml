@@ -14,7 +14,25 @@
         <Border Style="{DynamicResource SettingBorderStyle}"
                 CornerRadius="10"
                 Background="White">
-            <ContentPresenter Width="31"/>
+            <ContentPresenter Width="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="DotControlButton" TargetType="Button">
+        <Border Style="{DynamicResource SettingBorderStyle}"
+                CornerRadius="10"
+                Background="White">
+            <ContentPresenter Width="150" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="LastPageControlButton" TargetType="Button">
+        <Border Style="{DynamicResource SettingBorderStyle}"
+                CornerRadius="10"
+                Background="White">
+            <TextBlock Text="{TemplateBinding Content}"
+                       FontSize="50"
+                       Foreground="#808080"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
         </Border>
     </ControlTemplate>
 

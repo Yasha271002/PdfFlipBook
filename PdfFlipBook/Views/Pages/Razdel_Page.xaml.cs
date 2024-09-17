@@ -226,8 +226,6 @@ namespace PdfFlipBook.Views.Pages
             GetBooks(actualBooks, razdel);
             LearnCountBooks(actualBooks);
 
-            ItemsControlHeight = 480.0;
-
             UpdatePageButtonsState();
 
 
@@ -296,9 +294,15 @@ namespace PdfFlipBook.Views.Pages
 
         private void UpdatePageButtonsState()
         {
-            IsFirstPage = false || SelectedBookIndex != 0;
-
-            IsLastPage = SelectedBookIndex != CountBooks.Count - 1;
+            if (CountBooks.Count == 0)
+            {
+                IsLastPage = false;
+            }
+            else
+            {
+                IsFirstPage = false || SelectedBookIndex != 0;
+                IsLastPage = SelectedBookIndex != CountBooks.Count - 1;
+            }
         }
 
         private void MoveUp()
@@ -359,6 +363,16 @@ namespace PdfFlipBook.Views.Pages
                 index++;
             }
 
+            if (CountBooks.Count > 5)
+            {
+                ItemsControlHeight = 296;
+                IsDotsVisibility = true;
+            }
+            else
+            {
+                ItemsControlHeight = 480;
+                IsDotsVisibility = false;
+            }
             IsLastBookCount = CountBooks.Count.ToString();
         }
 
@@ -408,7 +422,7 @@ namespace PdfFlipBook.Views.Pages
             double radioItemHeight = 97;
             int visibleRadioItemsCount = (int)(_radioScrollViewer.ViewportHeight / radioItemHeight);
 
-            if (SelectedBookIndex < 5)
+            if (SelectedBookIndex < 5 && CountBooks.Count < 5)
             {
                 _radioScrollViewer.ScrollToVerticalOffset(0);
                 ItemsControlHeight = 480.0;
@@ -416,7 +430,7 @@ namespace PdfFlipBook.Views.Pages
             }
             else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2)
             {
-                double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight;
+                double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight - 8;
                 _radioScrollViewer.ScrollToVerticalOffset(offset);
                 IsDotsVisibility = false;
                 ItemsControlHeight = 480;

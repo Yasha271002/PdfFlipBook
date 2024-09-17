@@ -4,32 +4,18 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using iDiTect.Converter;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
-using PdfFlipBook.Views;
 using PdfFlipBook.Views.Pages;
-using WPFMitsuControls;
-using Image = System.Drawing.Image;
-using Path = System.IO.Path;
 
 
 namespace PdfFlipBook
@@ -52,19 +38,19 @@ namespace PdfFlipBook
 
 
             //this.Cursor = Cursors.None;
-            //Process process = Process.Start(new ProcessStartInfo
-            //{
-            //    FileName = "taskkill",
-            //    Arguments = "/F /IM explorer.exe",
-            //    CreateNoWindow = true,
-            //    UseShellExecute = false,
-            //    WindowStyle = ProcessWindowStyle.Hidden
-            //});
-            //process?.WaitForExit();
-            //Closing += (e, a) =>
-            //{
-            //    Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
-            //};
+            Process process = Process.Start(new ProcessStartInfo
+            {
+                FileName = "taskkill",
+                Arguments = "/F /IM explorer.exe",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden
+            });
+            process?.WaitForExit();
+            Closing += (e, a) =>
+            {
+                Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
+            };
 
         }
 

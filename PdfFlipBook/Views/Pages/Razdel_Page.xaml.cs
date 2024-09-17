@@ -9,13 +9,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using Core;
-using IronPdf.Engines.WebKit.Settings;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
-using GlobalSettings = PdfFlipBook.Helper.Singleton.GlobalSettings;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -186,6 +183,17 @@ namespace PdfFlipBook.Views.Pages
             set
             {
                 _isDotsVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _isCheckedRadio;
+        public bool IsCheckedRadio
+        {
+            get => _isCheckedRadio;
+            set
+            {
+                _isCheckedRadio = value;
                 OnPropertyChanged();
             }
         }
@@ -365,12 +373,12 @@ namespace PdfFlipBook.Views.Pages
 
             if (CountBooks.Count > 5)
             {
-                ItemsControlHeight = 296;
+                ItemsControlHeight = 282.0;
                 IsDotsVisibility = true;
             }
             else
             {
-                ItemsControlHeight = 480;
+                ItemsControlHeight = 482.0;
                 IsDotsVisibility = false;
             }
             IsLastBookCount = CountBooks.Count.ToString();
@@ -399,7 +407,9 @@ namespace PdfFlipBook.Views.Pages
 
             if (_booksScrollViewer == null) return;
 
-            double booksItemHeight = 1553;
+            IsCheckedRadio = SelectedBookIndex == Convert.ToInt32(IsLastBookCount);
+
+            double booksItemHeight = 1553.0;
             int visibleItemsCount = (int)(_booksScrollViewer.ViewportHeight / booksItemHeight);
 
             if (SelectedBookIndex < 2)
@@ -419,27 +429,28 @@ namespace PdfFlipBook.Views.Pages
 
             if (_radioScrollViewer == null) return;
 
-            double radioItemHeight = 97;
+            double radioItemHeight = 97.0;
             int visibleRadioItemsCount = (int)(_radioScrollViewer.ViewportHeight / radioItemHeight);
 
             if (SelectedBookIndex < 5 && CountBooks.Count < 5)
             {
                 _radioScrollViewer.ScrollToVerticalOffset(0);
-                ItemsControlHeight = 480.0;
+                ItemsControlHeight = 482.0;
                 IsDotsVisibility = false;
             }
-            else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2)
+            else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2 )
             {
-                double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight - 8;
-                _radioScrollViewer.ScrollToVerticalOffset(offset);
+                ItemsControlHeight = 482.0;
+                double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight;
                 IsDotsVisibility = false;
-                ItemsControlHeight = 480;
+                _radioScrollViewer.ScrollToVerticalOffset(offset);
             }
             else
             {
-                double offset = (SelectedBookIndex - visibleRadioItemsCount / 3) * radioItemHeight;
+                double offset = (SelectedBookIndex - visibleRadioItemsCount / 2.0) * radioItemHeight;
+
                 _radioScrollViewer.ScrollToVerticalOffset(offset);
-                ItemsControlHeight = 296;
+                ItemsControlHeight = 282.0;
                 IsDotsVisibility = true;
             }
         }

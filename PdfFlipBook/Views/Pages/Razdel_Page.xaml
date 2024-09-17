@@ -129,11 +129,11 @@
             <ScrollViewer x:Name="RadioScrollViewer" 
                           MaxHeight="{Binding ItemsControlHeight}"
                           VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
-                           PanningMode="VerticalOnly">
+                           PanningMode="VerticalOnly" Margin="0 0 0 0">
                 <ItemsControl ItemsSource="{Binding CountBooks}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" />
+                            <StackPanel Orientation="Vertical" Margin="0 0 0 -2.5"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -141,6 +141,7 @@
                             <RadioButton Template="{DynamicResource ItemsControlRadioButton}"
                                          Content="{Binding Count}" Width="85" Height="85" Foreground="#808080"
                                          Margin="0 6" Focusable="False" GroupName="1"
+                                         x:Name="RadioButtonCount"
                                          Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                          CommandParameter="{Binding Count}">
                                 <RadioButton.IsChecked>
@@ -155,28 +156,28 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-            <StackPanel Margin="0 0 0 0"
+            <StackPanel Margin="0 12 0 6"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Visibility="{Binding IsDotsVisibility, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Button Template="{DynamicResource DotControlButton}"
                         Width="85" Height="85"
                         Opacity="0.5"
-                        ContentTemplate="{DynamicResource DotIcons}"
-                        Command="{Binding MoveDownCommand}"/>
+                        ContentTemplate="{DynamicResource DotIcons}"/>
                 <RadioButton Template="{DynamicResource ItemsControlRadioButton}"
                         Width="85" Height="85"
-                        Margin="0 12 0 2"
+                        Margin="0 12 0 0"
                         Content="{Binding IsLastBookCount}"
                         Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                        CommandParameter="{Binding IsLastBookCount}"/>
+                        CommandParameter="{Binding IsLastBookCount}"
+                        IsChecked="{Binding IsCheckedRadio, Mode=TwoWay}"/>
             </StackPanel>
             <Button Template="{DynamicResource ItemsControlButton}"
                     Width="85" Height="85"
                     ContentTemplate="{DynamicResource DownArrow}"
-                    Margin="0 8 0 0"
+                    Margin="0 6 0 0"
                     Command="{Binding MoveDownCommand}"
-                    Visibility="{Binding IsLastPage, Converter={StaticResource InvertBoolToVisibilityHiddenConverter}}" />
+                    Visibility="{Binding IsLastPage, Converter={StaticResource InvertBoolToVisibilityHiddenConverter}}"/>
         </StackPanel>
         
         <StackPanel Margin="160,60,0,0"

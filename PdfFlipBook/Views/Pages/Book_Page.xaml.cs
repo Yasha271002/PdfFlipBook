@@ -289,76 +289,82 @@ namespace PdfFlipBook.Views.Pages
         }
 
         public ICommand ToPageCommand =>
-            _toPageCommand ?? (_toPageCommand = new Command(c =>
+           _toPageCommand ?? (_toPageCommand = new Command(c =>
+           {
+               if (KK.Text == "") return;
+               int page = int.Parse(KK.Text);
+               if (page > AllPages.Count)
+               {
+                   var animation = new DoubleAnimation
+                   {
+                       From = 0,
+                       To = 1,
+                       Duration = TimeSpan.FromSeconds(1.3),
+                       AutoReverse = true
+                   };
+                   TB.BeginAnimation(UIElement.OpacityProperty, animation);
+               }
+               else
+               {
+                   AllPages = new ObservableCollection<DisposableImage>();
+
+                   AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + BookTitle).ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+                   foreach (var s in AllPhotos)
+                   {
+                       AllPages.Add(new DisposableImage(s));
+                   }
+                   if (AllPages.Count > 30)
+                   {
+                       for (int i = 30; i < AllPages.Count; i++)
+                       {
+                           AllPages[i].Dispose();
+                       }
+                   }
+                   var ostatok = page % 2;
+                   if (ostatok == 1)
+                       page--;
+
+                   Book.CurrentSheetIndex = page / 2;
+                   int index = Book.CurrentSheetIndex;
+                   try
+                   {
+                       ReloadPage(page);
+
+                   }
+                   catch (Exception exception)
+                   {
+                       Console.WriteLine(exception.Message);
+                   }
+                   CloseInsertCommand.Execute(null);
+               }
+           }));
+
+        private void ReloadPage(int page)
+        {
+            if (page < 0 || page >= AllPages.Count / 2)
             {
-                if (c is null) return;
-                int page = int.Parse(KK.Text);
-                if (page > AllPages.Count)
+                return;
+            }
+
+            var index = page / 2;
+            if (index * 2 >= 0 && index * 2 < AllPages.Count)
+            {
+                try
                 {
-                    var animation = new DoubleAnimation
-                    {
-                        From = 0,
-                        To = 1,
-                        Duration = TimeSpan.FromSeconds(1.3),
-                        AutoReverse = true
-                    };
-                    TB.BeginAnimation(UIElement.OpacityProperty, animation);
+                    AllPages[index * 2]?.Dispose();
+                    AllPages[index * 2 + 1]?.Dispose();
+
+                    AllPages[index * 2] = new DisposableImage(AllPhotos[index * 2]);
+                    AllPages[index * 2 + 1] = new DisposableImage(AllPhotos[index * 2 + 1]);
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    AllPages = new ObservableCollection<DisposableImage>();
-
-                    AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + BookTitle).ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-                    foreach (var s in AllPhotos)
-                    {
-                        AllPages.Add(new DisposableImage(s));
-                    }
-                    if (AllPages.Count > 30)
-                    {
-                        for (int i = 30; i < AllPages.Count; i++)
-                        {
-                            AllPages[i].Dispose();
-                        }
-                    }
-                    var ostatok = page % 2;
-                    if (ostatok == 1)
-                        page--;
-
-
-                    Book.CurrentSheetIndex = page / 2;
-                    int index = Book.CurrentSheetIndex;
-                    try
-                    {
-
-                        AllPages[index * 2 - 4].Dispose();
-                        AllPages[index * 2 - 5].Dispose();
-                        GC.Collect();
-                        AllPages.RemoveAt(index * 2 - 3);
-                        AllPages.Insert(index * 2 - 3, new DisposableImage(AllPhotos[index * 2 - 3]));
-                        AllPages.RemoveAt(index * 2 - 2);
-                        AllPages.Insert(index * 2 - 2, new DisposableImage(AllPhotos[index * 2 - 2]));
-                        AllPages.RemoveAt(index * 2 - 1);
-                        AllPages.Insert(index * 2 - 1, new DisposableImage(AllPhotos[index * 2 - 1]));
-                        AllPages.RemoveAt(index * 2);
-                        AllPages.Insert(index * 2, new DisposableImage(AllPhotos[index * 2]));
-                        AllPages.RemoveAt(index * 2 + 1);
-                        AllPages.Insert(index * 2 + 1, new DisposableImage(AllPhotos[index * 2 + 1]));
-                        AllPages.RemoveAt(index * 2 + 2);
-                        AllPages.Insert(index * 2 + 2, new DisposableImage(AllPhotos[index * 2 + 2]));
-                        AllPages.RemoveAt(index * 2 + 3);
-                        AllPages.Insert(index * 2 + 3, new DisposableImage(AllPhotos[index * 2 + 3]));
-                        AllPages.RemoveAt(index * 2 + 4);
-                        AllPages.Insert(index * 2 + 4, new DisposableImage(AllPhotos[index * 2 + 4]));
-
-                    }
-                    catch (Exception exception)
-                    {
-
-                    }
-                    CloseInsertCommand.Execute(null);
+                    Console.WriteLine(ex.Message);
                 }
+            }
+        }
 
-            }));
 
         private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {

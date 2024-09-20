@@ -16,6 +16,7 @@
     <Grid>
         <Viewbox>
             <Grid Width="3840" Height="2160">
+                <Image Stretch="Fill" Source="{Binding ActualBack}" Height="2160" VerticalAlignment="Bottom"/>
                 <Frame Name="Frame1"
                        NavigationUIVisibility="Hidden"
                        Navigated="Frame1_OnNavigated" />

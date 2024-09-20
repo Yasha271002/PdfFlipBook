@@ -9,22 +9,21 @@
       mc:Ignorable="d" 
       Loaded="Book_Page_OnLoaded"
       Unloaded="Book_Page_OnUnloaded"
+      MouseDown="Book_Page_OnMouseDown"
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Book_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
-
-    <Grid  Width="3810" Height="2160">
-        <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
-                               Width="3800" 
-                               Height="2040"
-                               VerticalAlignment="Top" 
-                               Name="Book" 
-                               
-                               MouseLeftButtonUp="Book_OnMouseLeftButtonUp" 
-                               MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
+            <Grid  Width="3840" Height="2160">
+                <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
+                                       Width="3800" 
+                                       Height="2040"
+                                       VerticalAlignment="Top" 
+                                       Name="Book" 
+                                       MouseLeftButtonUp="Book_OnMouseLeftButtonUp" 
+                                       MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
             <wpfMitsuControls:Book.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="4" BorderBrush="Gray" Background="White" >
+                    <Border BorderThickness="4" Background="Transparent">
                         <ContentControl HorizontalAlignment="Center">
                             <ContentControl.Content>
                                 <Image Source="{Binding Source}"></Image>

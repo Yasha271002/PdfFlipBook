@@ -412,7 +412,7 @@ namespace PdfFlipBook.Views.Pages
             double booksItemHeight = 1553.0;
             int visibleItemsCount = (int)(_booksScrollViewer.ViewportHeight / booksItemHeight);
 
-            if (SelectedBookIndex < 2)
+            if (SelectedBookIndex < 1)
             {
                 _booksScrollViewer.ScrollToVerticalOffset(0);
             }

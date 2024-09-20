@@ -19,7 +19,7 @@
     <Grid Width="3840" Height="2160">
 
         <!--<moonPdfLib:MoonPdfPanel Background="LightGray" ViewType="BookView" Name="BookView"  PageMargin="0,2,4,2" AllowDrop="True"/>-->
-        <Image Stretch="Fill" Source="{Binding ActualBack}" Height="2160" VerticalAlignment="Bottom"/>
+        
         <Button Command="{Binding HideKeyboardCommand}" Panel.ZIndex="100"
                 Visibility="Collapsed" Name="HideButton">
             <Button.Template>

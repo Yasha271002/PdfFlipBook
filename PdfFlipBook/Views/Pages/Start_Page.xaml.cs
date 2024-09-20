@@ -42,15 +42,6 @@ namespace PdfFlipBook.Views.Pages
             set { SetValue(ActualBooksProperty, value); }
         }
 
-        public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
-            "ActualBack", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
-
-        public string ActualBack
-        {
-            get { return (string)GetValue(ActualBackProperty); }
-            set { SetValue(ActualBackProperty, value); }
-        }
-
 
         public static readonly DependencyProperty AllFoldersProperty = DependencyProperty.Register(
             "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page), new PropertyMetadata(default(ObservableCollection<BookFolder>)));
@@ -301,7 +292,7 @@ namespace PdfFlipBook.Views.Pages
             InitializeComponent();
             AuthorBookRB.IsChecked = true;
 
-            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
+            
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();

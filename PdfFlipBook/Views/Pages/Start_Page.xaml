@@ -14,6 +14,7 @@
       Loaded="Start_Page_OnLoaded"
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Start_Page"
+      Background="Transparent"
       DataContext="{Binding RelativeSource= {RelativeSource Self}}">
 
     <Grid Width="3840" Height="2160">

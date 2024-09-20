@@ -12,9 +12,6 @@
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="SettingsPage"
       d:DataContext="{d:DesignInstance pages:SettingsPageViewModel}">
-    <Page.Background>
-        <ImageBrush ImageSource="../../Images/wood-86 1.png" />
-    </Page.Background>
     <Viewbox>
         <ScrollViewer>
             <Grid Width="3840" Height="2160">

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Core;
+using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
 
@@ -26,8 +28,16 @@ namespace PdfFlipBook.ViewModel.Pages
 
         public SettingsPageViewModel(SettingsModel settings)
         {
+            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
             SettingsModel = settings;
             StartPageSettings();
+        }
+
+        [CanBeNull]
+        public string ActualBack
+        {
+            get => GetOrCreate<string>();
+            set => SetAndNotify(value);
         }
 
         private ICommand _checkPasswordCommand;

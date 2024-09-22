@@ -13,7 +13,7 @@
       Title="SettingsPage"
       d:DataContext="{d:DesignInstance pages:SettingsPageViewModel}">
     <Page.Background>
-        <ImageBrush ImageSource="../../Images/wood-86 1.png" />
+        <ImageBrush ImageSource="{Binding ActualBack}"/>
     </Page.Background>
     <Viewbox>
         <ScrollViewer>

@@ -23,7 +23,6 @@ namespace PdfFlipBook
         
         public static App CurrentApp => App.Current as App;
 
-       
         public Start_Page SP = new Start_Page();
         private bool _isLoading;
 

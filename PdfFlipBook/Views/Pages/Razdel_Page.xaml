@@ -24,6 +24,7 @@
         <Image Stretch="Fill" Source="{Binding ActualBack}" Height="2160" VerticalAlignment="Bottom" />
 
         <ItemsControl AlternationCount="{Binding ActualBooks.Count}"
+
                       ItemsSource="{Binding ActualBooks, IsAsync=True}"
                       VirtualizingStackPanel.IsVirtualizing="True"
                       ScrollViewer.CanContentScroll="True"
@@ -32,7 +33,7 @@
                       Name="BooksItemsControl"
                       HorizontalAlignment="Center"
                       ScrollViewer.IsDeferredScrollingEnabled="True"
-                      controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
+                      controls:VirtualizingWrapPanel.VirtualizationMode="Recycling"
                       controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
                       controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
                       controls:VirtualizingWrapPanel.CacheLength="0,0" Height="1860"

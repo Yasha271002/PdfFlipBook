@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.ImageCache;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
 
@@ -58,6 +60,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         [CanBeNull] private ObservableCollection<GridSizeModel> _gridSizes;
+        private bool _isBooksLoaded = false;
 
         public ObservableCollection<GridSizeModel> GridSizes
         {
@@ -226,17 +229,24 @@ namespace PdfFlipBook.Views.Pages
         public Razdel_Page(string razdel, List<BookPDF> actualBooks, SettingsModel settings)
         {
             InitializeComponent();
-            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
+            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
             ActualRazdel = razdel;
             SettingsModel = settings;
 
-            GetBooks(actualBooks, razdel);
+            if (actualBooks != null && actualBooks.Count > 0)
+            {
+                _isBooksLoaded = true;
+                ActualBooks = new ObservableCollection<BookPDF>(actualBooks);
+            }
+
             LearnCountBooks(actualBooks);
 
-            UpdatePageButtonsState();
+            InitializeGridSizes();
+        }
 
-
+        private void InitializeGridSizes()
+        {
             GridSizes = new ObservableCollection<GridSizeModel>
             {
                 new GridSizeModel { Size = "1x1" },
@@ -325,35 +335,39 @@ namespace PdfFlipBook.Views.Pages
                 SelectedBookIndex++;
         }
 
-        public void GetBooks(List<BookPDF> actualBooks, string razdel)
+        private async void GetBooks()
         {
-            ActualBooks = new ObservableCollection<BookPDF>();
+            if (_isBooksLoaded) return;
+            _isBooksLoaded = true;
 
+            ActualBooks = new ObservableCollection<BookPDF>();
 
             foreach (var actualBook in App.CurrentApp.ActualBooks)
             {
-                if (actualBook.Icon.Source == null)
-                    actualBook.Icon =
-                        new DisposableImage(
-                            Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + actualBook.Title)[0]);
-                ActualBooks.Add(actualBook);
+                if (actualBook.Icon != null && actualBook.Icon.Source != null)
+                {
+                    ActualBooks.Add(actualBook);
+                    continue;
+                }
+
+                await Task.Run(() =>
+                {
+                    string imagePath = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + actualBook.Title)[0];
+                    actualBook.Icon = ImageCache.GetOrAdd(imagePath); 
+                });
+
+                Application.Current.Dispatcher.Invoke(() => ActualBooks.Add(actualBook));
             }
         }
 
+
         private void Razdel_Page_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            foreach (var actualBook in ActualBooks)
+            if (ImageCache.Count > 100)
             {
-                actualBook.Icon.Dispose();
+                ImageCache.ClearCache(false);
             }
 
-            foreach (var actualBook in App.CurrentApp.ActualBooks)
-            {
-                actualBook.Icon.Dispose();
-            }
-
-            ActualBooks.Clear();
-            //App.CurrentApp.ActualBooks = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -386,14 +400,9 @@ namespace PdfFlipBook.Views.Pages
 
         private void Razdel_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (ActualBooks.Count != 0) return;
-            foreach (var actualBook in App.CurrentApp.ActualBooks)
+            if (!_isBooksLoaded)
             {
-                if (actualBook.Icon.Source == null)
-                    actualBook.Icon =
-                        new DisposableImage(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" +
-                                                               actualBook.Title)[0]);
-                ActualBooks.Add(actualBook);
+                GetBooks(); 
             }
         }
 

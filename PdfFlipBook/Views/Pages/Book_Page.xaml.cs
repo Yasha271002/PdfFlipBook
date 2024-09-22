@@ -18,6 +18,9 @@ using PdfFlipBook.Models;
 using System.Runtime.InteropServices;
 using PdfFlipBook.Helper.Singleton;
 using WPFMitsuControls;
+using System.Threading.Tasks;
+using PdfFlipBook.Helper.ImageCache;
+using System.Threading;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -78,8 +81,20 @@ namespace PdfFlipBook.Views.Pages
             set { SetValue(BookTitleProperty, value); }
         }
 
+        public static readonly DependencyProperty BackProperty = DependencyProperty.Register(
+            "Back", typeof(string), typeof(Book_Page), new PropertyMetadata(default(string)));
+
+        public string Back
+        {
+            get { return (string)GetValue(BackProperty); }
+            set { SetValue(BackProperty, value); }
+        }
+
+
         private DispatcherTimer _pageFlipTimer;
         private readonly BaseInactivityHelper _inactivityHelper;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly SemaphoreSlim _loadingSemaphore = new SemaphoreSlim(1, 1);
 
         private int _indexBook;
 
@@ -122,27 +137,11 @@ namespace PdfFlipBook.Views.Pages
             InitializeComponent();
 
             BookTitle = bookTitle;
-
+            Back = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
             AllPages = new ObservableCollection<DisposableImage>();
             SettingsModel = settings;
 
-            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle)
-                .ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-            foreach (var s in AllPhotos)
-            {
-                AllPages.Add(new DisposableImage(s));
-            }
-
-            if (AllPages.Count > 30)
-            {
-                for (int i = 30; i < AllPages.Count; i++)
-                {
-                    AllPages[i].Dispose();
-                }
-            }
-
-            GC.Collect();
-
+            LoadPagesAsync(bookTitle);
 
             App.CurrentApp.IsLoading = false;
 
@@ -205,6 +204,54 @@ namespace PdfFlipBook.Views.Pages
 
         private ICommand _toPageCommand;
 
+        private async void LoadPagesAsync(string bookTitle)
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var token = _cancellationTokenSource.Token;
+
+            await _loadingSemaphore.WaitAsync();
+
+            try
+            {
+                AllPages?.Clear();
+                GC.Collect();
+
+                AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle)
+                    .ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+
+                foreach (var photoPath in AllPhotos)
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    var image = await Task.Run(() => ImageCache.GetOrAdd(photoPath), token);
+
+                    Application.Current.Dispatcher.Invoke(() => AllPages.Add(image), DispatcherPriority.Background);
+                }
+
+                if (AllPages.Count > 30)
+                {
+                    for (int i = 30; i < AllPages.Count; i++)
+                    {
+                        AllPages[i].Dispose();
+                    }
+                }
+                GC.Collect();
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при загрузке страниц: {ex.Message}");
+            }
+            finally
+            {
+                // Освобождаем семафор
+                _loadingSemaphore.Release();
+            }
+        }
+
 
         private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -257,42 +304,43 @@ namespace PdfFlipBook.Views.Pages
         {
             _pageFlipTimer.Stop();
             _inactivityHelper.OnInactivity -= OnInactivityDetected;
-        }
 
-        private void ReloadBookPages(string newBookTitle)
-        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+
+            _loadingSemaphore.Wait();
+            _loadingSemaphore.Release(); 
+
             if (AllPages != null)
             {
                 foreach (var page in AllPages)
                 {
                     page.Dispose();
                 }
+                AllPages.Clear();
+            }
 
+            ImageCache.ClearCache();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
+
+        private void ReloadBookPages(string newBookTitle)
+        {
+            _cancellationTokenSource?.Cancel();
+
+            if (AllPages != null)
+            {
+                foreach (var page in AllPages)
+                {
+                    page.Dispose();
+                }
                 AllPages.Clear();
             }
 
             AllPhotos?.Clear();
 
-            BookTitle = newBookTitle;
-
-            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + newBookTitle)
-                .ToList()
-                .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-
-            foreach (var photoPath in AllPhotos)
-            {
-                AllPages.Add(new DisposableImage(photoPath));
-            }
-
-            if (AllPages.Count > 30)
-            {
-                for (int i = 30; i < AllPages.Count; i++)
-                {
-                    AllPages[i].Dispose();
-                }
-            }
-
-            GC.Collect();
+            LoadPagesAsync(newBookTitle);
         }
 
         public ICommand ToPageCommand =>

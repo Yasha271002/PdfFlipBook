@@ -161,6 +161,9 @@ namespace PdfFlipBook.Views.Pages
         public ICommand BackCommand =>
             _backCommand ??= (_backCommand = new Command(c =>
             {
+                _pageFlipTimer.Stop();
+                _inactivityHelper.OnInactivity -= OnInactivityDetected;
+
                 NavigationService?.GoBack();
                 if (AllPages != null)
                 {
@@ -239,6 +242,7 @@ namespace PdfFlipBook.Views.Pages
                 {
                     IndexBook++;
                     PageIndex = 0;
+                    if(GlobalSettings.Instance.Books.Count == 0) return;
                     if (IndexBook >= GlobalSettings.Instance.Books.Count)
                         IndexBook = 0;
 

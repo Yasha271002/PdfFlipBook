@@ -13,12 +13,10 @@
         Title="MainWindow" Height="2160" Width="3840"
         WindowState="Maximized"
         WindowStyle="None">
-    <Window.Background>
-        <ImageBrush ImageSource="{Binding ActualBack, UpdateSourceTrigger=PropertyChanged}"/>
-    </Window.Background>
     <Grid>
         <Viewbox>
             <Grid Width="3840" Height="2160">
+            <Image Source="{Binding ActualBack,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Frame Name="Frame1"
                        NavigationUIVisibility="Hidden"
                        Navigated="Frame1_OnNavigated" />

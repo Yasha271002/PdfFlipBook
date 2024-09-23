@@ -250,7 +250,7 @@ namespace PdfFlipBook.Views.Pages
                 }
             }
 
-            Book.AnimateToNextPage(false, PageIndex);
+            Book.AnimateToNextPage(false, 1000);
         }
 
         private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)

@@ -329,7 +329,6 @@ namespace PdfFlipBook.Views.Pages
         {
             ActualBooks = new ObservableCollection<BookPDF>();
 
-
             foreach (var actualBook in App.CurrentApp.ActualBooks)
             {
                 if (actualBook.Icon.Source == null)

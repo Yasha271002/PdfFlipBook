@@ -28,6 +28,7 @@ namespace PdfFlipBook
         public MainWindow()
         {
             InitializeComponent();
+            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
             App.CurrentApp.IsLoading = true;
             // UpdatePhotos();
@@ -35,7 +36,6 @@ namespace PdfFlipBook
             NavigationManager.Frame1 = Frame1.NavigationService;
             NavigationCommands.BrowseBack.InputGestures.Clear();
             NavigationCommands.BrowseForward.InputGestures.Clear();
-            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
 
             //this.Cursor = Cursors.None;
@@ -58,7 +58,7 @@ namespace PdfFlipBook
 
             
         public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
-            "ActualBack", typeof(string), typeof(Start_Page), new PropertyMetadata(default(string)));
+            "ActualBack", typeof(string), typeof(MainWindow), new PropertyMetadata(default(string)));
 
         public string ActualBack
         {

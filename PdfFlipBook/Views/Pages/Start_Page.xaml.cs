@@ -34,14 +34,13 @@ namespace PdfFlipBook.Views.Pages
     {
 
         public static readonly DependencyProperty ActualBooksProperty = DependencyProperty.Register(
-            "ActualBooks", typeof(List<BookPDF>), typeof(Start_Page), new PropertyMetadata(default(List<BookPDF>)));
+            "ActualBooks", typeof(ObservableCollection<BookPDF>), typeof(Start_Page), new PropertyMetadata(new ObservableCollection<BookPDF>()));
 
-        public List<BookPDF> ActualBooks
+        public ObservableCollection<BookPDF> ActualBooks
         {
-            get { return (List<BookPDF>)GetValue(ActualBooksProperty); }
+            get { return (ObservableCollection<BookPDF>)GetValue(ActualBooksProperty); }
             set { SetValue(ActualBooksProperty, value); }
         }
-
 
         public static readonly DependencyProperty AllFoldersProperty = DependencyProperty.Register(
             "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page), new PropertyMetadata(default(ObservableCollection<BookFolder>)));
@@ -320,7 +319,7 @@ namespace PdfFlipBook.Views.Pages
             if (App.CurrentApp.AllBooks.Count == 0)
             {
                 int pageCount;
-                List<BookPDF> AllBooks2 = new List<BookPDF>();
+                ObservableCollection<BookPDF> AllBooks2 = new ObservableCollection<BookPDF>();
                 var pdfFolders = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs\\");
                 foreach (var pdfFolder in pdfFolders)
                 {
@@ -542,10 +541,10 @@ namespace PdfFlipBook.Views.Pages
         }
 
 
-        private List<BookPDF> _allBooks;
-        public List<BookPDF> AllBooks
+        private ObservableCollection<BookPDF> _allBooks;
+        public ObservableCollection<BookPDF> AllBooks
         {
-            get => _allBooks ?? (_allBooks = new List<BookPDF>());
+            get => _allBooks ??= (_allBooks = new ObservableCollection<BookPDF>());
             set
             {
                 _allBooks = value;
@@ -642,7 +641,7 @@ namespace PdfFlipBook.Views.Pages
 
         private ICommand _searchCommand;
         public ICommand SearchCommand =>
-            _searchCommand ??= new Command(c =>
+            _searchCommand ??= new Command(async c =>
             {
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
@@ -651,16 +650,30 @@ namespace PdfFlipBook.Views.Pages
 
                 if (AuthorBookRB.IsChecked == true)
                 {
-                    var filteredBooks = AllBooks
-                        .Where(x => x.Author.ToLower().Contains(searchQuery) ||
-                                     x.Title.ToLower().Contains(searchQuery))
-                        .ToList();
-                    ActualBooks = new List<BookPDF>(filteredBooks);
+                    var filteredBooks = await Task.Run(() =>
+                        AllBooks
+                            .Where(x => x.Author.ToLower().Contains(searchQuery) ||
+                                        x.Title.ToLower().Contains(searchQuery))
+                            .ToList());
+
+                    ActualBooks.Clear();
+                    foreach (var book in filteredBooks)
+                    {
+                        ActualBooks.Add(book);
+                    }
                 }
                 else if (TextBookRB.IsChecked == true)
                 {
-                    ActualBooks = new List<BookPDF>(
-                        AllBooks.Where(x => x.Text.ToLower().Contains(searchQuery)).ToList());
+                    var filteredBooks = await Task.Run(() =>
+                        AllBooks
+                            .Where(x => x.Text.ToLower().Contains(searchQuery))
+                            .ToList());
+
+                    ActualBooks.Clear();
+                    foreach (var book in filteredBooks)
+                    {
+                        ActualBooks.Add(book);
+                    }
                 }
             });
 

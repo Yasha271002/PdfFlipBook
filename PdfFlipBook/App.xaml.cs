@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
@@ -39,10 +40,10 @@ namespace PdfFlipBook
             }
         }
 
-        private List<BookPDF> _allBooks;
-        public List<BookPDF> AllBooks
+        private ObservableCollection<BookPDF> _allBooks;
+        public ObservableCollection<BookPDF> AllBooks
         {
-            get => _allBooks ?? (_allBooks = new List<BookPDF>());
+            get => _allBooks ?? (_allBooks = new ObservableCollection<BookPDF>());
             set
             {
                 _allBooks = value;

@@ -133,14 +133,6 @@ namespace PdfFlipBook.Views.Pages
                 AllPages.Add(new DisposableImage(s));
             }
 
-            if (AllPages.Count > 30)
-            {
-                for (int i = 30; i < AllPages.Count; i++)
-                {
-                    AllPages[i].Dispose();
-                }
-            }
-
             GC.Collect();
 
 
@@ -325,14 +317,6 @@ namespace PdfFlipBook.Views.Pages
                     foreach (var s in AllPhotos)
                     {
                         AllPages.Add(new DisposableImage(s));
-                    }
-
-                    if (AllPages.Count > 30)
-                    {
-                        for (int i = 30; i < AllPages.Count; i++)
-                        {
-                            AllPages[i].Dispose();
-                        }
                     }
 
                     var ostatok = page % 2;

@@ -24,6 +24,7 @@ using PdfFlipBook.Helper;
 using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Utilities;
+using Path = System.IO.Path;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -300,98 +301,116 @@ namespace PdfFlipBook.Views.Pages
                 BookFolder BF = new BookFolder()
                 {
                     Title = s.Split('\\').Last(),
-                    Icon = new DisposableImage(Directory.GetFiles(s + "\\Logo\\")[0])
+                    Icon =  Directory.GetFiles(s + "\\Logo\\")[0].ToString()
                 };
                 AllFolders.Add(BF);
             }
-
-        }
-
-        static async void UpdaePhotosAsync()
-        {
-
-            //await Task.Run(() => UpdatePhotos()); // выполняется асинхронно
         }
 
 
-        public void UpdatePhotos()
+        private async Task UpdatePhotos()
         {
             if (App.CurrentApp.AllBooks.Count == 0)
             {
-                int pageCount;
-                ObservableCollection<BookPDF> AllBooks2 = new ObservableCollection<BookPDF>();
+                var allBooks = new ObservableCollection<BookPDF>();
                 var pdfFolders = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs\\");
-                foreach (var pdfFolder in pdfFolders)
+
+                await Task.Run(() =>
                 {
-                    var pdfFiles = Directory.GetFiles(pdfFolder);
-                    foreach (var pdfFile in pdfFiles)
+                    Parallel.ForEach(pdfFolders, pdfFolder =>
                     {
-
-
-                        IPdfSource pdfDoc = new FileSource(pdfFile);
-                        using (var stream = new PdfFileStream(pdfDoc))
+                        var pdfFiles = Directory.GetFiles(pdfFolder);
+                        foreach (var pdfFile in pdfFiles)
                         {
-                            ValidatePassword(stream.Document, null);
-
-                            pageCount = NativeMethods.CountPages(stream
-                                .Document); // gets the number of pages in the document
-                        }
-
-                        string folderToImages = Directory.GetCurrentDirectory() + "\\Temp\\" +
-                                                pdfFile.Split('\\').Last().Replace(".pdf", "");
-
-                        if (!Directory.Exists(folderToImages))
-                            Directory.CreateDirectory(folderToImages);
-                        if (Directory.GetFiles(folderToImages).ToList().Count != pageCount)
-                        {
-                            for (int i = 1; i < pageCount + 1; i++)
+                            try
                             {
-                                var a = ExtractPage(pdfDoc, i, 4, null);
-                                a.Save(folderToImages + "\\" + i + ".jpg", ImageFormat.Jpeg);
-                                System.GC.Collect();
-                                System.GC.WaitForPendingFinalizers();
+                                IPdfSource pdfDoc = new FileSource(pdfFile);
+                                int pageCount;
+
+                                using (var stream = new PdfFileStream(pdfDoc))
+                                {
+                                    ValidatePassword(stream.Document, null);
+                                    pageCount = NativeMethods.CountPages(stream.Document);
+                                }
+
+                                string folderToImages = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Path.GetFileNameWithoutExtension(pdfFile));
+
+                                if (!Directory.Exists(folderToImages))
+                                    Directory.CreateDirectory(folderToImages);
+
+                                var existingImages = Directory.GetFiles(folderToImages);
+                                if (existingImages.Length != pageCount)
+                                {
+                                    // Process page extraction in parallel
+                                    Parallel.For(1, pageCount + 1, i =>
+                                    {
+                                        var pageImage = ExtractPage(pdfDoc, i, 4, null);
+                                        string imagePath = Path.Combine(folderToImages, $"{i}.jpg");
+                                        pageImage.Save(imagePath, ImageFormat.Jpeg);
+                                        pageImage.Dispose();
+                                    });
+                                }
+
+                                string iconPath = Directory.GetFiles(folderToImages)[0];
+                                var icon = iconPath;
+
+                                string title = Path.GetFileNameWithoutExtension(pdfFile);
+                                string author = title.Split('.').First();
+                                string bookName = title.Split('.').Last();
+
+                                string textContent = ReadPdfFile(pdfFile);
+
+                                BookPDF bookPdf = new BookPDF
+                                {
+                                    Title = title,
+                                    Icon = icon,
+                                    FullPath = pdfFolder,
+                                    Text = textContent,
+                                    Author = author,
+                                    Book = bookName
+                                };
+
+                                lock (allBooks)
+                                {
+                                    allBooks.Add(bookPdf);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error processing file {pdfFile}: {ex.Message}");
                             }
                         }
+                    });
+                });
 
-                        DisposableImage icon = new DisposableImage(Directory.GetFiles(folderToImages)[0]);
-                        string title = pdfFile.Split('\\').Last().Replace(".pdf", "");
-                        BookPDF bpdf = new BookPDF()
-                        { Title = title, Icon = icon, FullPath = pdfFolder, Text = ReadPdfFile(pdfFile), Author = title.Split('.').First(), Book = title.Split('.').Last() };
-                        AllBooks2.Add(bpdf);
-
-                    }
-
-
-                }
-                AllBooks = AllBooks2;
-                App.CurrentApp.AllBooks = AllBooks2;
+                AllBooks = allBooks;
+                App.CurrentApp.AllBooks = allBooks;
             }
             else
             {
                 AllBooks = App.CurrentApp.AllBooks;
             }
+
             App.CurrentApp.IsLoading = false;
-            return;
         }
 
-        public string ReadPdfFile(string fileName)
+        private string ReadPdfFile(string fileName)
         {
-            StringBuilder text = new StringBuilder();
+            var text = new StringBuilder();
 
-            if (File.Exists(fileName))
+            if (!File.Exists(fileName)) return text.ToString();
+
+            var pdfReader = new PdfReader(fileName);
+
+            for (int page = 1; page <= pdfReader.NumberOfPages; page++)
             {
-                PdfReader pdfReader = new PdfReader(fileName);
+                ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
+                string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
 
-                for (int page = 1; page <= pdfReader.NumberOfPages; page++)
-                {
-                    ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
-                    string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
-
-                    currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
-                    text.Append(currentText);
-                }
-                pdfReader.Close();
+                currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
+                text.Append(currentText);
             }
+            pdfReader.Close();
             return text.ToString();
         }
 
@@ -403,19 +422,11 @@ namespace PdfFlipBook.Views.Pages
                 var BookData = Tuple.Create(c.ToString(), SettingsModel);
                 ExecuteNavigation(BookData);
 
-                foreach (var actualBook in ActualBooks)
-                {
-                    actualBook.Icon.Dispose();
-                }
-
                 NameTB.Text = "";
                 SearchResultGrid.Visibility = Visibility.Collapsed;
                 FoldersItemsControl.Visibility = Visibility.Visible;
                 ActualBooks.Clear();
                 ActualBooks = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
             }));
 
         private ICommand _hideKeyboardCommand;
@@ -443,11 +454,10 @@ namespace PdfFlipBook.Views.Pages
         public ICommand RazdelCommand =>
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
                 ActualRazdel = c.ToString();
-                var actualBooks = App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList();
+                var actualBooks = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks =
+                    new List<BookPDF>(AllBooks.Where(x => x.FullPath.Contains(c.ToString()))));
+
                 GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(actualBooks);
                 var razdelData = Tuple.Create(ActualRazdel, actualBooks, SettingsModel);
                 ExecuteNavigation(razdelData);
@@ -457,26 +467,6 @@ namespace PdfFlipBook.Views.Pages
         {
             CommonCommands.NavigateCommand.Execute(data);
         }
-
-        ////private ICommand _backCommand;
-
-        ////public ICommand WriteJsonFileAndBackCommand =>
-        ////    _backCommand ?? (_backCommand = new Command(c =>
-        ////    {
-        ////        ActualRazdel = "";
-        ////        SearchOptionSP.Visibility = Visibility.Visible;
-        ////        LoupeImage.Visibility = Visibility.Visible;
-        ////        NameTB.Visibility = Visibility.Visible;
-        ////        BooksItemsControl.Visibility = Visibility.Collapsed;
-        ////        BackButton.Visibility = Visibility.Collapsed;
-        ////        FoldersItemsControl.Visibility = Visibility.Visible;
-        ////        //foreach (var actualBook in ActualBooks)
-        ////        //{
-        ////        //  actualBook.Icon.Dispose();
-        ////        //}
-        ////        GC.Collect();
-
-        ////    }));
 
         private ICommand _stopTimerCommand;
         private ICommand _startTimerCommand;
@@ -542,7 +532,8 @@ namespace PdfFlipBook.Views.Pages
 
 
         private ObservableCollection<BookPDF> _allBooks;
-        public ObservableCollection<BookPDF> AllBooks
+
+        private ObservableCollection<BookPDF> AllBooks
         {
             get => _allBooks ??= (_allBooks = new ObservableCollection<BookPDF>());
             set
@@ -568,11 +559,8 @@ namespace PdfFlipBook.Views.Pages
 
         private async void Start_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
-            await Task.Run((() =>
-            {
-                App.CurrentApp.IsLoading = true;
-                UpdatePhotos();
-            }));
+            App.CurrentApp.IsLoading = true;
+            await UpdatePhotos();
             App.CurrentApp.IsLoading = false;
 
             var helper = new JsonHelper();
@@ -631,12 +619,10 @@ namespace PdfFlipBook.Views.Pages
 
         private void NameTB_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (NameTB.Text.Length == 0)
-            {
-                SearchResultGrid.Visibility = Visibility.Collapsed;
-                FoldersItemsControl.Visibility = Visibility.Visible;
+            if (NameTB.Text.Length != 0) return;
 
-            }
+            SearchResultGrid.Visibility = Visibility.Collapsed;
+            FoldersItemsControl.Visibility = Visibility.Visible;
         }
 
         private ICommand _searchCommand;
@@ -646,7 +632,7 @@ namespace PdfFlipBook.Views.Pages
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
 
-                string searchQuery = NameTB.Text.ToLower();
+                var searchQuery = NameTB.Text.ToLower();
 
                 if (AuthorBookRB.IsChecked == true)
                 {
@@ -656,7 +642,7 @@ namespace PdfFlipBook.Views.Pages
                                         x.Title.ToLower().Contains(searchQuery))
                             .ToList());
 
-                    ActualBooks.Clear();
+                    ActualBooks = new();
                     foreach (var book in filteredBooks)
                     {
                         ActualBooks.Add(book);
@@ -679,22 +665,21 @@ namespace PdfFlipBook.Views.Pages
 
         private void NameTB_OnGotFocus(object sender, RoutedEventArgs e)
         {
-            if (CoolKeyBoard.Margin.Bottom < -200)
-            {
-                var sb = new Storyboard();
-                var animation = new ThicknessAnimation
-                {
-                    Duration = new Duration(TimeSpan.FromSeconds(0.75)),
-                    From = new Thickness(0, 0, 0, -800),
-                    To = new Thickness(0, 0, 0, 200),
-                    DecelerationRatio = 0.9f,
+            if (!(CoolKeyBoard.Margin.Bottom < -200)) return;
 
-                };
-                Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
-                sb.Children.Add(animation);
-                sb.Begin(CoolKeyBoard);
-                HideButton.Visibility = Visibility.Visible;
-            }
+            var sb = new Storyboard();
+            var animation = new ThicknessAnimation
+            {
+                Duration = new Duration(TimeSpan.FromSeconds(0.75)),
+                From = new Thickness(0, 0, 0, -800),
+                To = new Thickness(0, 0, 0, 200),
+                DecelerationRatio = 0.9f,
+
+            };
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
+            sb.Children.Add(animation);
+            sb.Begin(CoolKeyBoard);
+            HideButton.Visibility = Visibility.Visible;
         }
 
 

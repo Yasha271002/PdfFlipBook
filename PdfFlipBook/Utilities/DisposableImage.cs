@@ -90,7 +90,6 @@ namespace PdfFlipBook.Utilities
                 mediaStream.Dispose();
                 mediaStream = null;
 
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
             }
         }
 

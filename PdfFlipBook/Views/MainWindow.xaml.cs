@@ -1,20 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
-using PdfFlipBook.Utilities;
 using PdfFlipBook.Views.Pages;
 
 
@@ -55,8 +48,6 @@ namespace PdfFlipBook
 
         }
 
-
-            
         public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
             "ActualBack", typeof(string), typeof(MainWindow), new PropertyMetadata(default(string)));
 
@@ -64,34 +55,6 @@ namespace PdfFlipBook
         {
             get { return (string)GetValue(ActualBackProperty); }
             set { SetValue(ActualBackProperty, value); }
-        }
-
-
-        public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
-            "AllPages", typeof(ObservableCollection<DisposableImage>), typeof(MainWindow), new PropertyMetadata(default(ObservableCollection<DisposableImage>)));
-
-        public ObservableCollection<DisposableImage> AllPages
-        {
-            get { return (ObservableCollection<DisposableImage>)GetValue(AllPagesProperty); }
-            set { SetValue(AllPagesProperty, value); }
-        }
-
-        public static readonly DependencyProperty PagesProperty = DependencyProperty.Register(
-            "Pages", typeof(List<string>), typeof(MainWindow), new PropertyMetadata(default(List<string>)));
-
-        public List<string> Pages
-        {
-            get { return (List<string>)GetValue(PagesProperty); }
-            set { SetValue(PagesProperty, value); }
-        }
-
-        public static readonly DependencyProperty AllPhotosProperty = DependencyProperty.Register(
-            "AllPhotos", typeof(List<string>), typeof(MainWindow), new PropertyMetadata(default(List<string>)));
-
-        public List<string> AllPhotos
-        {
-            get { return (List<string>) GetValue(AllPhotosProperty); }
-            set { SetValue(AllPhotosProperty, value); }
         }
 
         private SettingsModel _settings;
@@ -111,72 +74,7 @@ namespace PdfFlipBook
             e.Handled = true;
         }
 
-        public static byte[] converterDemo(System.Drawing.Image x)
-        {
-            ImageConverter _imageConverter = new ImageConverter();
-            byte[] xByte = (byte[])_imageConverter.ConvertTo(x, typeof(byte[]));
-            return xByte;
-            
-        }
 
-        public byte[] ImageToByteArray(System.Drawing.Image imageIn)
-        {
-            using (var ms = new MemoryStream())
-            {
-                imageIn.Save(ms, imageIn.RawFormat);
-                return ms.ToArray();
-            }
-        }
-
-        public BitmapImage ImageFromBuffer(Byte[] bytes)
-        {
-            MemoryStream stream = new MemoryStream(bytes);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = stream;
-            image.EndInit();
-            return image;
-        }
-
-        private Bitmap SourceToBitmap(BitmapSource source)
-        {
-            Bitmap bmp;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(source));
-                encoder.Save(ms);
-                bmp = new Bitmap(ms);
-            }
-            System.GC.Collect();
-            System.GC.WaitForPendingFinalizers();
-            return bmp;
-            
-        }
-
-        //private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    MessageBox.Show(Book.CurrentSheetIndex.ToString());
-
-        //    AllPages[Book.CurrentSheetIndex].Dispose();
-        //}
-
-        private void Frame1_OnNavigating(object sender, NavigatingCancelEventArgs e)
-        {
-            var ta = new DoubleAnimation();
-            ta.Duration = TimeSpan.FromSeconds(0.6);
-            ta.DecelerationRatio = 0.4;
-            ta.To = 1;
-            if (e.NavigationMode == NavigationMode.New)
-            {
-                ta.From = 0.3;
-            }
-            else if (e.NavigationMode == NavigationMode.Back)
-            {
-                ta.From = 0;
-            }
-            (e.Content as Page).BeginAnimation(OpacityProperty, ta);
-        }
         private void Frame1_OnNavigated(object sender, NavigationEventArgs e)
         {
             if (Frame1.Content is Start_Page)
@@ -185,7 +83,6 @@ namespace PdfFlipBook
                 {
                     Frame1.NavigationService.RemoveBackEntry();
                 }
-                GC.Collect();
 
             }
         }
@@ -201,14 +98,6 @@ namespace PdfFlipBook
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

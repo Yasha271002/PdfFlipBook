@@ -67,11 +67,12 @@
                                                    Margin="15"
                                                    RenderOptions.BitmapScalingMode="Fant"
                                                    RenderSize="454,390"
-                                                   Source="{Binding Icon.Source}"/>
+                                                   Source="{Binding Icon}"/>
                                                 <ScrollViewer Width="470" Margin="10,10,10,10" VerticalAlignment="Center" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
                                                     <TextBlock Text="{Binding Book}" FontSize="34" 
-                                                   Width="470" TextWrapping="WrapWithOverflow"
+                                                   Width="470" TextWrapping="NoWrap"
                                                    VerticalAlignment="Center"
+                                                   TextTrimming="WordEllipsis"
                                                    Foreground="White"
                                                    FontWeight="Bold"
                                                    FontFamily="{DynamicResource Montserrat}"
@@ -79,9 +80,10 @@
                                                 </ScrollViewer>
                                                 <ScrollViewer Width="470" Margin="0,10,0,10" VerticalAlignment="Center" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
                                                     <TextBlock Text="{Binding Author}" FontSize="34" 
-                                                           Width="470" TextWrapping="WrapWithOverflow"
+                                                           Width="470" TextWrapping="NoWrap"
                                                            VerticalAlignment="Center"
                                                            Foreground="White"
+                                                           TextTrimming="WordEllipsis"
                                                            FontFamily="{DynamicResource Montserrat}"
                                                            TextAlignment="Center"/>
                                                 </ScrollViewer>
@@ -104,7 +106,7 @@
             </ItemsControl>
         </Grid>
         <ItemsControl AlternationCount="{Binding AllFolders.Count}" 
-                          ItemsSource="{Binding AllFolders, IsAsync=True, UpdateSourceTrigger=PropertyChanged}"
+                          ItemsSource="{Binding AllFolders, IsAsync=True,UpdateSourceTrigger=PropertyChanged}"
                           VirtualizingStackPanel.IsVirtualizing="True"
                           ScrollViewer.CanContentScroll="True"
                           MaxWidth="3760"
@@ -120,7 +122,6 @@
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3760"></polusVerninskoe:AlignableWrapPanel>
-
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
@@ -133,9 +134,11 @@
                                 <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="30" Background="White" CornerRadius="50">
                                     <Grid >
                                         <StackPanel Orientation="Vertical" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                          <Image Source="{Binding Icon.Source}" Height="200"></Image>
+                                          <Image Source="{Binding Icon}" Height="200"></Image>
                                                 <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34" 
                                                            Foreground="#808080" Margin="0,20,0,0"
+                                                           TextTrimming="WordEllipsis"
+                                                           HorizontalAlignment="Center"
                                                            FontFamily="{DynamicResource Montserrat}"
                                                    Width="420" TextWrapping="WrapWithOverflow"
                                                    VerticalAlignment="Center"

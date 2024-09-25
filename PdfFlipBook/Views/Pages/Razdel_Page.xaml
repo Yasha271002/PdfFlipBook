@@ -66,7 +66,8 @@
                                                    Margin="15"
                                                    RenderOptions.BitmapScalingMode="Fant"
                                                    RenderSize="454,390"
-                                                   Source="{Binding Icon.Source}" />
+                                                   Source="{Binding Icon, Converter={StaticResource ImageConverter}}">
+                                            </Image>
 
 
                                             <ScrollViewer Width="470" Margin="10,10,10,10" VerticalAlignment="Center"
@@ -74,11 +75,12 @@
                                                           HorizontalScrollBarVisibility="Hidden"
                                                           VerticalScrollBarVisibility="Hidden">
                                                 <TextBlock Text="{Binding Book}" FontSize="34"
-                                                           TextWrapping="WrapWithOverflow"
+                                                           TextWrapping="NoWrap"
                                                            MaxWidth="400"
                                                            VerticalAlignment="Center"
                                                            Foreground="White"
                                                            FontWeight="Bold"
+                                                           TextTrimming="WordEllipsis"
                                                            FontFamily="{StaticResource Montserrat}"
                                                            TextAlignment="Center" />
                                             </ScrollViewer>
@@ -87,10 +89,10 @@
                                                           HorizontalScrollBarVisibility="Hidden"
                                                           VerticalScrollBarVisibility="Hidden">
                                                 <TextBlock Text="{Binding Author}" FontSize="34"
-                                                           Width="470" TextWrapping="WrapWithOverflow"
+                                                           Width="470" TextWrapping="NoWrap"
                                                            VerticalAlignment="Center"
                                                            Foreground="White"
-
+                                                           TextTrimming="WordEllipsis"
                                                            FontFamily="{StaticResource Montserrat}"
                                                            TextAlignment="Center" />
                                             </ScrollViewer>
@@ -105,7 +107,7 @@
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer
-                        x:Name="BooksScrollViewer"
+                        x:Name="BooksScrollViewer" ScrollChanged="BooksScrollViewer_OnScrollChanged"
                         Style="{DynamicResource ScrollViewerStyle}"
                         PanningMode="{Binding VerticalScrollBarVisibility, Converter={StaticResource VisibilityToPanningModeConverter}}"
                         HorizontalScrollBarVisibility="Hidden"

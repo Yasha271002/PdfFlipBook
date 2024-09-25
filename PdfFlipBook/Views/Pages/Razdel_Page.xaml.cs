@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -223,15 +224,27 @@ namespace PdfFlipBook.Views.Pages
         private ScrollViewer _booksScrollViewer;
         private ScrollViewer _radioScrollViewer;
 
-        public Razdel_Page(string razdel, List<BookPDF> actualBooks, SettingsModel settings)
+        private ObservableCollection<BookPDF> _allBooks;
+        private const int _initialLoadCount = 20; 
+        private const int _incrementLoadCount = 10; 
+        private bool _isLoadingMoreBooks = false;
+
+
+        public Razdel_Page(string razdel, ObservableCollection<BookPDF> actualBooks, SettingsModel settings)
         {
             InitializeComponent();
+
             ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
+
+            ActualBooks = actualBooks;
+            //_allBooks = actualBooks;
+            //ActualBooks = new ObservableCollection<BookPDF>();
+
+            //LoadInitialBooks();
 
             ActualRazdel = razdel;
             SettingsModel = settings;
 
-            GetBooks(actualBooks, razdel);
             LearnCountBooks(actualBooks);
 
             UpdatePageButtonsState();
@@ -257,14 +270,12 @@ namespace PdfFlipBook.Views.Pages
             _moveUpCommand ??= new Command(c =>
             {
                 MoveUp();
-                GC.Collect();
             });
 
         public ICommand MoveDownCommand =>
             _moveDownCommand ??= new Command(c =>
             {
                 MoveDown();
-                GC.Collect();
             });
 
         private ICommand _bookCommand;
@@ -276,7 +287,6 @@ namespace PdfFlipBook.Views.Pages
                 //int a = int.Parse(c.ToString())+1;
                 var BookData = Tuple.Create(c.ToString(), SettingsModel);
                 CommonCommands.NavigateCommand.Execute(BookData);
-                GC.Collect();
             }));
 
         private ICommand _backCommand;
@@ -285,7 +295,6 @@ namespace PdfFlipBook.Views.Pages
             _backCommand ??= (_backCommand = new Command(c =>
             {
                 NavigationService?.Navigate(new Start_Page());
-                GC.Collect();
             }));
 
         private ICommand _selectBookCommand;
@@ -293,12 +302,12 @@ namespace PdfFlipBook.Views.Pages
         public ICommand SelectBookCommand =>
             _selectBookCommand ??= new Command(c =>
             {
-                if (int.TryParse(c.ToString(), out int selectedIndex))
-                {
-                    SelectedBookIndex = selectedIndex - 1;
-                    ScrollToSelectedElements();
-                }
+                if (!int.TryParse(c.ToString(), out var selectedIndex)) return;
+
+                SelectedBookIndex = selectedIndex - 1;
+                ScrollToSelectedElements();
             });
+
 
         private void UpdatePageButtonsState()
         {
@@ -325,39 +334,12 @@ namespace PdfFlipBook.Views.Pages
                 SelectedBookIndex++;
         }
 
-        public void GetBooks(List<BookPDF> actualBooks, string razdel)
-        {
-            ActualBooks = new ObservableCollection<BookPDF>();
-
-            foreach (var actualBook in App.CurrentApp.ActualBooks)
-            {
-                if (actualBook.Icon.Source == null)
-                    actualBook.Icon =
-                        new DisposableImage(
-                            Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + actualBook.Title)[0]);
-                ActualBooks.Add(actualBook);
-            }
-        }
-
         private void Razdel_Page_OnUnloaded(object sender, RoutedEventArgs e)
         {
-            foreach (var actualBook in ActualBooks)
-            {
-                actualBook.Icon.Dispose();
-            }
-
-            foreach (var actualBook in App.CurrentApp.ActualBooks)
-            {
-                actualBook.Icon.Dispose();
-            }
-
             ActualBooks.Clear();
-            //App.CurrentApp.ActualBooks = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
-        private void LearnCountBooks(List<BookPDF> books)
+        private void LearnCountBooks(ObservableCollection<BookPDF> books)
         {
             CountBooks = new List<CountBooksModel>();
             var index = 1;
@@ -388,10 +370,8 @@ namespace PdfFlipBook.Views.Pages
             if (ActualBooks.Count != 0) return;
             foreach (var actualBook in App.CurrentApp.ActualBooks)
             {
-                if (actualBook.Icon.Source == null)
-                    actualBook.Icon =
-                        new DisposableImage(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" +
-                                                               actualBook.Title)[0]);
+                actualBook.Icon ??= Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" +
+                                                       actualBook.Title)[0];
                 ActualBooks.Add(actualBook);
             }
         }
@@ -584,5 +564,45 @@ namespace PdfFlipBook.Views.Pages
         {
             e.Handled = true;
         }
+
+        //private void BooksScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        //{
+        //    if (!_isLoadingMoreBooks && e.ExtentHeight > e.ViewportHeight && e.VerticalOffset >= (e.ExtentHeight - e.ViewportHeight) / 2)
+        //    {
+        //        LoadMoreBooks();
+        //    }
+        //}
+
+        //private void LoadMoreBooks()
+        //{
+        //    _isLoadingMoreBooks = true;
+
+        //    var currentlyLoadedBooks = ActualBooks.Count;
+        //    var totalBooks = _allBooks.Count;
+
+        //    if (currentlyLoadedBooks >= totalBooks)
+        //    {
+        //        _isLoadingMoreBooks = false;
+        //        return;
+        //    }
+
+        //    var booksToLoad = Math.Min(_incrementLoadCount, totalBooks - currentlyLoadedBooks);
+
+        //    for (var i = 0; i < booksToLoad; i++)
+        //    {
+        //        ActualBooks.Add(_allBooks[currentlyLoadedBooks + i]);
+        //    }
+
+        //    _isLoadingMoreBooks = false;
+        //}
+
+        //private void LoadInitialBooks()
+        //{
+        //    var booksToLoad = Math.Min(_initialLoadCount, _allBooks.Count);
+        //    for (var i = 0; i < booksToLoad; i++)
+        //    {
+        //        ActualBooks.Add(_allBooks[i]);
+        //    }
+        //}
     }
 }

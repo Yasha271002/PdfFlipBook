@@ -10,6 +10,6 @@ namespace PdfFlipBook.Models
     public class BookFolder
     {
         public string Title { get; set; }
-        public DisposableImage Icon { get; set; }
+        public string Icon { get; set; }
     }
 }

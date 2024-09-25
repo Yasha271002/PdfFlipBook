@@ -12,7 +12,7 @@ namespace PdfFlipBook.Models
         public string Book { get; set; }
         public string FullPath { get; set; }
         public string Text { get; set; }
-        public DisposableImage Icon { get; set; }
+        public string Icon { get; set; }
 
         private double _borderWidth;
         public double BorderWidth

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -13,11 +12,8 @@ using PdfFlipBook.Helper;
 using System.Windows.Threading;
 using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
-using System.Web.UI.WebControls;
 using PdfFlipBook.Models;
-using System.Runtime.InteropServices;
 using PdfFlipBook.Helper.Singleton;
-using WPFMitsuControls;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -27,12 +23,12 @@ namespace PdfFlipBook.Views.Pages
     public partial class Book_Page : Page, INotifyPropertyChanged
     {
         public static readonly DependencyProperty AllPagesProperty = DependencyProperty.Register(
-            "AllPages", typeof(ObservableCollection<DisposableImage>), typeof(Book_Page),
-            new PropertyMetadata(default(ObservableCollection<DisposableImage>)));
+            "AllPages", typeof(List<string>), typeof(Book_Page),
+            new PropertyMetadata(default(List<string>)));
 
-        public ObservableCollection<DisposableImage> AllPages
+        public List<string> AllPages
         {
-            get { return (ObservableCollection<DisposableImage>)GetValue(AllPagesProperty); }
+            get { return (List<string>)GetValue(AllPagesProperty); }
             set { SetValue(AllPagesProperty, value); }
         }
 
@@ -123,17 +119,15 @@ namespace PdfFlipBook.Views.Pages
 
             BookTitle = bookTitle;
 
-            AllPages = new ObservableCollection<DisposableImage>();
             SettingsModel = settings;
+            AllPages = new List<string>();
 
             AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle)
                 .ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
             foreach (var s in AllPhotos)
             {
-                AllPages.Add(new DisposableImage(s));
+                AllPages.Add(s);
             }
-
-            GC.Collect();
 
 
             App.CurrentApp.IsLoading = false;
@@ -157,15 +151,6 @@ namespace PdfFlipBook.Views.Pages
                 _inactivityHelper.OnInactivity -= OnInactivityDetected;
 
                 NavigationService?.GoBack();
-                if (AllPages != null)
-                {
-                    foreach (var allBooks in AllPages)
-                    {
-                        allBooks.Dispose();
-                    }
-                }
-
-                GC.Collect();
             }));
 
         private ICommand _insertPageCommand;
@@ -259,11 +244,6 @@ namespace PdfFlipBook.Views.Pages
         {
             if (AllPages != null)
             {
-                foreach (var page in AllPages)
-                {
-                    page.Dispose();
-                }
-
                 AllPages.Clear();
             }
 
@@ -277,18 +257,8 @@ namespace PdfFlipBook.Views.Pages
 
             foreach (var photoPath in AllPhotos)
             {
-                AllPages.Add(new DisposableImage(photoPath));
+                AllPages.Add(photoPath);
             }
-
-            if (AllPages.Count > 30)
-            {
-                for (int i = 30; i < AllPages.Count; i++)
-                {
-                    AllPages[i].Dispose();
-                }
-            }
-
-            GC.Collect();
         }
 
         public ICommand ToPageCommand =>
@@ -309,14 +279,14 @@ namespace PdfFlipBook.Views.Pages
                 }
                 else
                 {
-                    AllPages = new ObservableCollection<DisposableImage>();
+                    AllPages = new List<string>();
 
                     AllPhotos = new List<string>(Directory
                         .GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + BookTitle).ToList()
                         .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
                     foreach (var s in AllPhotos)
                     {
-                        AllPages.Add(new DisposableImage(s));
+                        AllPages.Add(s);
                     }
 
                     var ostatok = page % 2;
@@ -350,11 +320,8 @@ namespace PdfFlipBook.Views.Pages
             {
                 try
                 {
-                    AllPages[index * 2]?.Dispose();
-                    AllPages[index * 2 + 1]?.Dispose();
-
-                    AllPages[index * 2] = new DisposableImage(AllPhotos[index * 2]);
-                    AllPages[index * 2 + 1] = new DisposableImage(AllPhotos[index * 2 + 1]);
+                    AllPages[index * 2] = AllPhotos[index * 2].ToString();
+                    AllPages[index * 2 + 1] = AllPhotos[index * 2 + 1].ToString();
                 }
                 catch (Exception ex)
                 {
@@ -375,17 +342,14 @@ namespace PdfFlipBook.Views.Pages
                 if (!(StartPointX > 1920)) return;
                 try
                 {
-                    AllPages[index * 2 - 4].Dispose();
-                    AllPages[index * 2 - 5].Dispose();
-                    GC.Collect();
                     AllPages.RemoveAt(index * 2 + 1);
-                    AllPages.Insert(index * 2 + 1, new DisposableImage(AllPhotos[index * 2 + 1]));
+                    AllPages.Insert(index * 2 + 1, AllPhotos[index * 2 + 1]);
                     AllPages.RemoveAt(index * 2 + 2);
-                    AllPages.Insert(index * 2 + 2, new DisposableImage(AllPhotos[index * 2 + 2]));
+                    AllPages.Insert(index * 2 + 2, AllPhotos[index * 2 + 2]);
                     AllPages.RemoveAt(index * 2 + 3);
-                    AllPages.Insert(index * 2 + 3, new DisposableImage(AllPhotos[index * 2 + 3]));
+                    AllPages.Insert(index * 2 + 3, AllPhotos[index * 2 + 3]);
                     AllPages.RemoveAt(index * 2 + 4);
-                    AllPages.Insert(index * 2 + 4, new DisposableImage(AllPhotos[index * 2 + 4]));
+                    AllPages.Insert(index * 2 + 4, AllPhotos[index * 2 + 4]);
                 }
                 catch (Exception exception)
                 {
@@ -397,18 +361,14 @@ namespace PdfFlipBook.Views.Pages
                 if (!(StartPointX < 1920)) return;
                 try
                 {
-                    AllPages[index * 2 + 3].Dispose();
-                    AllPages[index * 2 + 4].Dispose();
-                    GC.Collect();
-
                     AllPages.RemoveAt(index * 2 - 4);
-                    AllPages.Insert(index * 2 - 4, new DisposableImage(AllPhotos[index * 2 - 4]));
+                    AllPages.Insert(index * 2 - 4, AllPhotos[index * 2 - 4]);
                     AllPages.RemoveAt(index * 2 - 5);
-                    AllPages.Insert(index * 2 - 5, new DisposableImage(AllPhotos[index * 2 - 5]));
+                    AllPages.Insert(index * 2 - 5, AllPhotos[index * 2 - 5]);
                     AllPages.RemoveAt(index * 2 - 6);
-                    AllPages.Insert(index * 2 - 6, new DisposableImage(AllPhotos[index * 2 - 6]));
+                    AllPages.Insert(index * 2 - 6, AllPhotos[index * 2 - 6]);
                     AllPages.RemoveAt(index * 2 - 7);
-                    AllPages.Insert(index * 2 - 7, new DisposableImage(AllPhotos[index * 2 - 7]));
+                    AllPages.Insert(index * 2 - 7, AllPhotos[index * 2 - 7]);
                 }
                 catch (Exception exception)
                 {
@@ -421,14 +381,6 @@ namespace PdfFlipBook.Views.Pages
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
 
         private void Book_Page_OnMouseDown(object sender, MouseButtonEventArgs e)

@@ -14,7 +14,7 @@
       Title="Book_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
             <Grid  Width="3840" Height="2160">
-                <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
+        <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
                                        Height="2040"
                                        Width="3000"
                                        HorizontalAlignment="Center"
@@ -27,7 +27,7 @@
                     <Border BorderThickness="4" Background="Transparent">
                         <ContentControl HorizontalAlignment="Center">
                             <ContentControl.Content>
-                                <Image Source="{Binding Source}"></Image>
+                                <Image Source="{Binding Converter={StaticResource ImageConverter}}"></Image>
                             </ContentControl.Content>
                         </ContentControl>
                     </Border>

@@ -129,9 +129,6 @@ namespace PdfFlipBook.Views.Pages
                 AllPages.Add(s);
             }
 
-
-            App.CurrentApp.IsLoading = false;
-
             _pageFlipTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(Convert.ToDouble(settings.IntervalSwitchPage))

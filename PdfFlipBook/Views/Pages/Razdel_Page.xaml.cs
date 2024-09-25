@@ -237,10 +237,6 @@ namespace PdfFlipBook.Views.Pages
             ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
 
             ActualBooks = actualBooks;
-            //_allBooks = actualBooks;
-            //ActualBooks = new ObservableCollection<BookPDF>();
-
-            //LoadInitialBooks();
 
             ActualRazdel = razdel;
             SettingsModel = settings;
@@ -564,45 +560,5 @@ namespace PdfFlipBook.Views.Pages
         {
             e.Handled = true;
         }
-
-        //private void BooksScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
-        //{
-        //    if (!_isLoadingMoreBooks && e.ExtentHeight > e.ViewportHeight && e.VerticalOffset >= (e.ExtentHeight - e.ViewportHeight) / 2)
-        //    {
-        //        LoadMoreBooks();
-        //    }
-        //}
-
-        //private void LoadMoreBooks()
-        //{
-        //    _isLoadingMoreBooks = true;
-
-        //    var currentlyLoadedBooks = ActualBooks.Count;
-        //    var totalBooks = _allBooks.Count;
-
-        //    if (currentlyLoadedBooks >= totalBooks)
-        //    {
-        //        _isLoadingMoreBooks = false;
-        //        return;
-        //    }
-
-        //    var booksToLoad = Math.Min(_incrementLoadCount, totalBooks - currentlyLoadedBooks);
-
-        //    for (var i = 0; i < booksToLoad; i++)
-        //    {
-        //        ActualBooks.Add(_allBooks[currentlyLoadedBooks + i]);
-        //    }
-
-        //    _isLoadingMoreBooks = false;
-        //}
-
-        //private void LoadInitialBooks()
-        //{
-        //    var booksToLoad = Math.Min(_initialLoadCount, _allBooks.Count);
-        //    for (var i = 0; i < booksToLoad; i++)
-        //    {
-        //        ActualBooks.Add(_allBooks[i]);
-        //    }
-        //}
     }
 }

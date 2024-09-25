@@ -18,14 +18,13 @@
             <Grid Width="3840" Height="2160">
             <Image Source="{Binding ActualBack,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Frame Name="Frame1"
-                       NavigationUIVisibility="Hidden"
-                       Navigated="Frame1_OnNavigated" />
+                       NavigationUIVisibility="Hidden"/>
                 <Border Panel.ZIndex="100000" Background="White" Width="Auto" Height="Auto">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Source={x:Static local:App.CurrentApp}, Path=IsLoading}"
+                                <DataTrigger Binding="{Binding Source={x:Static local:App.CurrentApp}, Path=IsLoading, UpdateSourceTrigger=PropertyChanged}"
                                              Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>

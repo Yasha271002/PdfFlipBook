@@ -13,7 +13,7 @@
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Book_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
-            <Grid  Width="3840" Height="2160">
+    <Grid  Width="3840" Height="2160">
         <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
                                        Height="2040"
                                        Width="3000"

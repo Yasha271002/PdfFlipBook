@@ -9,6 +9,7 @@
       xmlns:polusVerninskoe="clr-namespace:PolusVerninskoe"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
       xmlns:properties="clr-namespace:PdfFlipBook.Properties"
+      xmlns:converters="clr-namespace:PdfFlipBook.Helper.Converters"
       ManipulationBoundaryFeedback="Razdel_Page_OnManipulationBoundaryFeedback"
       mc:Ignorable="d"
 
@@ -16,6 +17,9 @@
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Razdel_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Page.Resources>
+        <converters:ImageConverter x:Key="CoverImageConverter" Height="390" />
+    </Page.Resources>
 
     <Grid Width="3840" Height="2160">
         <Grid.Resources>
@@ -59,15 +63,33 @@
                                         Background="Transparent" CornerRadius="10">
                                     <Grid Background="#60000000">
                                         <StackPanel Orientation="Vertical" ClipToBounds="True">
-
-                                            <Image Width="{Binding ImageWidth, Mode=OneWay}"
-                                                   Height="{Binding ImageHeight, Mode=OneWay}"
-                                                   Stretch="Uniform"
-                                                   Margin="15"
-                                                   RenderOptions.BitmapScalingMode="Fant"
-                                                   RenderSize="454,390"
-                                                   Source="{Binding Icon, Converter={StaticResource ImageConverter}}">
-                                            </Image>
+                                            <Border Margin="15" Width="{Binding ImageWidth}"
+                                                    Height="{Binding ImageHeight}">
+                                                <Image
+                                                    Stretch="Uniform"
+                                                    Source="{Binding Icon, Converter={StaticResource CoverImageConverter}}">
+                                                    <Image.Style>
+                                                        <Style TargetType="Image">
+                                                            <Setter Property="Opacity" Value="0" />
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                            <Style.Triggers>
+                                                                <Trigger Property="Opacity" Value="0">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </Trigger>
+                                                                <EventTrigger RoutedEvent="Loaded">
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard TargetProperty="Opacity">
+                                                                            <DoubleAnimation To="1"
+                                                                                Duration="0:0:0.5"
+                                                                                BeginTime="0:0:0.5" />
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </EventTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                            </Border>
 
 
                                             <ScrollViewer Width="470" Margin="10,10,10,10" VerticalAlignment="Center"
@@ -107,7 +129,7 @@
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer
-                        x:Name="BooksScrollViewer" ScrollChanged="BooksScrollViewer_OnScrollChanged"
+                        x:Name="BooksScrollViewer"
                         Style="{DynamicResource ScrollViewerStyle}"
                         PanningMode="{Binding VerticalScrollBarVisibility, Converter={StaticResource VisibilityToPanningModeConverter}}"
                         HorizontalScrollBarVisibility="Hidden"
@@ -120,22 +142,22 @@
         </ItemsControl>
 
         <StackPanel Width="85" Height="667" HorizontalAlignment="Right" Margin="0 0 62 0"
-              Visibility="{Binding VerticalScrollBarVisibility, Mode=TwoWay,
+                    Visibility="{Binding VerticalScrollBarVisibility, Mode=TwoWay,
             Converter={StaticResource BoolToVisibilityHiddenConverter}}">
-            <Button  Template="{DynamicResource ItemsControlButton}"
+            <Button Template="{DynamicResource ItemsControlButton}"
                     Width="85" Height="85" Margin="0 0 0 6"
                     ContentTemplate="{DynamicResource UpArrow}"
                     Command="{Binding MoveUpCommand}"
                     Visibility="{Binding IsFirstPage, Converter={StaticResource InvertBoolToVisibilityHiddenConverter}}" />
-            
-            <ScrollViewer x:Name="RadioScrollViewer" 
+
+            <ScrollViewer x:Name="RadioScrollViewer"
                           MaxHeight="{Binding ItemsControlHeight}"
                           VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden"
-                           PanningMode="VerticalOnly" Margin="0 0 0 0">
+                          PanningMode="VerticalOnly" Margin="0 0 0 0">
                 <ItemsControl ItemsSource="{Binding CountBooks}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Vertical" Margin="0 0 0 -2.5"/>
+                            <StackPanel Orientation="Vertical" Margin="0 0 0 -2.5" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
@@ -165,57 +187,57 @@
                 <Button Template="{DynamicResource DotControlButton}"
                         Width="85" Height="85"
                         Opacity="0.5"
-                        ContentTemplate="{DynamicResource DotIcons}"/>
+                        ContentTemplate="{DynamicResource DotIcons}" />
                 <RadioButton Template="{DynamicResource ItemsControlRadioButton}"
-                        Width="85" Height="85"
-                        Margin="0 12 0 0"
-                        Content="{Binding IsLastBookCount}"
-                        Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                        CommandParameter="{Binding IsLastBookCount}"
-                        IsChecked="{Binding IsCheckedRadio, Mode=TwoWay}"/>
+                             Width="85" Height="85"
+                             Margin="0 12 0 0"
+                             Content="{Binding IsLastBookCount}"
+                             Command="{Binding DataContext.SelectBookCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                             CommandParameter="{Binding IsLastBookCount}"
+                             IsChecked="{Binding IsCheckedRadio, Mode=TwoWay}" />
             </StackPanel>
             <Button Template="{DynamicResource ItemsControlButton}"
                     Width="85" Height="85"
                     ContentTemplate="{DynamicResource DownArrow}"
                     Margin="0 6 0 0"
                     Command="{Binding MoveDownCommand}"
-                    Visibility="{Binding IsLastPage, Converter={StaticResource InvertBoolToVisibilityHiddenConverter}}"/>
+                    Visibility="{Binding IsLastPage, Converter={StaticResource InvertBoolToVisibilityHiddenConverter}}" />
         </StackPanel>
-        
+
         <StackPanel Margin="160,60,0,0"
-            VerticalAlignment="Top"
-            Orientation="Horizontal"
-            HorizontalAlignment="Left">
-        <Button Command="{Binding BackCommand}"
-                Name="BackButton"
-                Width="400"
-                Height="120"
-                Visibility="Visible">
-            <Button.Template>
-                <ControlTemplate>
-                    <Border Background="White"
-                            CornerRadius="20">
-                        <TextBlock TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Text="Назад"
-                                   FontSize="40"
-                                   FontFamily="{StaticResource Montserrat}"
-                                   Padding="20">
-                        </TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left">
+            <Button Command="{Binding BackCommand}"
+                    Name="BackButton"
+                    Width="400"
+                    Height="120"
+                    Visibility="Visible">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="White"
+                                CornerRadius="20">
+                            <TextBlock TextAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Назад"
+                                       FontSize="40"
+                                       FontFamily="{StaticResource Montserrat}"
+                                       Padding="20">
+                            </TextBlock>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
             <TextBlock Text="{Binding ActualRazdel}"
-                   Foreground="White"
-                   FontFamily="{StaticResource Montserrat}"
-                   FontSize="40"
-                   Margin="80 0 0 0"
-                   FontWeight="Bold"
-                   VerticalAlignment="Center">
-        </TextBlock>
+                       Foreground="White"
+                       FontFamily="{StaticResource Montserrat}"
+                       FontSize="40"
+                       Margin="80 0 0 0"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center">
+            </TextBlock>
         </StackPanel>
-        
+
 
         <Border Margin="2979 60 0 0"
                 VerticalAlignment="Top"
@@ -267,8 +289,6 @@
                 </ComboBox>
             </Grid>
         </Border>
-
-        
 
 
     </Grid>

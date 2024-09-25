@@ -292,7 +292,7 @@ namespace PdfFlipBook.Views.Pages
             InitializeComponent();
             AuthorBookRB.IsChecked = true;
 
-            
+
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();
@@ -315,8 +315,7 @@ namespace PdfFlipBook.Views.Pages
                 var allBooks = new ObservableCollection<BookPDF>();
                 var pdfFolders = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs\\");
 
-                await Task.Run(() =>
-                {
+                
                     Parallel.ForEach(pdfFolders, pdfFolder =>
                     {
                         var pdfFiles = Directory.GetFiles(pdfFolder);
@@ -344,10 +343,9 @@ namespace PdfFlipBook.Views.Pages
                                     // Process page extraction in parallel
                                     Parallel.For(1, pageCount + 1, i =>
                                     {
-                                        var pageImage = ExtractPage(pdfDoc, i, 4, null);
+                                        var pageImage = ExtractPage(pdfDoc, i, 2, null);
                                         string imagePath = Path.Combine(folderToImages, $"{i}.jpg");
                                         pageImage.Save(imagePath, ImageFormat.Jpeg);
-                                        pageImage.Dispose();
                                     });
                                 }
 
@@ -381,8 +379,6 @@ namespace PdfFlipBook.Views.Pages
                             }
                         }
                     });
-                });
-
                 AllBooks = allBooks;
                 App.CurrentApp.AllBooks = allBooks;
             }
@@ -561,7 +557,6 @@ namespace PdfFlipBook.Views.Pages
         {
             App.CurrentApp.IsLoading = true;
             await UpdatePhotos();
-            App.CurrentApp.IsLoading = false;
 
             var helper = new JsonHelper();
             var jsonPath = "Settings/Settings.json";

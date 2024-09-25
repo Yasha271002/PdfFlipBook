@@ -1,8 +1,8 @@
 ﻿<Page x:Class="PdfFlipBook.Views.Pages.Start_Page"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:PdfFlipBook.Views"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:moonPdfLib="clr-namespace:MoonPdfLib;assembly=MoonPdfLib"
@@ -10,7 +10,7 @@
       xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
       xmlns:controls1="clr-namespace:PdfFlipBook.Views.Controls"
-      mc:Ignorable="d" 
+      mc:Ignorable="d"
       Loaded="Start_Page_OnLoaded"
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Start_Page"
@@ -20,7 +20,7 @@
     <Grid Width="3840" Height="2160">
 
         <!--<moonPdfLib:MoonPdfPanel Background="LightGray" ViewType="BookView" Name="BookView"  PageMargin="0,2,4,2" AllowDrop="True"/>-->
-        
+
         <Button Command="{Binding HideKeyboardCommand}" Panel.ZIndex="100"
                 Visibility="Collapsed" Name="HideButton">
             <Button.Template>
@@ -30,7 +30,7 @@
             </Button.Template>
         </Button>
         <Grid Name="SearchResultGrid" Visibility="Collapsed">
-            <ItemsControl AlternationCount="{Binding ActualBooks.Count}" 
+            <ItemsControl AlternationCount="{Binding ActualBooks.Count}"
                           ItemsSource="{Binding ActualBooks, IsAsync=True}"
                           VirtualizingStackPanel.IsVirtualizing="True"
                           ScrollViewer.CanContentScroll="True"
@@ -42,9 +42,8 @@
                           controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
                           controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
                           controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
-                          controls:VirtualizingWrapPanel.CacheLength ="0,0" Height="1920"
-                          Margin="0,320,0,0"
-            >
+                          controls:VirtualizingWrapPanel.CacheLength="0,0" Height="1920"
+                          Margin="0,320,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3560"></polusVerninskoe:AlignableWrapPanel>
@@ -54,38 +53,66 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Panel.ZIndex="200" Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
-                    Path=BookCommand}" CommandParameter="{Binding Title}">
+                        <Button Panel.ZIndex="200"
+                                Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
+                    Path=BookCommand}"
+                                CommandParameter="{Binding Title}">
                             <Button.Template>
                                 <ControlTemplate>
-                                    <Border HorizontalAlignment="Center" Width="540" Height="590" Margin="20" Background="Transparent" CornerRadius="10" >
+                                    <Border HorizontalAlignment="Center" Width="540" Height="590" Margin="20"
+                                            Background="Transparent" CornerRadius="10">
                                         <Grid Width="540" Background="#60000000">
                                             <StackPanel Orientation="Vertical" ClipToBounds="True">
-                                                <Image Width="454"
-                                                   Height="390" 
-                                                   Stretch="Uniform" 
-                                                   Margin="15"
-                                                   RenderOptions.BitmapScalingMode="Fant"
-                                                   RenderSize="454,390"
-                                                   Source="{Binding Icon}"/>
-                                                <ScrollViewer Width="470" Margin="10,10,10,10" VerticalAlignment="Center" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
-                                                    <TextBlock Text="{Binding Book}" FontSize="34" 
-                                                   Width="470" TextWrapping="NoWrap"
-                                                   VerticalAlignment="Center"
-                                                   TextTrimming="WordEllipsis"
-                                                   Foreground="White"
-                                                   FontWeight="Bold"
-                                                   FontFamily="{DynamicResource Montserrat}"
-                                                   TextAlignment="Center"/>
+                                                <Border Width="454" Height="390" Margin="15">
+                                                    <Image
+                                                        Stretch="Uniform"
+                                                        Source="{Binding Icon}">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Opacity" Value="0" />
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="Opacity" Value="0">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                    </Trigger>
+                                                                    <EventTrigger RoutedEvent="Loaded">
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard TargetProperty="Opacity">
+                                                                                <DoubleAnimation To="1"
+                                                                                    Duration="0:0:0.5"
+                                                                                    BeginTime="0:0:0.5" />
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </EventTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </Border>
+                                                <ScrollViewer Width="470" Margin="10,10,10,10"
+                                                              VerticalAlignment="Center" PanningMode="VerticalOnly"
+                                                              HorizontalScrollBarVisibility="Hidden"
+                                                              VerticalScrollBarVisibility="Hidden">
+                                                    <TextBlock Text="{Binding Book}" FontSize="34"
+                                                               Width="470" TextWrapping="NoWrap"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="WordEllipsis"
+                                                               Foreground="White"
+                                                               FontWeight="Bold"
+                                                               FontFamily="{DynamicResource Montserrat}"
+                                                               TextAlignment="Center" />
                                                 </ScrollViewer>
-                                                <ScrollViewer Width="470" Margin="0,10,0,10" VerticalAlignment="Center" PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" >
-                                                    <TextBlock Text="{Binding Author}" FontSize="34" 
-                                                           Width="470" TextWrapping="NoWrap"
-                                                           VerticalAlignment="Center"
-                                                           Foreground="White"
-                                                           TextTrimming="WordEllipsis"
-                                                           FontFamily="{DynamicResource Montserrat}"
-                                                           TextAlignment="Center"/>
+                                                <ScrollViewer Width="470" Margin="0,10,0,10" VerticalAlignment="Center"
+                                                              PanningMode="VerticalOnly"
+                                                              HorizontalScrollBarVisibility="Hidden"
+                                                              VerticalScrollBarVisibility="Hidden">
+                                                    <TextBlock Text="{Binding Author}" FontSize="34"
+                                                               Width="470" TextWrapping="NoWrap"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="White"
+                                                               TextTrimming="WordEllipsis"
+                                                               FontFamily="{DynamicResource Montserrat}"
+                                                               TextAlignment="Center" />
                                                 </ScrollViewer>
                                             </StackPanel>
                                         </Grid>
@@ -98,27 +125,26 @@
                 <ItemsControl.Template>
                     <ControlTemplate>
                         <ScrollViewer PanningMode="VerticalOnly" HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Visible" Height="1700">
+                                      VerticalScrollBarVisibility="Visible" Height="1700">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"></ItemsPresenter>
                         </ScrollViewer>
                     </ControlTemplate>
                 </ItemsControl.Template>
             </ItemsControl>
         </Grid>
-        <ItemsControl AlternationCount="{Binding AllFolders.Count}" 
-                          ItemsSource="{Binding AllFolders, IsAsync=True,UpdateSourceTrigger=PropertyChanged}"
-                          VirtualizingStackPanel.IsVirtualizing="True"
-                          ScrollViewer.CanContentScroll="True"
-                          MaxWidth="3760"
-                          Name="FoldersItemsControl"
-                          HorizontalAlignment="Center"
-                          ScrollViewer.IsDeferredScrollingEnabled="True"
-                          controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
-                          controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
-                          controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
-                          controls:VirtualizingWrapPanel.CacheLength ="0,0" Height="1320"
-                          Margin="0,300,0,0"
-            >
+        <ItemsControl AlternationCount="{Binding AllFolders.Count}"
+                      ItemsSource="{Binding AllFolders, IsAsync=True,UpdateSourceTrigger=PropertyChanged}"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      ScrollViewer.CanContentScroll="True"
+                      MaxWidth="3760"
+                      Name="FoldersItemsControl"
+                      HorizontalAlignment="Center"
+                      ScrollViewer.IsDeferredScrollingEnabled="True"
+                      controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
+                      controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
+                      controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
+                      controls:VirtualizingWrapPanel.CacheLength="0,0" Height="1320"
+                      Margin="0,300,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3760"></polusVerninskoe:AlignableWrapPanel>
@@ -127,23 +153,27 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Panel.ZIndex="200" Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
-                    Path=RazdelCommand}" CommandParameter="{Binding Title }">
+                    <Button Panel.ZIndex="200"
+                            Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
+                    Path=RazdelCommand}"
+                            CommandParameter="{Binding Title }">
                         <Button.Template>
                             <ControlTemplate>
-                                <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="30" Background="White" CornerRadius="50">
-                                    <Grid >
-                                        <StackPanel Orientation="Vertical" ClipToBounds="True" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                          <Image Source="{Binding Icon}" Height="200"></Image>
-                                                <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34" 
-                                                           Foreground="#808080" Margin="0,20,0,0"
-                                                           TextTrimming="WordEllipsis"
-                                                           HorizontalAlignment="Center"
-                                                           FontFamily="{DynamicResource Montserrat}"
-                                                   Width="420" TextWrapping="WrapWithOverflow"
-                                                   VerticalAlignment="Center"
-                                                   TextAlignment="Center"
-                                                   FontWeight="Bold"/>
+                                <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="30"
+                                        Background="White" CornerRadius="50">
+                                    <Grid>
+                                        <StackPanel Orientation="Vertical" ClipToBounds="True"
+                                                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Image Source="{Binding Icon}" Height="200"></Image>
+                                            <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34"
+                                                       Foreground="#808080" Margin="0,20,0,0"
+                                                       TextTrimming="WordEllipsis"
+                                                       HorizontalAlignment="Center"
+                                                       FontFamily="{DynamicResource Montserrat}"
+                                                       Width="420" TextWrapping="WrapWithOverflow"
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"
+                                                       FontWeight="Bold" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -192,20 +222,21 @@
                    HorizontalAlignment="Left"
                    Margin="640,80,0,0"></TextBlock>-->
 
-        
 
-        <Button 
+        <Button
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
-            Panel.ZIndex="3000" 
-            Width="200" 
+            Panel.ZIndex="3000"
+            Width="200"
             Height="200">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseDown">
-                    <i:InvokeCommandAction Command="{Binding StartTimerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                    <i:InvokeCommandAction
+                        Command="{Binding StartTimerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}" />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="PreviewMouseUp">
-                    <i:InvokeCommandAction Command="{Binding StopTimerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                    <i:InvokeCommandAction
+                        Command="{Binding StopTimerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <Button.Style>
@@ -231,27 +262,27 @@
                  Tag="Поиск"
                  TextChanged="NameTB_OnTextChanged"
                  FontFamily="{DynamicResource Montserrat}"
-                 FontSize="48"  Template="{DynamicResource BlueBox}" 
+                 FontSize="48" Template="{DynamicResource BlueBox}"
                  Margin="5,138">
             <TextBox.Effect>
                 <DropShadowEffect BlurRadius="30"></DropShadowEffect>
             </TextBox.Effect>
         </TextBox>
-        <StackPanel 
-                    Width="1200" Height="55" Margin="0 298 0 0"
-                    VerticalAlignment="Top" Orientation="Horizontal">
+        <StackPanel
+            Width="1200" Height="55" Margin="0 298 0 0"
+            VerticalAlignment="Top" Orientation="Horizontal">
             <RadioButton Tag="По автору или названию"
                          Style="{DynamicResource StartPageRadioButtonTemplate}"
-                          x:Name="AuthorBookRB"
-                         VerticalAlignment="Center"/>
-            
+                         x:Name="AuthorBookRB"
+                         VerticalAlignment="Center" />
+
             <RadioButton Style="{DynamicResource StartPageRadioButtonTemplate}"
                          Margin="70 0 0 0" x:Name="TextBookRB"
                          VerticalAlignment="Center"
-                         Tag="По тексту"/>
+                         Tag="По тексту" />
         </StackPanel>
         <Button Command="{Binding SearchCommand}"
-                Width="60" 
+                Width="60"
                 Panel.ZIndex="300"
                 Height="60"
                 Margin="1440,168,0,0"
@@ -261,8 +292,8 @@
                 <ControlTemplate>
                     <Border Background="Transparent">
                         <Image Name="LoupeImage"
-                               Source="/Images/loupe.png"
-                        ></Image>
+                               Source="/Images/loupe.png">
+                        </Image>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -271,50 +302,57 @@
                     Panel.ZIndex="150"
                     Visibility="Collapsed"
                     VerticalAlignment="Top"
-                   Name="SearchOptionSP"
+                    Name="SearchOptionSP"
                     HorizontalAlignment="Center"
                     Margin="0,250,0,0">
-        <RadioButton Style="{DynamicResource CircleCheckbox}"
-                  Width="60"
-                  IsChecked="True"
-                  GroupName="MyGroup"
-                  Height="60" ></RadioButton>
+            <RadioButton Style="{DynamicResource CircleCheckbox}"
+                         Width="60"
+                         IsChecked="True"
+                         GroupName="MyGroup"
+                         Height="60">
+            </RadioButton>
             <TextBlock Text="По автору или названию" TextAlignment="Center"
                        FontFamily="{DynamicResource   Montserrat}"
                        VerticalAlignment="Center" FontWeight="Bold"
                        Margin="40"
                        Foreground="White"
-                       FontSize="48"></TextBlock>
-        <RadioButton Style="{DynamicResource CircleCheckbox}"
-                  Width="60"
-                  Name="TextRB"
-                  GroupName="MyGroup"
-                  Height="60" ></RadioButton>
+                       FontSize="48">
+            </TextBlock>
+            <RadioButton Style="{DynamicResource CircleCheckbox}"
+                         Width="60"
+                         Name="TextRB"
+                         GroupName="MyGroup"
+                         Height="60">
+            </RadioButton>
             <TextBlock Text="По тексту" TextAlignment="Center"
                        FontWeight="Bold"
                        Foreground="White"
                        FontFamily="{DynamicResource  Montserrat}"
                        VerticalAlignment="Center"
                        Margin="40"
-                       FontSize="48"></TextBlock>
+                       FontSize="48">
+            </TextBlock>
 
         </StackPanel>
-        <controls1:CoolKeyBoard Height="620" Width="2133" 
+        <controls1:CoolKeyBoard Height="620" Width="2133"
                                 x:Name="CoolKeyBoard"
                                 Panel.ZIndex="200"
                                 VerticalAlignment="Bottom"
-                                Margin="0,0,0,-800"></controls1:CoolKeyBoard>
+                                Margin="0,0,0,-800">
+        </controls1:CoolKeyBoard>
 
         <Button VerticalAlignment="Top"
                 HorizontalAlignment="Left"
                 Width="200" Height="200"
-                Panel.ZIndex="3000" >
+                Panel.ZIndex="3000">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseDown">
-                    <i:InvokeCommandAction Command="{Binding StartTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                    <i:InvokeCommandAction
+                        Command="{Binding StartTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}" />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="PreviewMouseUp">
-                    <i:InvokeCommandAction Command="{Binding StopTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}"/>
+                    <i:InvokeCommandAction
+                        Command="{Binding StopTimer2Command, RelativeSource={RelativeSource FindAncestor, AncestorType=Page}}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <Button.Style>

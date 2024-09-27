@@ -60,7 +60,7 @@ namespace PdfFlipBook
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            LicenseHelper.Utilities.LicenseManager.SetAppId(22);
+            LicenseHelper.Utilities.LicenseManager.SetAppId(24);
             await LicenseHelper.Utilities.LicenseManager.CheckLicense();
         }
 

@@ -214,16 +214,15 @@ namespace PdfFlipBook.Views.Pages
                 }
                 else
                 {
-                    IndexBook++;
-                    PageIndex = 0;
                     if(GlobalSettings.Instance.Books.Count == 0) return;
                     if (IndexBook >= GlobalSettings.Instance.Books.Count)
                         IndexBook = 0;
 
-
                     var newTitle = GlobalSettings.Instance.Books[IndexBook].Title;
                     ReloadBookPages(newTitle);
 
+                    IndexBook++;
+                    PageIndex = 0;
                     return;
                 }
             }
@@ -313,17 +312,15 @@ namespace PdfFlipBook.Views.Pages
             }
 
             var index = page / 2;
-            if (index * 2 >= 0 && index * 2 < AllPages.Count)
+            if (index * 2 < 0 || index * 2 >= AllPages.Count) return;
+            try
             {
-                try
-                {
-                    AllPages[index * 2] = AllPhotos[index * 2].ToString();
-                    AllPages[index * 2 + 1] = AllPhotos[index * 2 + 1].ToString();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                AllPages[index * 2] = AllPhotos[index * 2].ToString();
+                AllPages[index * 2 + 1] = AllPhotos[index * 2 + 1].ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

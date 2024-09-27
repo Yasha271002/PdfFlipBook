@@ -33,9 +33,9 @@ namespace PdfFlipBook.Views.Pages
     /// </summary>
     public partial class Start_Page : Page, INotifyPropertyChanged
     {
-
         public static readonly DependencyProperty ActualBooksProperty = DependencyProperty.Register(
-            "ActualBooks", typeof(ObservableCollection<BookPDF>), typeof(Start_Page), new PropertyMetadata(new ObservableCollection<BookPDF>()));
+            "ActualBooks", typeof(ObservableCollection<BookPDF>), typeof(Start_Page),
+            new PropertyMetadata(new ObservableCollection<BookPDF>()));
 
         public ObservableCollection<BookPDF> ActualBooks
         {
@@ -44,7 +44,8 @@ namespace PdfFlipBook.Views.Pages
         }
 
         public static readonly DependencyProperty AllFoldersProperty = DependencyProperty.Register(
-            "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page), new PropertyMetadata(default(ObservableCollection<BookFolder>)));
+            "AllFolders", typeof(ObservableCollection<BookFolder>), typeof(Start_Page),
+            new PropertyMetadata(default(ObservableCollection<BookFolder>)));
 
         public ObservableCollection<BookFolder> AllFolders
         {
@@ -71,7 +72,8 @@ namespace PdfFlipBook.Views.Pages
         }
 
 
-        public static Bitmap ExtractPage(IPdfSource source, int pageNumber, float zoomFactor = 1.0f, string password = null)
+        public static Bitmap ExtractPage(IPdfSource source, int pageNumber, float zoomFactor = 1.0f,
+            string password = null)
         {
             var pageNumberIndex = Math.Max(0, pageNumber - 1); // pages start at index 0
 
@@ -107,7 +109,8 @@ namespace PdfFlipBook.Views.Pages
             ctm.D = zoomY;
 
             // creates a pixmap the same size as the width and height of the page
-            pix = NativeMethods.NewPixmap(context, NativeMethods.FindDeviceColorSpace(context, "DeviceRGB"), width, height);
+            pix = NativeMethods.NewPixmap(context, NativeMethods.FindDeviceColorSpace(context, "DeviceRGB"), width,
+                height);
             // sets white color as the background color of the pixmap
             NativeMethods.ClearPixmap(context, pix, 0xFF);
 
@@ -121,9 +124,11 @@ namespace PdfFlipBook.Views.Pages
 
             // creates a colorful bitmap of the same size of the pixmap
             Bitmap bmp = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            var imageData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, bmp.PixelFormat);
+            var imageData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, width, height), ImageLockMode.ReadWrite,
+                bmp.PixelFormat);
             unsafe
-            { // converts the pixmap data to Bitmap data
+            {
+                // converts the pixmap data to Bitmap data
                 byte* ptrSrc = (byte*)NativeMethods.GetSamples(context, pix); // gets the rendered data from the pixmap
                 byte* ptrDest = (byte*)imageData.Scan0;
                 for (int y = 0; y < height; y++)
@@ -137,14 +142,16 @@ namespace PdfFlipBook.Views.Pages
                         pl[2] = sl[0]; //b-r
                         pl[1] = sl[1]; //g-g
                         pl[0] = sl[2]; //r-b
-                                       //sl[3] is the alpha channel, we will skip it here
+                        //sl[3] is the alpha channel, we will skip it here
                         pl += 3;
                         sl += 4;
                     }
+
                     ptrDest += imageData.Stride;
                     ptrSrc += width * 4;
                 }
             }
+
             bmp.UnlockBits(imageData);
 
             NativeMethods.DropPixmap(context, pix);
@@ -152,10 +159,12 @@ namespace PdfFlipBook.Views.Pages
 
             return bmp;
         }
+
         internal struct Matrix
         {
             public float A, B, C, D, E, F;
         }
+
         public static bool NeedsPassword(IPdfSource source)
         {
             using (var stream = new PdfFileStream(source))
@@ -188,14 +197,16 @@ namespace PdfFlipBook.Views.Pages
                 if (source is FileSource)
                 {
                     var fs = (FileSource)source;
-                    Context = NativeMethods.NewContext(IntPtr.Zero, IntPtr.Zero, FZ_STORE_DEFAULT); // Creates the context
+                    Context = NativeMethods.NewContext(IntPtr.Zero, IntPtr.Zero,
+                        FZ_STORE_DEFAULT); // Creates the context
                     Stream = NativeMethods.OpenFile(Context, fs.Filename); // opens file as a stream
                     Document = NativeMethods.OpenDocumentStream(Context, ".pdf", Stream); // opens the document
                 }
                 else if (source is MemorySource)
                 {
                     var ms = (MemorySource)source;
-                    Context = NativeMethods.NewContext(IntPtr.Zero, IntPtr.Zero, FZ_STORE_DEFAULT); // Creates the context
+                    Context = NativeMethods.NewContext(IntPtr.Zero, IntPtr.Zero,
+                        FZ_STORE_DEFAULT); // Creates the context
                     GCHandle pinnedArray = GCHandle.Alloc(ms.Bytes, GCHandleType.Pinned);
                     IntPtr pointer = pinnedArray.AddrOfPinnedObject();
                     Stream = NativeMethods.OpenStream(Context, pointer, ms.Bytes.Length); // opens file as a stream
@@ -211,6 +222,7 @@ namespace PdfFlipBook.Views.Pages
                 NativeMethods.FreeContext(Context);
             }
         }
+
         private static class NativeMethods
         {
             const string DLL = "libmupdf.dll";
@@ -221,7 +233,8 @@ namespace PdfFlipBook.Views.Pages
             [DllImport(DLL, EntryPoint = "fz_free_context", CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr FreeContext(IntPtr ctx);
 
-            [DllImport(DLL, EntryPoint = "fz_open_file_w", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            [DllImport(DLL, EntryPoint = "fz_open_file_w", CharSet = CharSet.Unicode,
+                CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr OpenFile(IntPtr ctx, string fileName);
 
             [DllImport(DLL, EntryPoint = "fz_open_document_with_stream", CallingConvention = CallingConvention.Cdecl)]
@@ -275,23 +288,30 @@ namespace PdfFlipBook.Views.Pages
             [DllImport(DLL, EntryPoint = "fz_authenticate_password", CallingConvention = CallingConvention.Cdecl)]
             public static extern int AuthenticatePassword(IntPtr doc, string password);
 
-            [DllImport(DLL, EntryPoint = "fz_open_memory", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Cdecl)]
+            [DllImport(DLL, EntryPoint = "fz_open_memory", CharSet = CharSet.Unicode,
+                CallingConvention = CallingConvention.Cdecl)]
             public static extern IntPtr OpenStream(IntPtr ctx, IntPtr data, int len);
         }
+
         internal struct Rectangle
         {
             public float Left, Top, Right, Bottom;
 
-            public float Width { get { return this.Right - this.Left; } }
-            public float Height { get { return this.Bottom - this.Top; } }
+            public float Width
+            {
+                get { return this.Right - this.Left; }
+            }
 
+            public float Height
+            {
+                get { return this.Bottom - this.Top; }
+            }
         }
 
         public Start_Page()
         {
             InitializeComponent();
             AuthorBookRB.IsChecked = true;
-
 
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
@@ -301,7 +321,7 @@ namespace PdfFlipBook.Views.Pages
                 BookFolder BF = new BookFolder()
                 {
                     Title = s.Split('\\').Last(),
-                    Icon =  Directory.GetFiles(s + "\\Logo\\")[0].ToString()
+                    Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString()
                 };
                 AllFolders.Add(BF);
             }
@@ -315,70 +335,23 @@ namespace PdfFlipBook.Views.Pages
                 var allBooks = new ObservableCollection<BookPDF>();
                 var pdfFolders = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs\\");
 
-                
-                    Parallel.ForEach(pdfFolders, pdfFolder =>
-                    {
-                        var pdfFiles = Directory.GetFiles(pdfFolder);
-                        foreach (var pdfFile in pdfFiles)
+                await Task.Run(() =>
+                {
+                    Task.WaitAll((from pdfFolder in pdfFolders
+                        let pdfFiles = Directory.GetFiles(pdfFolder)
+                        from pdfFile in pdfFiles
+                        select Task.Run(() =>
                         {
-                            try
+                            var bookPdf = ProcessPdfFile(pdfFile, pdfFolder);
+
+                            if (bookPdf == null) return;
+                            lock (allBooks)
                             {
-                                IPdfSource pdfDoc = new FileSource(pdfFile);
-                                int pageCount;
-
-                                using (var stream = new PdfFileStream(pdfDoc))
-                                {
-                                    ValidatePassword(stream.Document, null);
-                                    pageCount = NativeMethods.CountPages(stream.Document);
-                                }
-
-                                string folderToImages = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Path.GetFileNameWithoutExtension(pdfFile));
-
-                                if (!Directory.Exists(folderToImages))
-                                    Directory.CreateDirectory(folderToImages);
-
-                                var existingImages = Directory.GetFiles(folderToImages);
-                                if (existingImages.Length != pageCount)
-                                {
-                                    // Process page extraction in parallel
-                                    Parallel.For(1, pageCount + 1, i =>
-                                    {
-                                        var pageImage = ExtractPage(pdfDoc, i, 2, null);
-                                        string imagePath = Path.Combine(folderToImages, $"{i}.jpg");
-                                        pageImage.Save(imagePath, ImageFormat.Jpeg);
-                                    });
-                                }
-
-                                string iconPath = Directory.GetFiles(folderToImages)[0];
-                                var icon = iconPath;
-
-                                string title = Path.GetFileNameWithoutExtension(pdfFile);
-                                string author = title.Split('.').First();
-                                string bookName = title.Split('.').Last();
-
-                                string textContent = ReadPdfFile(pdfFile);
-
-                                BookPDF bookPdf = new BookPDF
-                                {
-                                    Title = title,
-                                    Icon = icon,
-                                    FullPath = pdfFolder,
-                                    Text = textContent,
-                                    Author = author,
-                                    Book = bookName
-                                };
-
-                                lock (allBooks)
-                                {
-                                    allBooks.Add(bookPdf);
-                                }
+                                allBooks.Add(bookPdf);
                             }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error processing file {pdfFile}: {ex.Message}");
-                            }
-                        }
-                    });
+                        })).ToArray());
+                });
+
                 AllBooks = allBooks;
                 App.CurrentApp.AllBooks = allBooks;
             }
@@ -388,6 +361,74 @@ namespace PdfFlipBook.Views.Pages
             }
 
             App.CurrentApp.IsLoading = false;
+        }
+
+        private BookPDF ProcessPdfFile(string pdfFile, string pdfFolder)
+        {
+            try
+            {
+                IPdfSource pdfDoc = new FileSource(pdfFile);
+                int pageCount;
+
+                using (var stream = new PdfFileStream(pdfDoc))
+                {
+                    ValidatePassword(stream.Document, null);
+                    pageCount = NativeMethods.CountPages(stream.Document);
+                }
+
+                string folderToImages = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Path.GetFileNameWithoutExtension(pdfFile));
+                if (!Directory.Exists(folderToImages))
+                    Directory.CreateDirectory(folderToImages);
+
+                var existingImages = Directory.GetFiles(folderToImages);
+                if (existingImages.Length != pageCount)
+                {
+                    ExtractImagesFromPdf(pdfDoc, pageCount, folderToImages);
+                }
+
+                string iconPath = Directory.GetFiles(folderToImages).FirstOrDefault();
+                if (iconPath == null) return null;
+
+                string title = Path.GetFileNameWithoutExtension(pdfFile);
+                string author = title.Split('.').First();
+                string bookName = title.Split('.').Last();
+
+                string textContent = ReadPdfFile(pdfFile);
+
+                var bookPdf = new BookPDF
+                {
+                    Title = title,
+                    Icon = iconPath,
+                    FullPath = pdfFolder,
+                    Text = textContent,
+                    Author = author,
+                    Book = bookName
+                };
+
+                return bookPdf;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing file {pdfFile}: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void ExtractImagesFromPdf(IPdfSource pdfDoc, int pageCount, string folderToImages)
+        {
+            for (int i = 1; i <= pageCount; i++)
+            {
+                try
+                {
+                    var pageImage = ExtractPage(pdfDoc, i, 2, null);
+                    string imagePath = Path.Combine(folderToImages, $"{i}.jpg");
+                    pageImage.Save(imagePath, ImageFormat.Jpeg);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error extracting page {i}: {ex.Message}");
+                }
+            }
         }
 
         private string ReadPdfFile(string fileName)
@@ -403,18 +444,22 @@ namespace PdfFlipBook.Views.Pages
                 ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
                 string currentText = PdfTextExtractor.GetTextFromPage(pdfReader, page, strategy);
 
-                currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(currentText)));
+                currentText = Encoding.UTF8.GetString(ASCIIEncoding.Convert(Encoding.Default, Encoding.UTF8,
+                    Encoding.Default.GetBytes(currentText)));
                 text.Append(currentText);
             }
+
             pdfReader.Close();
             return text.ToString();
         }
 
         private ICommand _bookCommand;
+
         public ICommand BookCommand =>
             _bookCommand ??= (_bookCommand = new Command(c =>
             {
-                GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks = AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList());
+                GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks =
+                    AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList());
                 var BookData = Tuple.Create(c.ToString(), SettingsModel);
                 ExecuteNavigation(BookData);
 
@@ -439,7 +484,6 @@ namespace PdfFlipBook.Views.Pages
                     To = new Thickness(0, 0, 0, -800),
                     From = new Thickness(0, 0, 0, 200),
                     DecelerationRatio = 0.9f,
-
                 };
                 Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
                 sb.Children.Add(animation);
@@ -447,6 +491,7 @@ namespace PdfFlipBook.Views.Pages
             }));
 
         private ICommand _razdelCommand;
+
         public ICommand RazdelCommand =>
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
@@ -473,7 +518,6 @@ namespace PdfFlipBook.Views.Pages
             _timer.Stop();
             _sec = 0;
         }));
-
 
 
         public ICommand StartTimerCommand => _startTimerCommand ??= (_startTimerCommand = new Command(a =>
@@ -523,7 +567,6 @@ namespace PdfFlipBook.Views.Pages
             if (_sec2 < 4) return;
             CommonCommands.NavigateCommand.Execute(SettingsModel);
             _timer2.Stop();
-
         }
 
 
@@ -621,6 +664,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private ICommand _searchCommand;
+
         public ICommand SearchCommand =>
             _searchCommand ??= new Command(async c =>
             {
@@ -669,14 +713,11 @@ namespace PdfFlipBook.Views.Pages
                 From = new Thickness(0, 0, 0, -800),
                 To = new Thickness(0, 0, 0, 200),
                 DecelerationRatio = 0.9f,
-
             };
             Storyboard.SetTargetProperty(animation, new PropertyPath("Margin"));
             sb.Children.Add(animation);
             sb.Begin(CoolKeyBoard);
             HideButton.Visibility = Visibility.Visible;
         }
-
-
     }
 }

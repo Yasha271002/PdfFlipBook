@@ -7,8 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using PdfFlipBook.Helper;
 
-
-namespace PdfFlipBook
+namespace PdfFlipBook.Views
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml

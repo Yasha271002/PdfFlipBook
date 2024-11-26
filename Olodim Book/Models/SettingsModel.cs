@@ -1,5 +1,5 @@
 ﻿using Core;
-using PdfFlipBook.Annotations;
+using PdfFlipBook.Properties;
 
 namespace PdfFlipBook.Models
 {

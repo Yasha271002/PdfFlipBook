@@ -7,7 +7,7 @@
     <ProjectGuid>{C5C60577-AAD3-4B65-BDB2-B826CA1C75A1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>PdfFlipBook</RootNamespace>
-    <AssemblyName>PdfFlipBook</AssemblyName>
+    <AssemblyName>Olodim Book</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -85,6 +85,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>OlodimBookicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AngleSharp, Version=1.1.2.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
@@ -408,6 +411,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Library\TermControls.dll" />
+    <Resource Include="OlodimBookicon.ico" />
     <Resource Include="Images\Cancel.png" />
     <Resource Include="Images\Correct.png" />
     <Content Include="Library\CommonControls.dll" />

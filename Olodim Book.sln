@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfFlipBook", "PdfFlipBook\PdfFlipBook.csproj", "{C5C60577-AAD3-4B65-BDB2-B826CA1C75A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Olodim Book", "Olodim Book\Olodim Book.csproj", "{C5C60577-AAD3-4B65-BDB2-B826CA1C75A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

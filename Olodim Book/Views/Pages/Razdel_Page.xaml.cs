@@ -10,9 +10,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
+using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
 
 namespace PdfFlipBook.Views.Pages

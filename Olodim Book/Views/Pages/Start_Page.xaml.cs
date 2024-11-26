@@ -19,10 +19,10 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
-using PdfFlipBook.Annotations;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
+using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
 

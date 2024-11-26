@@ -6,10 +6,10 @@
       xmlns:local="clr-namespace:PdfFlipBook.Views"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:moonPdfLib="clr-namespace:MoonPdfLib;assembly=MoonPdfLib"
-      xmlns:polusVerninskoe="clr-namespace:PolusVerninskoe"
       xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
       xmlns:controls1="clr-namespace:PdfFlipBook.Views.Controls"
+      xmlns:utilities="clr-namespace:PdfFlipBook.Utilities"
       mc:Ignorable="d"
       Loaded="Start_Page_OnLoaded"
       d:DesignHeight="2160" d:DesignWidth="3840"
@@ -46,7 +46,7 @@
                           Margin="0,320,0,0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3560"></polusVerninskoe:AlignableWrapPanel>
+                        <utilities:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3560"></utilities:AlignableWrapPanel>
 
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -147,7 +147,7 @@
                       Margin="0,300,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3760"></polusVerninskoe:AlignableWrapPanel>
+                    <utilities:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3760"></utilities:AlignableWrapPanel>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 

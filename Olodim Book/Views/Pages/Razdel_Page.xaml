@@ -6,10 +6,10 @@
       xmlns:local="clr-namespace:PdfFlipBook.Views"
       Loaded="Razdel_Page_OnLoaded"
       xmlns:controls="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
-      xmlns:polusVerninskoe="clr-namespace:PolusVerninskoe"
       xmlns:pdfFlipBook="clr-namespace:PdfFlipBook"
       xmlns:properties="clr-namespace:PdfFlipBook.Properties"
       xmlns:converters="clr-namespace:PdfFlipBook.Helper.Converters"
+      xmlns:utilities="clr-namespace:PdfFlipBook.Utilities"
       ManipulationBoundaryFeedback="Razdel_Page_OnManipulationBoundaryFeedback"
       mc:Ignorable="d"
 
@@ -43,9 +43,9 @@
                       Margin="0,240,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <polusVerninskoe:AlignableWrapPanel HorizontalContentAlignment="Center"
+                    <utilities:AlignableWrapPanel HorizontalContentAlignment="Center"
                                                         Width="{Binding WrapPanelWidths}">
-                    </polusVerninskoe:AlignableWrapPanel>
+                    </utilities:AlignableWrapPanel>
 
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>

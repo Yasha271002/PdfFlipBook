@@ -21,24 +21,25 @@ namespace PdfFlipBook.Views
 
             App.CurrentApp.IsLoading = true;
             // UpdatePhotos();
-            Frame1.NavigationService?.Navigate(App.CurrentApp.SP, UriKind.Relative);
+            //Frame1.NavigationService?.Navigate(App.CurrentApp.SP, UriKind.Relative);
             NavigationManager.Frame1 = Frame1.NavigationService;
+            CommonCommands.NavigateCommand.Execute(PageTypes.StartPage);
 
 
             //this.Cursor = Cursors.None;
-            Process process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "taskkill",
-                Arguments = "/F /IM explorer.exe",
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Hidden
-            });
-            process?.WaitForExit();
-            Closing += (e, a) =>
-            {
-                Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
-            };
+            //Process process = Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = "taskkill",
+            //    Arguments = "/F /IM explorer.exe",
+            //    CreateNoWindow = true,
+            //    UseShellExecute = false,
+            //    WindowStyle = ProcessWindowStyle.Hidden
+            //});
+            //process?.WaitForExit();
+            //Closing += (e, a) =>
+            //{
+            //    Process.Start(System.IO.Path.Combine(Environment.GetEnvironmentVariable("windir"), "explorer.exe"));
+            //};
 
         }
 
@@ -59,8 +60,8 @@ namespace PdfFlipBook.Views
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            LicenseHelper.Utilities.LicenseManager.SetAppId(24);
-            await LicenseHelper.Utilities.LicenseManager.CheckLicense();
+            //LicenseHelper.Utilities.LicenseManager.SetAppId(24);
+            //await LicenseHelper.Utilities.LicenseManager.CheckLicense();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -3,6 +3,13 @@ using PdfFlipBook.Properties;
 
 namespace PdfFlipBook.Models
 {
+    public enum SelectThemes
+    {
+        Dark,
+        Light,
+        Custom
+    }
+
     public class SettingsModel:ObservableObject
     {
         [CanBeNull]
@@ -35,6 +42,12 @@ namespace PdfFlipBook.Models
         public bool NextPage
         {
             get => GetOrCreate<bool>();
+            set => SetAndNotify(value);
+        }
+
+        public SelectThemes SelectedThemes
+        {
+            get => GetOrCreate<SelectThemes>();
             set => SetAndNotify(value);
         }
     }

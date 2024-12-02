@@ -1,0 +1,93 @@
+﻿<Page x:Class="PdfFlipBook.Views.Pages.SelectBackgroundPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:PdfFlipBook.Views.Pages"
+      xmlns:pages="clr-namespace:PdfFlipBook.ViewModel.Pages"
+      xmlns:helper="clr-namespace:PdfFlipBook.Helper"
+      mc:Ignorable="d"
+      Title="SelectBackgroundPage">
+    <Page.DataContext>
+        <pages:SelectBackgroundPageViewModel />
+    </Page.DataContext>
+    <Grid Width="3840" Height="2160">
+        <Button Template="{StaticResource SettingButtonBack}" HorizontalAlignment="Left"
+                Content="На главную" FontSize="50" Foreground="{StaticResource WhiteColorForeground}"
+                VerticalAlignment="Top" Width="400" Height="120"
+                Margin="157 60 0 0"
+                Background="{StaticResource DarkBackgroundThemes}" />
+        <Border Width="1982"
+                Height="1860" CornerRadius="20">
+            <Border.Background>
+                <SolidColorBrush Color="{StaticResource DarkColor}"
+                                 Opacity="0.3" />
+            </Border.Background>
+            <Border Style="{StaticResource SettingBorderStyle}"
+                    Width="1886" Height="1764" Padding="32">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                        <Button
+                            Template="{StaticResource CancelBackgroundPageButton}"
+                            Command="helper:CommonCommands.GoBackCommand" />
+                        <TextBlock
+                            Text="Задний фон"
+                            Style="{StaticResource TitleTextBlockStyle}" />
+                        <Button Template="{StaticResource SaveBackgroundButton}"
+                                Background="Transparent"
+                                Margin="957 0 0 0" Foreground="#00D220"/>
+                    </StackPanel>
+
+                    <Grid>
+                        <ScrollViewer Margin="0 152 0 0">
+                            <ItemsControl ItemsSource="{Binding ImageModel}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderThickness="2" CornerRadius="10" Width="903" Height="508">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="BorderBrush" Value="#00D220" />
+                                                            <Setter Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect Color="#00D220"
+                                                                        BlurRadius="16" 
+                                                                        Direction="0"
+                                                                        ShadowDepth="0"
+                                                                        RenderingBias="Quality"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <Grid>
+                                                <Border CornerRadius="10">
+                                                    <Border.Background>
+                                                        <ImageBrush ImageSource="{Binding ImagePath}" />
+                                                    </Border.Background>
+                                                </Border>
+                                                <RadioButton GroupName="1"
+                                                             VerticalAlignment="Top" HorizontalAlignment="Right"
+                                                             Margin="24"
+                                                             Template="{StaticResource SelectBackgroundButton}"
+                                                             IsChecked="{Binding IsSelected}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Border>
+    </Grid>
+</Page>

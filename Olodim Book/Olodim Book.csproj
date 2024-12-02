@@ -211,6 +211,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Helper\BaseInactivityHelper.cs" />
+    <Compile Include="Helper\Behavior\ItemsControlDragAndDropTest.cs" />
     <Compile Include="Helper\CommonCommands.cs" />
     <Compile Include="Helper\Converters\BoolToVisibilityHiddenConverter.cs" />
     <Compile Include="Helper\Converters\ImageConverter.cs" />
@@ -226,6 +227,7 @@
     <Compile Include="Helper\NavigationManager.cs" />
     <Compile Include="Helper\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Helper\Singleton\GlobalSettings.cs" />
+    <Compile Include="Models\ImageModel.cs" />
     <Compile Include="Models\BookFolder.cs" />
     <Compile Include="Models\CountBooksModel.cs" />
     <Compile Include="Models\GridSizeModel.cs" />
@@ -234,7 +236,11 @@
     <Compile Include="Utilities\AlignableWrapPanel.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="Utilities\UserInactivity.cs" />
+    <Compile Include="ViewModel\Pages\SelectBackgroundPageViewModel.cs" />
     <Compile Include="ViewModel\Pages\SettingsPageViewModel.cs" />
+    <Compile Include="Views\Controls\Color\ColorPicker.xaml.cs">
+      <DependentUpon>ColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\PainPadControl.xaml.cs">
       <DependentUpon>PainPadControl.xaml</DependentUpon>
     </Compile>
@@ -252,6 +258,9 @@
     </Compile>
     <Compile Include="Views\Pages\Razdel_Page.xaml.cs">
       <DependentUpon>Razdel_Page.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\SelectBackgroundPage.xaml.cs">
+      <DependentUpon>SelectBackgroundPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
@@ -303,6 +312,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\Color\ColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Controls\PainPadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -340,6 +353,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Pages\Razdel_Page.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\SelectBackgroundPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

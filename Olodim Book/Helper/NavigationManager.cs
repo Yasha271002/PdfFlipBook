@@ -11,6 +11,7 @@ namespace PdfFlipBook.Helper
         StartPage,
         RazdelPage,
         BookPage,
+        SelectBackground,
         None
     }
   

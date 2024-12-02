@@ -10,6 +10,7 @@ namespace PdfFlipBook.Helper.Singleton
 
         public static GlobalSettings Instance => _instance.Value;
         public ObservableCollection<BookPDF> Books { get; set; } = new ObservableCollection<BookPDF>();
+        public SettingsModel Settings { get; set; }
 
         private GlobalSettings()
         {

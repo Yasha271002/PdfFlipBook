@@ -18,6 +18,8 @@ namespace PdfFlipBook.Helper
         {
             return pageType switch
             {
+                PageTypes.SelectBackground => new SelectBackgroundPage(),
+                PageTypes.StartPage => new Start_Page(),
                 PageTypes.None => null,
                 _ => null
             };

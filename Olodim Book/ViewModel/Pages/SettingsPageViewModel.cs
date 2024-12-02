@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Core;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 
 namespace PdfFlipBook.ViewModel.Pages
@@ -24,6 +27,22 @@ namespace PdfFlipBook.ViewModel.Pages
             set => SetAndNotify(value);
         }
 
+        public SolidColorBrush SelectedBrush
+        {
+            get => GetOrCreate<SolidColorBrush>();
+            set => SetAndNotify(value);
+        }
+
+        public System.Windows.Media.Color SelectedColor
+        {
+            get => GetOrCreate<System.Windows.Media.Color>();
+            set
+            {
+                SetAndNotify(value);
+                SelectedBrush = new SolidColorBrush(value);
+            }
+        }
+
         public SettingsPageViewModel(SettingsModel settings)
         {
             SettingsModel = settings;
@@ -40,7 +59,7 @@ namespace PdfFlipBook.ViewModel.Pages
 
         public ICommand ShowPasswordCommand => GetOrCreate(new RelayCommand(f =>
         {
-            PageSettings.ShowPassword = PageSettings.ShowPassword != true;
+            PageSettings.ShowPassword = !PageSettings.ShowPassword;
         }));
 
         public ICommand ButtonPinPadCommand => GetOrCreate(new RelayCommand(OnPinPadButtonPressed));
@@ -147,7 +166,6 @@ namespace PdfFlipBook.ViewModel.Pages
         private void OnGotFocus(object parameter)
         {
             parameter ??= PageSettings.Type;
-            ;
 
             if (parameter is not string type) return;
             PageSettings.Type = type;

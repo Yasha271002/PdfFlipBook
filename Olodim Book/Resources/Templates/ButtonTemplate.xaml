@@ -2,11 +2,17 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTemplate TargetType="Button" x:Key="SettingButtonBack">
         <Border Style="{DynamicResource SettingBorderStyle}"
-                Background="#FFFFFF">
+                Background="{TemplateBinding Background}">
             <TextBlock Text="{TemplateBinding Content}"
-                       Style="{DynamicResource SettingsButtonText}" 
+                       Style="{DynamicResource SettingsButtonText}"
                        FontSize="{TemplateBinding FontSize}"
-                       Foreground="{TemplateBinding Foreground}"/>
+                       Foreground="{TemplateBinding Foreground}" />
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CorrectButton" TargetType="Button">
+        <Border Background="Transparent">
+            <Image Source="../../Images/Correct.png" Width="57" />
         </Border>
     </ControlTemplate>
 
@@ -14,14 +20,14 @@
         <Border Style="{DynamicResource SettingBorderStyle}"
                 CornerRadius="10"
                 Background="White">
-            <ContentPresenter Width="36" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ContentPresenter Width="36" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
     </ControlTemplate>
     <ControlTemplate x:Key="DotControlButton" TargetType="Button">
         <Border Style="{DynamicResource SettingBorderStyle}"
                 CornerRadius="10"
                 Background="White">
-            <ContentPresenter Width="150" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ContentPresenter Width="150" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
     </ControlTemplate>
     <ControlTemplate x:Key="LastPageControlButton" TargetType="Button">
@@ -32,7 +38,7 @@
                        FontSize="50"
                        Foreground="#808080"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center" />
         </Border>
     </ControlTemplate>
 
@@ -42,19 +48,87 @@
                        FontSize="50"
                        Foreground="#808080"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center" />
             <Border.Style>
                 <Style BasedOn="{StaticResource SettingBorderStyle}" TargetType="Border">
-                    <Setter Property="Background" Value="White"/>
-                    <Setter Property="Opacity" Value="0.5"/>
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="Opacity" Value="0.5" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
-                                     Value="True">
-                            <Setter Property="Opacity" Value="1"/>
+                        <DataTrigger
+                            Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
+                            Value="True">
+                            <Setter Property="Opacity" Value="1" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
+        </Border>
+    </ControlTemplate>
+
+
+    <ControlTemplate x:Key="CancelBackgroundPageButton" TargetType="Button">
+        <Border Width="88" Height="88" CornerRadius="10" Background="{StaticResource DarkThemes}">
+            <ContentPresenter ContentTemplate="{StaticResource CancelButtonIcons}" />
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="SaveBackgroundButton" TargetType="Button">
+        <Border Background="{TemplateBinding Background}"
+                CornerRadius="20"
+                Padding="20">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Image Source="../../Images/Correct.png" Width="57" />
+                <TextBlock Text="Сохранить" Style="{StaticResource TitleTextBlockStyle}"
+                           FontSize="40" FontWeight="SemiBold" Foreground="{TemplateBinding Foreground}"
+                           Margin="16 0 0 0"/>
+            </StackPanel>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="CancelBackgroundButton" TargetType="Button">
+        <Border Background="{StaticResource DarkBackgroundThemes}"
+                CornerRadius="20" Padding="20">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Image Source="../../Images/Cancel.png" Width="57" />
+                <TextBlock Text="Отмена" Style="{StaticResource TitleTextBlockStyle}"
+                           FontSize="40" FontWeight="SemiBold" Foreground="{TemplateBinding Foreground}"
+                           Margin="16 0 0 0"/>
+            </StackPanel>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate TargetType="RadioButton" x:Key="SelectBackgroundButton">
+        <Border CornerRadius="32"
+                Width="64" Height="64"
+                BorderThickness="2"
+                BorderBrush="{StaticResource DarkThemes}"
+                Background="{StaticResource DarkBackgroundThemes}">
+            <ContentPresenter ContentTemplate="{StaticResource CorrectIcons}">
+                <ContentPresenter.Style>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger 
+                                Binding="{Binding RelativeSource={RelativeSource TemplatedParent},
+                                Path=IsChecked}" Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentPresenter.Style>
+            </ContentPresenter>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="DraggingButton" TargetType="Button">
+        <Border Style="{StaticResource SettingBorderStyle}" Padding="32">
+            <StackPanel Orientation="Horizontal">
+                <ContentPresenter ContentTemplate="{StaticResource SwitchRazdelIcon}"/>
+                <TextBlock Style="{StaticResource SettingsTextBlock}"
+                           FontSize="40"
+                           Foreground="{TemplateBinding Foreground}"
+                           Text="Изменить расположение"
+                           Margin="16 0 0 0"/>
+            </StackPanel>
         </Border>
     </ControlTemplate>
 </ResourceDictionary>

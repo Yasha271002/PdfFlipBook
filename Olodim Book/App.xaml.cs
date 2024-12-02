@@ -14,13 +14,9 @@ namespace PdfFlipBook
     /// </summary>
     public partial class App : Application,INotifyPropertyChanged
     {
-        
         public static App CurrentApp => App.Current as App;
-
        
-        public Start_Page SP = new Start_Page();
         private bool _isLoading;
-
 
         private List<BookPDF> _actualBooks;
         public List<BookPDF> ActualBooks

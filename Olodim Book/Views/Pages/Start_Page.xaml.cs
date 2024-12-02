@@ -19,12 +19,14 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
+using Newtonsoft.Json;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
+using Point = System.Windows.Point;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -50,7 +52,11 @@ namespace PdfFlipBook.Views.Pages
         public ObservableCollection<BookFolder> AllFolders
         {
             get { return (ObservableCollection<BookFolder>)GetValue(AllFoldersProperty); }
-            set { SetValue(AllFoldersProperty, value); }
+            set
+            {
+                SetValue(AllFoldersProperty, value);
+                OnPropertyChanged();
+            }
         }
 
         public static readonly DependencyProperty PageCountProperty = DependencyProperty.Register(
@@ -316,15 +322,16 @@ namespace PdfFlipBook.Views.Pages
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();
-            foreach (string s in a)
+            foreach (var BF in a.Select(s => new BookFolder()
+                     {
+                         Title = s.Split('\\').Last(),
+                         Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString()
+                     }))
             {
-                BookFolder BF = new BookFolder()
-                {
-                    Title = s.Split('\\').Last(),
-                    Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString()
-                };
                 AllFolders.Add(BF);
             }
+
+            LoadFoldersOrder();
         }
 
 
@@ -376,7 +383,8 @@ namespace PdfFlipBook.Views.Pages
                     pageCount = NativeMethods.CountPages(stream.Document);
                 }
 
-                string folderToImages = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Path.GetFileNameWithoutExtension(pdfFile));
+                string folderToImages = Path.Combine(Directory.GetCurrentDirectory(), "Temp",
+                    Path.GetFileNameWithoutExtension(pdfFile));
                 if (!Directory.Exists(folderToImages))
                     Directory.CreateDirectory(folderToImages);
 
@@ -518,8 +526,6 @@ namespace PdfFlipBook.Views.Pages
             _timer.Stop();
             _sec = 0;
         }));
-
-
         public ICommand StartTimerCommand => _startTimerCommand ??= (_startTimerCommand = new Command(a =>
         {
             _timer?.Stop();
@@ -548,7 +554,6 @@ namespace PdfFlipBook.Views.Pages
             _timer2.Stop();
             _sec2 = 0;
         }));
-
         public ICommand StartTimer2Command => _startTimer2Command ??= (_startTimer2Command = new Command(a =>
         {
             _timer2?.Stop();
@@ -719,5 +724,86 @@ namespace PdfFlipBook.Views.Pages
             sb.Begin(CoolKeyBoard);
             HideButton.Visibility = Visibility.Visible;
         }
+
+        #region Drag
+
+        private const string FoldersOrderFileName = "folders_order.json";
+
+        private void SaveFoldersOrder()
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(AllFolders.Select(f => f.Title).ToList());
+                File.WriteAllText(FoldersOrderFileName, json);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void LoadFoldersOrder()
+        {
+            try
+            {
+                if (!File.Exists(FoldersOrderFileName)) return;
+                var json = File.ReadAllText(FoldersOrderFileName);
+                var savedOrder = JsonConvert.DeserializeObject<List<string>>(json);
+
+                var orderedFolders = new ObservableCollection<BookFolder>();
+
+                foreach (var folder in savedOrder.Select(title => AllFolders.FirstOrDefault(f => f.Title == title))
+                             .Where(folder => folder != null))
+                {
+                    orderedFolders.Add(folder);
+                }
+
+                foreach (var folder in AllFolders)
+                {
+                    if (!orderedFolders.Contains(folder))
+                    {
+                        orderedFolders.Add(folder);
+                    }
+                }
+
+                AllFolders = orderedFolders;
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private bool _isDragging;
+        public bool IsDragging
+        {
+            get => _isDragging;
+            set
+            {
+                _isDragging = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ICommand _enableDraggingCommand;
+        public ICommand EnableDraggingCommand => _enableDraggingCommand ??= new Command(f =>
+        {
+            IsDragging = !IsDragging;
+        });
+
+
+        private ICommand _cancelDraggingCommand;
+        public ICommand CancelDraggingCommand => _cancelDraggingCommand ??= new Command(f =>
+        {
+            IsDragging = !IsDragging;
+            LoadFoldersOrder();
+        });
+
+        private ICommand _saveDraggingCommand;
+        public ICommand SaveDraggingCommand => _saveDraggingCommand ??= new Command(f =>
+        {
+            IsDragging = !IsDragging;
+            SaveFoldersOrder();
+        });
+
+        #endregion
     }
 }

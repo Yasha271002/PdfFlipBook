@@ -16,15 +16,17 @@
                 Content="На главную" FontSize="50" Foreground="{StaticResource WhiteColorForeground}"
                 VerticalAlignment="Top" Width="400" Height="120"
                 Margin="157 60 0 0"
+                Command="helper:CommonCommands.NavigateCommand"
+                CommandParameter="{x:Static helper:PageTypes.StartPage}"
                 Background="{StaticResource DarkBackgroundThemes}" />
-        <Border Width="1982"
+        <Border Width="2016"
                 Height="1860" CornerRadius="20">
             <Border.Background>
                 <SolidColorBrush Color="{StaticResource DarkColor}"
                                  Opacity="0.3" />
             </Border.Background>
             <Border Style="{StaticResource SettingBorderStyle}"
-                    Width="1886" Height="1764" Padding="32">
+                    Width="1916" Height="1764" Padding="32">
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <Button
@@ -48,7 +50,7 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderThickness="2" CornerRadius="10" Width="903" Height="508">
+                                        <Border BorderThickness="2" CornerRadius="10" Margin="5" Width="890" Height="508">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Setter Property="BorderBrush" Value="Transparent" />

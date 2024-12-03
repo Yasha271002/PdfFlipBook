@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using PdfFlipBook.Models;
 
 namespace PdfFlipBook.Views.Controls.Color
 {
@@ -69,15 +70,17 @@ namespace PdfFlipBook.Views.Controls.Color
 
         private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is ColorPicker picker)
+            if (d is not ColorPicker picker || e.NewValue is not System.Windows.Media.Color newColor) return;
+            if (!picker.SelectedColor.Equals(newColor))
             {
-                picker.SelectedBrush = new SolidColorBrush(picker.SelectedColor);
+                picker.SelectedBrush = new SolidColorBrush(newColor);
             }
         }
 
         private void UpdateColor()
         {
             SelectedColor = ConvertHsbToRgb(Hue, Saturation, Brightness);
+            SelectedBrush = new SolidColorBrush(SelectedColor);
         }
 
         private static System.Windows.Media.Color ConvertHsbToRgb(double hue, double saturation, double brightness)

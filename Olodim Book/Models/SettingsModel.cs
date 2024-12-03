@@ -1,4 +1,5 @@
-﻿using Core;
+﻿using System.Windows.Media;
+using Core;
 using PdfFlipBook.Properties;
 
 namespace PdfFlipBook.Models
@@ -50,5 +51,19 @@ namespace PdfFlipBook.Models
             get => GetOrCreate<SelectThemes>();
             set => SetAndNotify(value);
         }
+
+        public SolidColorBrush SelectedBrush
+        {
+            get => GetOrCreate<SolidColorBrush>();
+            set => SetAndNotify(value);
+        }
+
+        public System.Windows.Media.Color SelectedColor
+        {
+            get => GetOrCreate<Color>();
+            set => SetAndNotify(value);
+        }
+
+
     }
 }

@@ -146,7 +146,7 @@
                       controls:VirtualizingWrapPanel.VirtualizationMode="Standard"
                       controls:VirtualizingWrapPanel.ScrollUnit="Pixel"
                       controls:VirtualizingWrapPanel.CacheLengthUnit="Item"
-                      controls:VirtualizingWrapPanel.CacheLength="0,0" MaxHeight="1320"
+                      controls:VirtualizingWrapPanel.CacheLength="0,0" MaxHeight="1350"
                       Margin="0,300,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -174,14 +174,14 @@
                         </Button.Style>
                         <Button.Template>
                             <ControlTemplate>
-                                <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="15 0"
+                                <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="15 "
                                         Background="{DynamicResource DarkBackgroundThemes}" BorderBrush="#5C5C5C"
                                         BorderThickness="2"
                                         CornerRadius="50" >
                                     <Grid>
                                         <StackPanel Orientation="Vertical" ClipToBounds="True"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Image Source="{Binding Icon}" Height="200"></Image>
+                                            <Image Source="{Binding Icon}" Height="339"></Image>
                                             <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34"
                                                        Foreground="{DynamicResource WhiteColorForeground}" Margin="0,20,0,0"
                                                        TextTrimming="WordEllipsis"

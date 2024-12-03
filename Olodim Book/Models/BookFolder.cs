@@ -9,6 +9,13 @@ namespace PdfFlipBook.Models
         [JsonIgnore] public string Icon { get; set; }
 
         [JsonIgnore]
+        public string? Background
+        {
+            get => GetOrCreate<string?>();
+            set => SetAndNotify(value);
+        }
+
+        [JsonIgnore]
         public bool IsDragging
         {
             get => GetOrCreate<bool>();

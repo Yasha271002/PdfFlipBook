@@ -131,4 +131,27 @@
             </StackPanel>
         </Border>
     </ControlTemplate>
+
+    <ControlTemplate x:Key="SelectPage" TargetType="Button">
+        <Border BorderBrush="{StaticResource WhiteThemes}"
+                CornerRadius="10"
+                BorderThickness="3"
+                Background="{StaticResource DarkBackgroundThemes}">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}"
+                       FontSize="50"
+                       FontWeight="Medium"
+                       Foreground="{StaticResource WhiteColorForeground}">
+                <Run Text="Страница"/>
+                <Run Text="{Binding PageNumber, UpdateSourceTrigger=PropertyChanged}"/>
+            </TextBlock>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="SwitchPageButton" TargetType="Button">
+        <Border CornerRadius="10"
+                Width="114" Height="114"
+                Background="{StaticResource DarkBackgroundThemes}">
+            <ContentPresenter ContentTemplate="{TemplateBinding Content}"
+                               Width="48" Height="48"/>
+        </Border>
+    </ControlTemplate>
 </ResourceDictionary>

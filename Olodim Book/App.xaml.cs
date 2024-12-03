@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Threading;
+using PdfFlipBook.Helper.Logger;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Views.Pages;
@@ -15,7 +17,13 @@ namespace PdfFlipBook
     public partial class App : Application,INotifyPropertyChanged
     {
         public static App CurrentApp => App.Current as App;
-       
+
+        private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            Logger.Instance._logger.Error(e.Exception.Message);
+            e.Handled = true;
+        }
+
         private bool _isLoading;
 
         private List<BookPDF> _actualBooks;
@@ -71,7 +79,6 @@ namespace PdfFlipBook
                 OnPropertyChanged();
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

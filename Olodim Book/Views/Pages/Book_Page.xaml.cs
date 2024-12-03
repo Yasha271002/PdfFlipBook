@@ -98,6 +98,9 @@ namespace PdfFlipBook.Views.Pages
             {
                 _pageIndex = value;
                 OnPropertyChanged();
+
+                CurrentPageNumber = PageIndex;
+                GetPageNumber();
             }
         }
 
@@ -137,6 +140,9 @@ namespace PdfFlipBook.Views.Pages
 
             _inactivityHelper = new BaseInactivityHelper(Convert.ToInt32(settings.InactivityTime));
             _inactivityHelper.OnInactivity += OnInactivityDetected;
+
+            CurrentPageNumber = 0;
+            GetPageNumber();
         }
 
         private ICommand _backCommand;
@@ -227,6 +233,7 @@ namespace PdfFlipBook.Views.Pages
                 }
             }
 
+            GetPageNumber();
             Book.AnimateToNextPage(false, 1000);
         }
 
@@ -289,6 +296,8 @@ namespace PdfFlipBook.Views.Pages
                     if (ostatok == 1)
                         page--;
 
+                    PageIndex = page;
+
                     Book.CurrentSheetIndex = page / 2;
                     int index = Book.CurrentSheetIndex;
                     try
@@ -310,6 +319,7 @@ namespace PdfFlipBook.Views.Pages
             {
                 return;
             }
+
 
             var index = page / 2;
             if (index * 2 < 0 || index * 2 >= AllPages.Count) return;
@@ -366,6 +376,7 @@ namespace PdfFlipBook.Views.Pages
                 }
                 catch (Exception exception)
                 {
+                    
                 }
             }
         }
@@ -382,5 +393,94 @@ namespace PdfFlipBook.Views.Pages
             _inactivityHelper.OnInactivity -= OnInactivityDetected;
             _inactivityHelper.OnInactivity += OnInactivityDetected;
         }
+
+        #region CountPage
+
+        private int _currentPageNumber;
+
+        public int CurrentPageNumber
+        {
+            get => _currentPageNumber;
+            set
+            {
+                _currentPageNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string? _pageNumber;
+        public string? PageNumber
+        {
+            get => _pageNumber;
+            set
+            {
+                _pageNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ICommand _switchPageCommand;
+        public ICommand SwitchPageCommand => _switchPageCommand ??= new Command(f =>
+        {
+            if (f is not string type)
+                return;
+
+            switch (type)
+            {
+                case "+":
+                    SwitchPage(type);
+                    break;
+                case "-":
+                    SwitchPage(type);
+                    break;
+            }
+        });
+
+        private void SwitchPage(string type)
+        {
+            PageIndex = type switch
+            {
+                "+" => Book.CurrentSheetIndex + 1,
+                "-" => Book.CurrentSheetIndex - 1,
+                _ => PageIndex
+            };
+
+            var halfPhotosCount = (int)Math.Ceiling(AllPhotos.Count / 2.0);
+            IndexBook = GlobalSettings.Instance.Books.IndexOf(
+                GlobalSettings.Instance.Books.FirstOrDefault(f => f.Title == BookTitle));
+
+            if (PageIndex >= halfPhotosCount)
+            {
+                if (SettingsModel.Repeat)
+                {
+                    Book.CurrentSheetIndex = 0;
+                    PageIndex = 0;
+                }
+                else
+                {
+                    if (GlobalSettings.Instance.Books.Count == 0) return;
+                    if (IndexBook >= GlobalSettings.Instance.Books.Count)
+                        IndexBook = 0;
+
+                    var newTitle = GlobalSettings.Instance.Books[IndexBook].Title;
+                    ReloadBookPages(newTitle);
+
+                    IndexBook++;
+                    PageIndex = 0;
+                    return;
+                }
+            }
+
+            GetPageNumber();
+            Book.AnimateToNextPage(false, 1000);
+        }
+
+        private void GetPageNumber()
+        {
+            PageNumber = $"{CurrentPageNumber}-{++CurrentPageNumber} из {AllPages.Count}";
+        }
+
+
+        #endregion
     }
 }

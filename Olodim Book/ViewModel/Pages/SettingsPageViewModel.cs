@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Core;
 using PdfFlipBook.Helper;
-using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
+using PdfFlipBook.Views.Controls.Color;
 
 namespace PdfFlipBook.ViewModel.Pages
 {
     public class SettingsPageViewModel : ObservableObject
     {
-        DispatcherTimer _timer = new DispatcherTimer();
+        DispatcherTimer _timer = new();
         private int _sec = 0;
 
         public SettingsModel SettingsModel
@@ -36,11 +35,7 @@ namespace PdfFlipBook.ViewModel.Pages
         public System.Windows.Media.Color SelectedColor
         {
             get => GetOrCreate<System.Windows.Media.Color>();
-            set
-            {
-                SetAndNotify(value);
-                SelectedBrush = new SolidColorBrush(value);
-            }
+            set => SetAndNotify(value);
         }
 
         public SettingsPageViewModel(SettingsModel settings)
@@ -48,6 +43,8 @@ namespace PdfFlipBook.ViewModel.Pages
             SettingsModel = settings;
             StartPageSettings();
         }
+
+        #region ICommandRegion
 
         private ICommand _checkPasswordCommand;
 
@@ -89,6 +86,10 @@ namespace PdfFlipBook.ViewModel.Pages
             helper.WriteJsonToFile(filePath, SettingsModel, false);
             CommonCommands.GoBackCommand!.Execute(null);
         }));
+
+        #endregion
+        #region MethodsRegion
+
 
         private void EditSettings(string type)
         {
@@ -210,5 +211,7 @@ namespace PdfFlipBook.ViewModel.Pages
                 ShowSettings = false
             };
         }
+
+        #endregion
     }
 }

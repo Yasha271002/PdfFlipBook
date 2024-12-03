@@ -27,7 +27,7 @@
                     Style="{StaticResource SettingBorderStyle}">
                 <TextBlock Style="{StaticResource SettingsButtonText}"
                            Text="{TemplateBinding Content}"
-                           FontSize="50"/>
+                           FontSize="50" />
             </Border>
         </ControlTemplate>
         <Style TargetType="Border" x:Key="RadioButtonBorderStyle">
@@ -103,7 +103,7 @@
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
         <Border Style="{DynamicResource SettingBorderStyle}" Opacity="0.4"
                 Width="1982"
-                Height="1820" >
+                Height="1820">
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="MouseDown">
                     <b:InvokeCommandAction Command="{Binding LostFocusCommand}" CommandParameter="Interval" />
@@ -134,7 +134,8 @@
                              Tag="{Binding SettingsModel.InactivityTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="GotFocus">
-                                <b:InvokeCommandAction Command="{Binding GotFocusCommand}" CommandParameter="Inactivity" />
+                                <b:InvokeCommandAction Command="{Binding GotFocusCommand}"
+                                                       CommandParameter="Inactivity" />
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                     </TextBox>
@@ -152,7 +153,7 @@
                              Text="{Binding PageSettings.Interval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                              Tag="{Binding SettingsModel.IntervalSwitchPage, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                              Foreground="{StaticResource WhiteColorForeground}"
-                             FontSize="50" >
+                             FontSize="50">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="GotFocus">
                                 <b:InvokeCommandAction Command="{Binding GotFocusCommand}" CommandParameter="Interval" />
@@ -168,42 +169,42 @@
                         Text="Задний фон" HorizontalAlignment="Left"
                         Style="{DynamicResource SettingsTextBlock}"
                         Margin="32" />
-                    <Button Content="Изменить" HorizontalAlignment="Right" 
+                    <Button Content="Изменить" HorizontalAlignment="Right"
                             Width="500" Height="125" Foreground="White" Background="#5C5C5C"
                             Template="{StaticResource EditButton}" FontSize="50"
                             Command="helper:CommonCommands.NavigateCommand"
-                            CommandParameter="{x:Static helper:PageTypes.SelectBackground}"/>
+                            CommandParameter="{x:Static helper:PageTypes.SelectBackground}" />
                 </Grid>
             </Border>
 
-            <Border Style="{StaticResource SettingBorderStyle}"  Width="1726" Height="285"
+            <Border Style="{StaticResource SettingBorderStyle}" Width="1726" Height="285"
                     Padding="32" Margin="0 16 0 16">
                 <Grid>
-                    <TextBlock Text="Цвет жанров" Style="{StaticResource SettingsTextBlock}" 
-                               VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Цвет жанров" Style="{StaticResource SettingsTextBlock}"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" />
+                    <color:ColorPicker
+                       SelectedBrush="{Binding SettingsModel.SelectedBrush, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                       SelectedColor="{Binding SettingsModel.SelectedColor, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                     <Border Height="50" Width="100"
-                            Background="{Binding SelectedBrush, UpdateSourceTrigger=PropertyChanged}"
-                            Margin="0 0 0 10" VerticalAlignment="Top" HorizontalAlignment="Right"/>
+                            Background="{Binding SettingsModel.SelectedBrush, UpdateSourceTrigger=PropertyChanged}"
+                            Margin="0 0 0 10" VerticalAlignment="Top" HorizontalAlignment="Right" />
                     <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"
                             Style="{StaticResource SettingBorderStyle}" BorderBrush="DarkGray"
                             BorderThickness="4" Width="500" Height="128">
                         <Grid>
                             <Button Template="{DynamicResource CancelButton}"
                                     HorizontalAlignment="Left" Margin="32 0 0 0"
-                                    Command="{Binding EditSettingsCommand}" CommandParameter="Cancel"/>
-                            <TextBlock  Foreground="#808080"  VerticalAlignment="Center" FontSize="50"
-                                       TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding SelectedColor,
+                                    Command="{Binding EditSettingsCommand}" CommandParameter="Cancel" />
+                            <TextBlock Foreground="#808080" VerticalAlignment="Center" FontSize="50"
+                                       TextAlignment="Center" HorizontalAlignment="Center"
+                                       Text="{Binding SettingsModel.SelectedColor,Mode=OneWay,
                                 UpdateSourceTrigger=PropertyChanged}"
-                                       FontFamily="{StaticResource Montserrat}"/>
-                            <Button  Template="{DynamicResource CorrectButton}"
-                                     HorizontalAlignment="Right" Margin="0 0 35 0 "
-                                     Command="{Binding EditSettingsCommand}" CommandParameter="Edit"/>
+                                       FontFamily="{StaticResource Montserrat}" />
+                            <Button Template="{DynamicResource CorrectButton}"
+                                    HorizontalAlignment="Right" Margin="0 0 35 0 "
+                                    Command="{Binding EditSettingsCommand}" CommandParameter="Edit" />
                         </Grid>
                     </Border>
-                    <color:ColorPicker SelectedBrush="{Binding SelectedBrush,
-                        UpdateSourceTrigger=PropertyChanged}"
-                                       SelectedColor="{Binding SelectedColor, 
-                        UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </Border>
 
@@ -213,21 +214,24 @@
                         Text="Схема оформления"
                         Style="{DynamicResource SettingsTextBlock}"
                         HorizontalAlignment="Left" Margin="32 32 0 16" />
-                    <StackPanel Orientation="Horizontal" Height="149" Width="1662" Background="{StaticResource DarkThemes}" 
+                    <StackPanel Orientation="Horizontal" Height="149" Width="1662"
+                                Background="{StaticResource DarkThemes}"
                                 Margin="12">
                         <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
-                                     Tag="Светлая" >
+                                     Tag="Светлая">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="GotFocus">
-                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}" CommandParameter="Interval" />
+                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}"
+                                                           CommandParameter="Interval" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </RadioButton>
-                        <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}" 
+                        <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
                                      Tag="Тёмная">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="GotFocus">
-                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}" CommandParameter="Interval" />
+                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}"
+                                                           CommandParameter="Interval" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </RadioButton>
@@ -241,23 +245,26 @@
                         Text="Действие после окончания книги"
                         Style="{DynamicResource SettingsTextBlock}"
                         HorizontalAlignment="Left" Margin="32 32 0 16" />
-                    <StackPanel Orientation="Horizontal" Height="149" Width="1662" Background="{StaticResource DarkThemes}" 
+                    <StackPanel Orientation="Horizontal" Height="149" Width="1662"
+                                Background="{StaticResource DarkThemes}"
                                 Margin="12">
                         <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
-                                     Tag="Начать заново" 
-                                     IsChecked="{Binding SettingsModel.Repeat,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" >
+                                     Tag="Начать заново"
+                                     IsChecked="{Binding SettingsModel.Repeat,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="GotFocus">
-                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}" CommandParameter="Interval" />
+                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}"
+                                                           CommandParameter="Interval" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </RadioButton>
-                        <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}" 
+                        <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
                                      IsChecked="{Binding SettingsModel.NextPage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      Tag="Следующая книга">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="GotFocus">
-                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}" CommandParameter="Interval" />
+                                    <b:InvokeCommandAction Command="{Binding LostFocusCommand}"
+                                                           CommandParameter="Interval" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </RadioButton>

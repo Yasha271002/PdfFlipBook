@@ -21,6 +21,7 @@ using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
 using Newtonsoft.Json;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Logger;
 using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
@@ -748,6 +749,7 @@ namespace PdfFlipBook.Views.Pages
                 if (!File.Exists(FoldersOrderFileName)) return;
                 var json = File.ReadAllText(FoldersOrderFileName);
                 var savedOrder = JsonConvert.DeserializeObject<List<string>>(json);
+
 
                 var orderedFolders = new ObservableCollection<BookFolder>();
 

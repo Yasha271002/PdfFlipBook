@@ -183,6 +183,8 @@ namespace PdfFlipBook.Views.Pages
 
             CurrentPageNumber = 0;
             GetPageNumber();
+
+            _audioHelper = new AudioHelper(settings.SwitchSoundPath, settings.Volume);
         }
 
         #region ICommandRegion
@@ -310,6 +312,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void Book_Page_OnUnloaded(object sender, RoutedEventArgs e)
         {
+            _audioHelper.Exit();
             _pageFlipTimer.Stop();
             _inactivityHelper.OnInactivity -= OnInactivityDetected;
         }
@@ -317,48 +320,59 @@ namespace PdfFlipBook.Views.Pages
         private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             int index = Book.CurrentSheetIndex;
-            // MessageBox.Show(index.ToString());
             var xPosition = e.GetPosition(this).X;
+
             if (AllPages.Count <= 30) return;
-            if (xPosition < 1920)
+
+            if (xPosition < 1920 / 2)
             {
-                if (!(StartPointX > 1920)) return;
-                try
+                if (StartPointX > 1920 / 2)
                 {
-                    AllPages.RemoveAt(index * 2 + 1);
-                    AllPages.Insert(index * 2 + 1, AllPhotos[index * 2 + 1]);
-                    AllPages.RemoveAt(index * 2 + 2);
-                    AllPages.Insert(index * 2 + 2, AllPhotos[index * 2 + 2]);
-                    AllPages.RemoveAt(index * 2 + 3);
-                    AllPages.Insert(index * 2 + 3, AllPhotos[index * 2 + 3]);
-                    AllPages.RemoveAt(index * 2 + 4);
-                    AllPages.Insert(index * 2 + 4, AllPhotos[index * 2 + 4]);
-                }
-                catch (Exception exception)
-                {
+                    try
+                    {
+                        AllPages.RemoveAt(index * 2 + 1);
+                        AllPages.Insert(index * 2 + 1, AllPhotos[index * 2 + 1]);
+                        AllPages.RemoveAt(index * 2 + 2);
+                        AllPages.Insert(index * 2 + 2, AllPhotos[index * 2 + 2]);
+                        AllPages.RemoveAt(index * 2 + 3);
+                        AllPages.Insert(index * 2 + 3, AllPhotos[index * 2 + 3]);
+                        AllPages.RemoveAt(index * 2 + 4);
+                        AllPages.Insert(index * 2 + 4, AllPhotos[index * 2 + 4]);
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
+
+                    FlipPage("+");
                 }
             }
-
             else
             {
-                if (!(StartPointX < 1920)) return;
-                try
+                if (StartPointX < 1920 / 2)
                 {
-                    AllPages.RemoveAt(index * 2 - 4);
-                    AllPages.Insert(index * 2 - 4, AllPhotos[index * 2 - 4]);
-                    AllPages.RemoveAt(index * 2 - 5);
-                    AllPages.Insert(index * 2 - 5, AllPhotos[index * 2 - 5]);
-                    AllPages.RemoveAt(index * 2 - 6);
-                    AllPages.Insert(index * 2 - 6, AllPhotos[index * 2 - 6]);
-                    AllPages.RemoveAt(index * 2 - 7);
-                    AllPages.Insert(index * 2 - 7, AllPhotos[index * 2 - 7]);
-                }
-                catch (Exception exception)
-                {
+                    try
+                    {
+                        AllPages.RemoveAt(index * 2 - 4);
+                        AllPages.Insert(index * 2 - 4, AllPhotos[index * 2 - 4]);
+                        AllPages.RemoveAt(index * 2 - 5);
+                        AllPages.Insert(index * 2 - 5, AllPhotos[index * 2 - 5]);
+                        AllPages.RemoveAt(index * 2 - 6);
+                        AllPages.Insert(index * 2 - 6, AllPhotos[index * 2 - 6]);
+                        AllPages.RemoveAt(index * 2 - 7);
+                        AllPages.Insert(index * 2 - 7, AllPhotos[index * 2 - 7]);
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
+
+                    FlipPage("-");
                 }
             }
-        }
 
+            PlaySound();
+        }
 
         private void Book_Page_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -390,6 +404,7 @@ namespace PdfFlipBook.Views.Pages
                 AllPages.Add(photoPath);
             }
         }
+
         private void ReloadPage(int page)
         {
             if (page < 0 || page >= AllPages.Count / 2)
@@ -413,8 +428,11 @@ namespace PdfFlipBook.Views.Pages
         #region FlipPageMethods
         private void GetPageNumber()
         {
-            PageNumber = $"{CurrentPageNumber}-{++CurrentPageNumber} из {AllPages.Count}";
+            int currentPage = Book.CurrentSheetIndex * 2 + 1;
+            int totalPages = AllPages.Count;
+            PageNumber = $"{currentPage}-{currentPage + 1} из {totalPages}";
         }
+
         private void FlipPage(string type)
         {
             switch (type)
@@ -424,14 +442,18 @@ namespace PdfFlipBook.Views.Pages
                     type = Flip(type);
                     if (type == "stop")
                         return;
+                    PlaySound();
                     Book.AnimateToNextPage(false, 1000);
+                    GetPageNumber();
                     break;
                 case "-":
                     PageIndex = Book.CurrentSheetIndex - 2;
                     type = Flip(type);
                     if (type == "stop")
                         return;
+                    PlaySound();
                     Book.AnimateToPreviousPage(false, 1000);
+                    GetPageNumber();
                     break;
                 default:
                     return;
@@ -474,6 +496,28 @@ namespace PdfFlipBook.Views.Pages
             GetPageNumber();
             return type;
         }
+        #endregion
+
+        #region Sound
+
+        private AudioHelper _audioHelper;
+
+        private void PlaySound()
+        {
+            if (_audioHelper.IsPlaying)
+                _audioHelper.Stop();
+
+            _audioHelper.Play();
+        }
+
+        private void StopSound()
+        {
+            if (!_audioHelper.IsPlaying)
+                return;
+
+            _audioHelper.Stop();
+        }
+
         #endregion
     }
 }

@@ -5,12 +5,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
@@ -28,15 +28,6 @@ namespace PdfFlipBook.Views.Pages
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
-            "ActualBack", typeof(string), typeof(Razdel_Page), new PropertyMetadata(default(string)));
-
-        public string ActualBack
-        {
-            get { return (string)GetValue(ActualBackProperty); }
-            set { SetValue(ActualBackProperty, value); }
         }
 
         public static readonly DependencyProperty ActualBooksProperty = DependencyProperty.Register(
@@ -221,6 +212,17 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
+        private BookFolder _selectRazdel;
+        public BookFolder SelectRazdel
+        {
+            get => _selectRazdel;
+            set
+            {
+                _selectRazdel = value;
+                OnPropertyChanged();
+            }
+        }
+
         private ScrollViewer _booksScrollViewer;
         private ScrollViewer _radioScrollViewer;
 
@@ -228,16 +230,15 @@ namespace PdfFlipBook.Views.Pages
         private const int _initialLoadCount = 20; 
         private const int _incrementLoadCount = 10; 
         private bool _isLoadingMoreBooks = false;
+        private AudioHelper _audioHelper;
 
-
-        public Razdel_Page(string razdel, ObservableCollection<BookPDF> actualBooks, SettingsModel settings)
+        public Razdel_Page(string razdel, ObservableCollection<BookPDF> actualBooks, SettingsModel settings,
+            BookFolder selectRazdel)
         {
             InitializeComponent();
 
-            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
-
             ActualBooks = actualBooks;
-
+            SelectRazdel = selectRazdel;
             ActualRazdel = razdel;
             SettingsModel = settings;
 
@@ -257,6 +258,9 @@ namespace PdfFlipBook.Views.Pages
             };
             SelectedGridSize = GridSizes.FirstOrDefault();
             UpdatePageButtonsState();
+
+            _audioHelper = new AudioHelper(SelectRazdel.Sound, GlobalSettings.Instance.Settings.Volume);
+            PlaySound();
         }
 
         private ICommand _moveUpCommand;
@@ -330,11 +334,6 @@ namespace PdfFlipBook.Views.Pages
                 SelectedBookIndex++;
         }
 
-        private void Razdel_Page_OnUnloaded(object sender, RoutedEventArgs e)
-        {
-            ActualBooks.Clear();
-        }
-
         private void LearnCountBooks(ObservableCollection<BookPDF> books)
         {
             CountBooks = new List<CountBooksModel>();
@@ -370,6 +369,14 @@ namespace PdfFlipBook.Views.Pages
                                                        actualBook.Title)[0];
                 ActualBooks.Add(actualBook);
             }
+
+            
+        }
+
+        private void Razdel_Page_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            ActualBooks.Clear();
+            _audioHelper.Exit();
         }
 
         private void ScrollToSelectedElements()
@@ -560,5 +567,25 @@ namespace PdfFlipBook.Views.Pages
         {
             e.Handled = true;
         }
+
+        #region Sound
+
+        private void PlaySound()
+        {
+            if (_audioHelper.IsPlaying)
+                _audioHelper.Stop();
+
+            _audioHelper.Play();
+        }
+
+        private void StopSound()
+        {
+            if (!_audioHelper.IsPlaying)
+                return;
+
+            _audioHelper.Stop();
+        }
+
+        #endregion
     }
 }

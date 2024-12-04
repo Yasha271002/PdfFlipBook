@@ -5,7 +5,6 @@ using System.Windows.Threading;
 using Core;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Models;
-using PdfFlipBook.Views.Controls.Color;
 
 namespace PdfFlipBook.ViewModel.Pages
 {

@@ -37,7 +37,8 @@
                             Style="{StaticResource TitleTextBlockStyle}" />
                         <Button Template="{StaticResource SaveBackgroundButton}"
                                 Background="Transparent"
-                                Margin="957 0 0 0" Foreground="#00D220"/>
+                                Margin="957 0 0 0" Foreground="#00D220"
+                                Command="{Binding SaveBackgroundCommand}"/>
                     </StackPanel>
 
                     <Grid>

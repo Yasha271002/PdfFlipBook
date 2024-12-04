@@ -14,6 +14,13 @@ namespace PdfFlipBook.Models
             get => GetOrCreate<string?>();
             set => SetAndNotify(value);
         }
+        
+        [JsonIgnore]
+        public string? Sound
+        {
+            get => GetOrCreate<string?>();
+            set => SetAndNotify(value);
+        }
 
         [JsonIgnore]
         public bool IsDragging

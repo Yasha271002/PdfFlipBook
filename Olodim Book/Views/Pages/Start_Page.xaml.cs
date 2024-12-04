@@ -17,17 +17,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using MoonPdfLib.Helper;
 using MoonPdfLib.MuPdf;
 using Newtonsoft.Json;
 using PdfFlipBook.Helper;
-using PdfFlipBook.Helper.Logger;
 using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
 using Path = System.IO.Path;
-using Point = System.Windows.Point;
 
 namespace PdfFlipBook.Views.Pages
 {
@@ -76,6 +73,17 @@ namespace PdfFlipBook.Views.Pages
         {
             get { return (string)GetValue(ActualRazdelProperty); }
             set { SetValue(ActualRazdelProperty, value); }
+        }
+
+        private BookFolder _selectRazdel;
+        public BookFolder SelectRazdel
+        {
+            get => _selectRazdel;
+            set
+            {
+                _selectRazdel = value;
+                OnPropertyChanged();
+            }
         }
 
 
@@ -320,14 +328,21 @@ namespace PdfFlipBook.Views.Pages
             InitializeComponent();
             AuthorBookRB.IsChecked = true;
 
+            if (Directory.Exists("PDFs"))
+                Directory.CreateDirectory("PDFs");
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();
+            
+            CreateFolders(a);
+
             foreach (var BF in a.Select(s => new BookFolder()
                      {
                          Title = s.Split('\\').Last(),
-                         Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString()
-                     }))
+                         Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString(),
+                         Background = Directory.GetFiles(s + "\\Background\\").FirstOrDefault()!.ToString(),
+                         Sound = Directory.GetFiles(s + "\\Sound\\").FirstOrDefault()!.ToString()
+            }))
             {
                 AllFolders.Add(BF);
             }
@@ -335,6 +350,24 @@ namespace PdfFlipBook.Views.Pages
             LoadFoldersOrder();
         }
 
+        private void CreateFolders(List<string> pathList)
+        {
+            foreach (var directory in pathList)
+            {
+                var backgroundPath = Path.Combine(directory, "Background");
+                var logoPath = Path.Combine(directory, "Logo");
+                var soundPath = Path.Combine(directory, "Sound");
+
+                if (!Directory.Exists(backgroundPath))
+                    Directory.CreateDirectory(backgroundPath);
+
+                if (!Directory.Exists(logoPath))
+                    Directory.CreateDirectory(logoPath);
+
+                if (!Directory.Exists(soundPath))
+                    Directory.CreateDirectory(soundPath);
+            }
+        }
 
         private async Task UpdatePhotos()
         {
@@ -469,6 +502,7 @@ namespace PdfFlipBook.Views.Pages
             {
                 GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks =
                     AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList());
+                //var currentRazdel = AllFolders.FirstOrDefault(f=>f.) 
                 var BookData = Tuple.Create(c.ToString(), SettingsModel);
                 ExecuteNavigation(BookData);
 
@@ -505,11 +539,13 @@ namespace PdfFlipBook.Views.Pages
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
                 ActualRazdel = c.ToString();
+                SelectRazdel = AllFolders.FirstOrDefault(f => f.Title == c.ToString());
+
                 var actualBooks = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks =
                     new List<BookPDF>(AllBooks.Where(x => x.FullPath.Contains(c.ToString()))));
 
                 GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(actualBooks);
-                var razdelData = Tuple.Create(ActualRazdel, actualBooks, SettingsModel);
+                var razdelData = Tuple.Create(ActualRazdel, actualBooks,SettingsModel, SelectRazdel);
                 ExecuteNavigation(razdelData);
             }));
 
@@ -601,6 +637,18 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
+        private AudioHelper _audioHelper;
+
+        private void CheckExist(string folder)
+        {
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+        }
+
+        private void Start_Page_OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            _audioHelper.Exit();
+        }
 
         private async void Start_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -608,11 +656,25 @@ namespace PdfFlipBook.Views.Pages
             await UpdatePhotos();
 
             var helper = new JsonHelper();
-            var jsonPath = "Settings/Settings.json";
-            var directoryPath = "Settings";
 
-            if (!Directory.Exists(directoryPath))
-                Directory.CreateDirectory(directoryPath);
+            var folderList = new List<string>
+            {
+                "Settings",
+                "Sound/BackgroundSound",
+                "Sound/SwitchPageSound",
+                "Sound"
+            };
+
+            foreach (var folder in folderList)
+            {
+                CheckExist(folder);
+            }
+
+            var jsonPath = "Settings/Settings.json";
+            var backgroundPath = "background.json";
+
+            var backgroundSound = "Sound/BackgroundSound/MainBackground.mp3";
+            var switchSound = "Sound/SwitchPageSound/SwitchPageSound.mp3";
 
             if (!File.Exists(jsonPath))
             {
@@ -622,11 +684,15 @@ namespace PdfFlipBook.Views.Pages
                     IntervalSwitchPage = "5",
                     Password = "1234",
                     Repeat = false,
-                    NextPage = true
+                    NextPage = true,
+                    Volume = 0.5f,
+                    MainBackgroundSoundPath = Path.GetFullPath(backgroundSound),
+                    SwitchSoundPath = Path.GetFullPath(switchSound),
                 };
                 helper.WriteJsonToFile(jsonPath, settings, false);
 
                 SettingsModel = settings;
+                GlobalSettings.Instance.Settings = SettingsModel;
             }
             else
             {
@@ -634,23 +700,8 @@ namespace PdfFlipBook.Views.Pages
                 SettingsModel = settings;
             }
 
-            //List<BookPDF> AllBooks2 = new List<BookPDF>();
-            //var pdfFolders = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\PDFs");
-            //foreach (var pdfFolder in pdfFolders)
-            //{
-            //    string folderToImages = Directory.GetCurrentDirectory() + "\\Temp\\" +
-            //                            pdfFolder.Split('\\').Last().Replace(".pdf", "");
-            //    if (Directory.Exists(folderToImages))
-            //    {
-            //        DisposableImage icon = new DisposableImage(Directory.GetFiles(folderToImages)[0]);
-            //        string title = pdfFolder.Split('\\').Last().Replace(".pdf", "");
-            //        BookPDF bpdf = new BookPDF() {Title = title, Icon = icon};
-            //        AllBooks2.Add(bpdf);
-            //    }
-
-            //}
-            //AllBooks = AllBooks2;
-            //App.CurrentApp.IsLoading = false;
+            _audioHelper = new AudioHelper(SettingsModel.MainBackgroundSoundPath, SettingsModel.Volume);
+            PlaySound();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -725,6 +776,26 @@ namespace PdfFlipBook.Views.Pages
             sb.Begin(CoolKeyBoard);
             HideButton.Visibility = Visibility.Visible;
         }
+
+        #region Sound
+
+        private void PlaySound()
+        {
+            if (_audioHelper.IsPlaying)
+                _audioHelper.Stop();
+
+            _audioHelper.Play();
+        }
+
+        private void StopSound()
+        {
+            if (!_audioHelper.IsPlaying)
+                return;
+
+            _audioHelper.Stop();
+        }
+
+        #endregion
 
         #region Drag
 
@@ -807,5 +878,7 @@ namespace PdfFlipBook.Views.Pages
         });
 
         #endregion
+
+        
     }
 }

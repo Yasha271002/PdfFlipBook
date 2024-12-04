@@ -34,6 +34,12 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
 
+        public float Volume
+        {
+            get => GetOrCreate(0.5f);
+            set => SetAndNotify(value);
+        }
+
         public bool Repeat
         {
             get => GetOrCreate<bool>();
@@ -64,6 +70,16 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
 
+        public string? MainBackgroundSoundPath
+        {
+            get => GetOrCreate<string>();
+            set => SetAndNotify(value);
+        }
 
+        public string? SwitchSoundPath
+        {
+            get => GetOrCreate<string>();
+            set => SetAndNotify(value);
+        }
     }
 }

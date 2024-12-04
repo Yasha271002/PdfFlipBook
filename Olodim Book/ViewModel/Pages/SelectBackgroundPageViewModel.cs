@@ -2,7 +2,10 @@
 using System.IO;
 using System.Linq;
 using Core;
+using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace PdfFlipBook.ViewModel.Pages
 {
@@ -14,20 +17,23 @@ namespace PdfFlipBook.ViewModel.Pages
             set => SetAndNotify(value);
         }
 
-        private string? _path = "Background";
+        private readonly JsonHelper _jsonHelper;
+        private string? _path = "background.json";
+        private string? _directoryPath = "Backgrounds";
 
         public SelectBackgroundPageViewModel()
         {
+            _jsonHelper = new JsonHelper();
             ImageModel = new List<ImageModel>();
             GetImages();
         }
 
         private void GetImages()
         {
-            if (Directory.Exists(_path))
-                Directory.CreateDirectory(_path);
+            if (Directory.Exists(_directoryPath))
+                Directory.CreateDirectory(_directoryPath);
 
-            var files = Directory.GetFiles(_path).ToList();
+            var files = Directory.GetFiles(_directoryPath).ToList();
 
             foreach (var file in files)
             {
@@ -37,5 +43,15 @@ namespace PdfFlipBook.ViewModel.Pages
                 });
             }
         }
+
+        public ICommand SaveBackgroundCommand => GetOrCreate(new RelayCommand(f =>
+        {
+            var selectedImage = ImageModel.FirstOrDefault(s => s.IsSelected == true);
+
+            if (selectedImage == null) return;
+
+            BackgroundSingleton.Instance.Background = Path.GetFullPath(selectedImage.ImagePath!);
+            _jsonHelper.WriteJsonToFile(_path, Path.GetFullPath(selectedImage.ImagePath!), false);
+        }));
     }
 }

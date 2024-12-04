@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:PdfFlipBook"
         mc:Ignorable="d"
         Loaded="MainWindow_OnLoaded"
-        xmlns:controls="clr-namespace:WPFMitsuControls;assembly=WPFMitsuControls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:singleton="clr-namespace:PdfFlipBook.Helper.Singleton"
         ManipulationBoundaryFeedback="OnManipulationBoundaryFeedback"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="2160" Width="3840"
@@ -16,7 +16,8 @@
     <Grid>
         <Viewbox>
             <Grid Width="3840" Height="2160">
-            <Image Source="{Binding ActualBack,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Image Source="{Binding Background, UpdateSourceTrigger=PropertyChanged,Source={x:Static singleton:BackgroundSingleton.Instance}}"
+                   Stretch="Fill"/>
                 <Frame Name="Frame1"
                        NavigationUIVisibility="Hidden"/>
                 <Border Panel.ZIndex="100000" Background="White" Width="Auto" Height="Auto">

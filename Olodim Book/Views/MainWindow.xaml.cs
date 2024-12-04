@@ -2,10 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 
 namespace PdfFlipBook.Views
 {
@@ -14,10 +16,14 @@ namespace PdfFlipBook.Views
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private readonly JsonHelper _jsonHelper;
+
         public MainWindow()
         {
             InitializeComponent();
-            ActualBack = Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Background")[0];
+
+            _jsonHelper = new JsonHelper();
+            GetBackground();
 
             App.CurrentApp.IsLoading = true;
             // UpdatePhotos();
@@ -43,20 +49,32 @@ namespace PdfFlipBook.Views
 
         }
 
-        public static readonly DependencyProperty ActualBackProperty = DependencyProperty.Register(
-            "ActualBack", typeof(string), typeof(MainWindow), new PropertyMetadata(default(string)));
-
-        public string ActualBack
+        private void GetBackground()
         {
-            get { return (string)GetValue(ActualBackProperty); }
-            set { SetValue(ActualBackProperty, value); }
+            var directoryPath = "Backgrounds";
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            var path = "background.json";
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+                _jsonHelper.WriteJsonToFile(path, Path.GetFullPath(Directory.GetFiles(directoryPath).FirstOrDefault()!), false);
+            }
+            else
+            {
+                var text = File.ReadAllText(path);
+                if (text.Length == 0)
+                    _jsonHelper.WriteJsonToFile(path, Path.GetFullPath(Directory.GetFiles(directoryPath).FirstOrDefault()!), false);
+            }
+
+            BackgroundSingleton.Instance.Background = Path.GetFullPath(_jsonHelper.ReadJsonFromFile<string>(path));
         }
 
         private void OnManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
         {
             e.Handled = true;
         }
-
 
         private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {

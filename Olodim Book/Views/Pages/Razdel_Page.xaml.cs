@@ -285,7 +285,7 @@ namespace PdfFlipBook.Views.Pages
             {
                 // App.CurrentApp.IsLoading = true;
                 //int a = int.Parse(c.ToString())+1;
-                var BookData = Tuple.Create(c.ToString(), SettingsModel);
+                var BookData = Tuple.Create(c.ToString(), SettingsModel, SelectRazdel);
                 CommonCommands.NavigateCommand.Execute(BookData);
             }));
 

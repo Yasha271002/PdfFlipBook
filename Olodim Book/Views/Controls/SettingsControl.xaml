@@ -36,7 +36,7 @@
             <Setter Property="Margin" Value="6 0 6 0 " />
             <Setter Property="Width" Value="819" />
             <Setter Property="Height" Value="125" />
-            <Setter Property="Background" Value="#7F7F7F" />
+            <Setter Property="Background" Value="{DynamicResource BackgroundRadioButton}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsChecked}"
                              Value="False">
@@ -83,7 +83,7 @@
                             <Storyboard>
                                 <ColorAnimation
                                     Storyboard.TargetProperty="Foreground.(SolidColorBrush.Color)"
-                                    To="White" Duration="0:0:0.3" />
+                                    To="#FFFFFF" Duration="0:0:0.3" />
                             </Storyboard>
                         </BeginStoryboard>
                     </Trigger.EnterActions>
@@ -128,7 +128,7 @@
                     <TextBox Template="{DynamicResource InactivityTextBox}"
                              Margin="600 0 0 0" Width="500" Height="128"
                              FontSize="50"
-                             Foreground="{StaticResource WhiteColorForeground}"
+                             Foreground="{DynamicResource ForegroundTextBlock}"
                              Text="{Binding PageSettings.InactivityTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                              TextAlignment="Center"
                              Tag="{Binding SettingsModel.InactivityTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -152,7 +152,7 @@
                              Margin="180 0 0 0" Width="500" Height="128"
                              Text="{Binding PageSettings.Interval,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                              Tag="{Binding SettingsModel.IntervalSwitchPage, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                             Foreground="{StaticResource WhiteColorForeground}"
+                             Foreground="{DynamicResource ForegroundTextBlock}"
                              FontSize="50">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="GotFocus">
@@ -170,7 +170,7 @@
                         Style="{DynamicResource SettingsTextBlock}"
                         Margin="32" />
                     <Button Content="Изменить" HorizontalAlignment="Right"
-                            Width="500" Height="125" Foreground="White" Background="#5C5C5C"
+                            Width="500" Height="125" Foreground="{DynamicResource ForegroundTextBlock}" Background="{DynamicResource BackgroundBorder}"
                             Template="{StaticResource EditButton}" FontSize="50"
                             Command="helper:CommonCommands.NavigateCommand"
                             CommandParameter="{x:Static helper:PageTypes.SelectBackground}" />
@@ -189,13 +189,14 @@
                             Background="{Binding SettingsModel.SelectedBrush, UpdateSourceTrigger=PropertyChanged}"
                             Margin="0 0 0 10" VerticalAlignment="Top" HorizontalAlignment="Right" />
                     <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                            Style="{StaticResource SettingBorderStyle}" BorderBrush="DarkGray"
+                            Style="{StaticResource SettingBorderStyle}" 
+                            BorderBrush="{DynamicResource BorderBrush}"
                             BorderThickness="4" Width="500" Height="128">
                         <Grid>
                             <Button Template="{DynamicResource CancelButton}"
                                     HorizontalAlignment="Left" Margin="32 0 0 0"
                                     Command="{Binding EditSettingsCommand}" CommandParameter="Cancel" />
-                            <TextBlock Foreground="#808080" VerticalAlignment="Center" FontSize="50"
+                            <TextBlock Foreground="{DynamicResource ForegroundTextBlock}" VerticalAlignment="Center" FontSize="50"
                                        TextAlignment="Center" HorizontalAlignment="Center"
                                        Text="{Binding SettingsModel.SelectedColor,Mode=OneWay,
                                 UpdateSourceTrigger=PropertyChanged}"
@@ -215,7 +216,7 @@
                         Style="{DynamicResource SettingsTextBlock}"
                         HorizontalAlignment="Left" Margin="32 32 0 16" />
                     <StackPanel Orientation="Horizontal" Height="149" Width="1662"
-                                Background="{StaticResource DarkThemes}"
+                                Background="{DynamicResource BackgroundRadioButton}"
                                 Margin="12">
                         <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
                                      Tag="Светлая">
@@ -246,7 +247,7 @@
                         Style="{DynamicResource SettingsTextBlock}"
                         HorizontalAlignment="Left" Margin="32 32 0 16" />
                     <StackPanel Orientation="Horizontal" Height="149" Width="1662"
-                                Background="{StaticResource DarkThemes}"
+                                Background="{DynamicResource BackgroundRadioButton}"
                                 Margin="12">
                         <RadioButton Style="{DynamicResource SettingsRadioButtonsStyle}"
                                      Tag="Начать заново"

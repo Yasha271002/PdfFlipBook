@@ -16,8 +16,6 @@
             <converters:ImageConverter x:Key="ImageConverter" />
             <converters:InvertBoolToVisibilityHiddenConverter x:Key="InvertBoolToVisibilityHiddenConverter"/>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/CommonBrushes.xaml" />
-
                 <ResourceDictionary Source="Resources/Styles/CheckBoxStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBlockStyles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/TextBoxStyle.xaml" />

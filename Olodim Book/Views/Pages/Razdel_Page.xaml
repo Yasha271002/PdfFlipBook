@@ -25,7 +25,7 @@
         <Grid.Resources>
             <FontFamily x:Key="Montserrat">pack://application:,,,/Fonts/#Montserrat</FontFamily>
         </Grid.Resources>
-        <Image Stretch="Fill" Source="{Binding SelectRazdel.Background}" Height="2160" VerticalAlignment="Bottom" />
+        <Image Stretch="Fill" Source="{Binding SelectRazdel.Background}" Height="2160" Width="3840" VerticalAlignment="Bottom" />
 
         <ItemsControl AlternationCount="{Binding ActualBooks.Count}"
                       ItemsSource="{Binding ActualBooks, IsAsync=True}"

@@ -2,11 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTemplate TargetType="Button" x:Key="SettingButtonBack">
         <Border Style="{DynamicResource SettingBorderStyle}"
-                Background="{TemplateBinding Background}">
+                Background="{DynamicResource ButtonDarkBackground}">
             <TextBlock Text="{TemplateBinding Content}"
                        Style="{DynamicResource SettingsButtonText}"
                        FontSize="{TemplateBinding FontSize}"
-                       Foreground="{TemplateBinding Foreground}" />
+                       Foreground="{DynamicResource ForegroundTextBlock}" />
         </Border>
     </ControlTemplate>
 
@@ -18,25 +18,22 @@
 
     <ControlTemplate x:Key="ItemsControlButton" TargetType="Button">
         <Border Style="{DynamicResource SettingBorderStyle}"
-                CornerRadius="10"
-                Background="White">
+                CornerRadius="10">
             <ContentPresenter Width="36" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
     </ControlTemplate>
     <ControlTemplate x:Key="DotControlButton" TargetType="Button">
         <Border Style="{DynamicResource SettingBorderStyle}"
-                CornerRadius="10"
-                Background="White">
+                CornerRadius="10">
             <ContentPresenter Width="150" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Border>
     </ControlTemplate>
     <ControlTemplate x:Key="LastPageControlButton" TargetType="Button">
         <Border Style="{DynamicResource SettingBorderStyle}"
-                CornerRadius="10"
-                Background="White">
+                CornerRadius="10">
             <TextBlock Text="{TemplateBinding Content}"
                        FontSize="50"
-                       Foreground="#808080"
+                       Foreground="{DynamicResource ForegroundTextBlock}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
         </Border>
@@ -46,12 +43,11 @@
         <Border CornerRadius="10">
             <TextBlock Text="{TemplateBinding Content}"
                        FontSize="50"
-                       Foreground="#808080"
+                       Foreground="{DynamicResource ForegroundTextBlock}"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center" />
             <Border.Style>
                 <Style BasedOn="{StaticResource SettingBorderStyle}" TargetType="Border">
-                    <Setter Property="Background" Value="White" />
                     <Setter Property="Opacity" Value="0.5" />
                     <Style.Triggers>
                         <DataTrigger
@@ -67,7 +63,7 @@
 
 
     <ControlTemplate x:Key="CancelBackgroundPageButton" TargetType="Button">
-        <Border Width="88" Height="88" CornerRadius="10" Background="{StaticResource DarkThemes}">
+        <Border Width="88" Height="88" CornerRadius="10" Background="{DynamicResource ButtonLightBackground}">
             <ContentPresenter ContentTemplate="{StaticResource CancelButtonIcons}" />
         </Border>
     </ControlTemplate>
@@ -86,7 +82,7 @@
         </Border>
     </ControlTemplate>
     <ControlTemplate x:Key="CancelBackgroundButton" TargetType="Button">
-        <Border Background="{StaticResource DarkBackgroundThemes}"
+        <Border Background="{DynamicResource ButtonDarkBackground}"
                 CornerRadius="20" Padding="20">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Image Source="../../Images/Cancel.png" Width="57" />
@@ -133,14 +129,14 @@
     </ControlTemplate>
 
     <ControlTemplate x:Key="SelectPage" TargetType="Button">
-        <Border BorderBrush="{StaticResource WhiteThemes}"
+        <Border BorderBrush="{DynamicResource BorderBrush}"
                 CornerRadius="10"
                 BorderThickness="3"
-                Background="{StaticResource DarkBackgroundThemes}">
+                Background="{DynamicResource ButtonDarkBackground}">
             <TextBlock Style="{StaticResource TitleTextBlockStyle}"
                        FontSize="50"
                        FontWeight="Medium"
-                       Foreground="{StaticResource WhiteColorForeground}">
+                       Foreground="{DynamicResource ForegroundTextBlock}">
                 <Run Text="Страница"/>
                 <Run Text="{Binding PageNumber, UpdateSourceTrigger=PropertyChanged}"/>
             </TextBlock>
@@ -149,9 +145,51 @@
     <ControlTemplate x:Key="SwitchPageButton" TargetType="Button">
         <Border CornerRadius="10"
                 Width="114" Height="114"
-                Background="{StaticResource DarkBackgroundThemes}">
+                Background="{DynamicResource ButtonDarkBackground}">
             <ContentPresenter ContentTemplate="{TemplateBinding Content}"
                                Width="48" Height="48"/>
+        </Border>
+    </ControlTemplate>
+
+    <Style x:Key="PinPadBorder" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource ButtonDarkBackground}" />
+        <Setter Property="Opacity" Value="0.5" />
+        <Setter Property="CornerRadius" Value="20" />
+    </Style>
+
+    <Style x:Key="PinPadButtonTextStyle" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="FontSize" Value="35" />
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundTextBlock}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="FontFamily" Value="{DynamicResource Montserrat}" />
+    </Style>
+
+    <Style x:Key="PinPadKeyBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource KeyBoardButtonBackground}"/>
+        <Setter Property="CornerRadius" Value="10" />
+    </Style>
+
+    <ControlTemplate x:Key="PinPadButton" TargetType="Button">
+        <Border Style="{DynamicResource PinPadKeyBorderStyle}"
+                Margin="10">
+            <TextBlock Style="{DynamicResource PinPadButtonTextStyle}"
+                       Text="{TemplateBinding Content}" />
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="PinPadEnterButton" TargetType="Button">
+        <Border Style="{DynamicResource PinPadKeyBorderStyle}"
+                Margin="10">
+            <ContentPresenter ContentTemplate="{StaticResource PinPadEnter}"
+                              Width="44.44"/>
+        </Border>
+    </ControlTemplate>
+    <ControlTemplate x:Key="PinPadBackButton" TargetType="Button">
+        <Border Style="{DynamicResource PinPadKeyBorderStyle}"
+                Margin="10">
+            <ContentPresenter ContentTemplate="{DynamicResource DeleteIcons}"
+                              Width="80" />
         </Border>
     </ControlTemplate>
 </ResourceDictionary>

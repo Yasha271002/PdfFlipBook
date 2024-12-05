@@ -176,7 +176,7 @@
                         <Button.Template>
                             <ControlTemplate>
                                 <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="15 "
-                                        Background="{DynamicResource DarkBackgroundThemes}" BorderBrush="#5C5C5C"
+                                        Background="{DynamicResource ButtonDarkBackground}" BorderBrush="{DynamicResource BorderBrush}"
                                         BorderThickness="2"
                                         CornerRadius="50" >
                                     <Grid>
@@ -184,7 +184,7 @@
                                                     VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" Height="339"></Image>
                                             <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34"
-                                                       Foreground="{DynamicResource WhiteColorForeground}" Margin="0,20,0,0"
+                                                       Foreground="{DynamicResource ForegroundTextBlock}" Margin="0,20,0,0"
                                                        TextTrimming="WordEllipsis"
                                                        HorizontalAlignment="Center"
                                                        FontFamily="{DynamicResource Montserrat}"
@@ -274,7 +274,7 @@
                  TextAlignment="Left"
                  VerticalAlignment="Top"
                  Height="120"
-                 Foreground="{DynamicResource WhiteColorForeground}"
+                 Foreground="{DynamicResource ForegroundTextBlock}"
                  Panel.ZIndex="150"
                  Tag="Поиск"
                  TextChanged="NameTB_OnTextChanged"
@@ -386,22 +386,23 @@
         </Button>
 
         <Button Template="{DynamicResource DraggingButton}" Width="687"
-                Foreground="{DynamicResource WhiteColorForeground}"
+                Foreground="{DynamicResource ForegroundTextBlock}"
                 Command="{Binding EnableDraggingCommand}"
                 Height="120" VerticalAlignment="Top" 
                 Margin="0 429 0 0"
                 Visibility="{Binding IsDragging,
             Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
         <Button Template="{DynamicResource SaveBackgroundButton}"
-                Foreground="{DynamicResource WhiteColorForeground}"
+                Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" HorizontalAlignment="Right"
-                Margin="0 429 343 0" Background="{StaticResource DarkBackgroundThemes}"
+                Margin="0 429 343 0"
+                Background="{DynamicResource ButtonDarkBackground}"
                 Width="499" Height="120"
                 Command="{Binding SaveDraggingCommand}"
                 Visibility="{Binding IsDragging,
             Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <Button Template="{DynamicResource CancelBackgroundButton}"
-                Foreground="{DynamicResource WhiteColorForeground}"
+                Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" HorizontalAlignment="Left"
                 Margin="343 429 0 0"
                 Width="499" Height="120"

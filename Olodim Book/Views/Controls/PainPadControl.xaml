@@ -6,49 +6,6 @@
              xmlns:pages="clr-namespace:PdfFlipBook.ViewModel.Pages"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance pages:SettingsPageViewModel}">
-    <UserControl.Resources>
-        <Style x:Key="PinPadBorder" TargetType="Border">
-            <Setter Property="Background" Value="#FFFFFF" />
-            <Setter Property="Opacity" Value="0.5" />
-            <Setter Property="CornerRadius" Value="20" />
-        </Style>
-
-        <Style x:Key="PinPadButtonTextStyle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="35" />
-            <Setter Property="Foreground" Value="#595959" />
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontFamily" Value="{DynamicResource Montserrat}" />
-        </Style>
-
-        <Style x:Key="PinPadKeyBorderStyle" TargetType="Border">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#FFFFFF" Offset="0"/>
-                        <GradientStop Color="#A8A8A8" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="CornerRadius" Value="10"/>
-        </Style>
-
-        <ControlTemplate x:Key="PinPadButton" TargetType="Button">
-            <Border Style="{DynamicResource PinPadKeyBorderStyle}"
-                    Margin="10">
-                <TextBlock Style="{DynamicResource PinPadButtonTextStyle}"
-                           Text="{TemplateBinding Content}"/>
-            </Border>
-        </ControlTemplate>
-        <ControlTemplate x:Key="PinPadBackButton" TargetType="Button">
-            <Border Style="{DynamicResource PinPadKeyBorderStyle}"
-                    Margin="10">
-                <ContentPresenter ContentTemplate="{DynamicResource DeleteIcons}"
-                                  Width="80"/>
-            </Border>
-        </ControlTemplate>
-    </UserControl.Resources>
     <Grid
         Panel.ZIndex="1"
         Width="500"

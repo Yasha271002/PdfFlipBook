@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Threading;
+using PdfFlipBook.Helper;
 using PdfFlipBook.Helper.Logger;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
@@ -16,6 +19,37 @@ namespace PdfFlipBook
     /// </summary>
     public partial class App : Application,INotifyPropertyChanged
     {
+        public void ChangeTheme(string themeName)
+        {
+            var dictionary = new ResourceDictionary();
+            dictionary.Source = themeName switch
+            {
+                "Light" => new Uri("Resources/Themes/LightThemes.xaml", UriKind.Relative),
+                "Dark" => new Uri("Resources/Themes/DarkThemes.xaml", UriKind.Relative),
+                _ => dictionary.Source
+            };
+            Resources.MergedDictionaries.Add(dictionary);
+        }
+
+        private JsonHelper _jsonHelper;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            _jsonHelper = new JsonHelper();
+
+            var path = "Themes.json";
+            if (File.Exists(path))
+            {
+                File.Create(path).Dispose();
+                _jsonHelper.WriteJsonToFile(path, "Light", false);
+            }
+
+            var theme = _jsonHelper.ReadJsonFromFile<string>(path);
+
+            base.OnStartup(e);
+            ChangeTheme(theme);
+        }
+
         public static App CurrentApp => App.Current as App;
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

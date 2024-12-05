@@ -19,9 +19,9 @@
                         Margin="157 60"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left"
-                        Background="{StaticResource DarkBackgroundThemes}"
+                        Background="{DynamicResource BackgroundBorder}"
                         FontSize="50"
-                        Foreground="{StaticResource WhiteColorForeground}"
+                        Foreground="{DynamicResource ForegroundTextBlock}"
                         Command="{Binding WriteJsonFileAndBackCommand}"
                         Template="{DynamicResource SettingButtonBack}"
                         Content="На главную" />

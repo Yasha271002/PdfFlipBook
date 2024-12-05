@@ -146,6 +146,18 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
+        private BookFolder _selectRazdel;
+
+        public BookFolder SelectRazdel
+        {
+            get => _selectRazdel;
+            set
+            {
+                _selectRazdel = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -154,38 +166,6 @@ namespace PdfFlipBook.Views.Pages
         }
 
         #endregion
-
-        public Book_Page(string bookTitle, SettingsModel settings)
-        {
-            InitializeComponent();
-
-            BookTitle = bookTitle;
-
-            SettingsModel = settings;
-            AllPages = new List<string>();
-
-            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle)
-                .ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-            foreach (var s in AllPhotos)
-            {
-                AllPages.Add(s);
-            }
-
-            _pageFlipTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(Convert.ToDouble(settings.IntervalSwitchPage))
-            };
-
-            _pageFlipTimer.Tick += OnPageFlipTimerTick;
-
-            _inactivityHelper = new BaseInactivityHelper(Convert.ToInt32(settings.InactivityTime));
-            _inactivityHelper.OnInactivity += OnInactivityDetected;
-
-            CurrentPageNumber = 0;
-            GetPageNumber();
-
-            _audioHelper = new AudioHelper(settings.SwitchSoundPath, settings.Volume);
-        }
 
         #region ICommandRegion
 
@@ -215,7 +195,6 @@ namespace PdfFlipBook.Views.Pages
             {
                 InsertGrid.Visibility = Visibility.Collapsed;
                 KK.Text = string.Empty;
-                onScreenKeyboard.Text = string.Empty;
             }));
 
         private ICommand _deleteCommand;
@@ -226,7 +205,6 @@ namespace PdfFlipBook.Views.Pages
                 if (KK.Text == string.Empty) return;
                 string qweq = KK.Text.Remove(KK.Text.Length - 1);
                 KK.Text = qweq;
-                onScreenKeyboard.Text = qweq;
             }));
 
 
@@ -235,51 +213,38 @@ namespace PdfFlipBook.Views.Pages
         public ICommand ToPageCommand =>
             _toPageCommand ?? (_toPageCommand = new Command(c =>
             {
-                if (KK.Text == "") return;
+                if (KK.Text == "" && AllPages.Count > int.Parse(KK.Text)) return;
                 int page = int.Parse(KK.Text);
-                if (page > AllPages.Count)
+
+                AllPages = new List<string>();
+
+                AllPhotos = new List<string>(Directory
+                    .GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + BookTitle).ToList()
+                    .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+                foreach (var s in AllPhotos)
                 {
-                    var animation = new DoubleAnimation
-                    {
-                        From = 0,
-                        To = 1,
-                        Duration = TimeSpan.FromSeconds(1.3),
-                        AutoReverse = true
-                    };
-                    TB.BeginAnimation(UIElement.OpacityProperty, animation);
+                    AllPages.Add(s);
                 }
-                else
+
+                var ostatok = page % 2;
+                if (ostatok == 1)
+                    page--;
+
+                Book.CurrentSheetIndex = page / 2;
+                int index = Book.CurrentSheetIndex;
+                try
                 {
-                    AllPages = new List<string>();
-
-                    AllPhotos = new List<string>(Directory
-                        .GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + BookTitle).ToList()
-                        .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-                    foreach (var s in AllPhotos)
-                    {
-                        AllPages.Add(s);
-                    }
-
-                    var ostatok = page % 2;
-                    if (ostatok == 1)
-                        page--;
-
-                    Book.CurrentSheetIndex = page / 2;
-                    int index = Book.CurrentSheetIndex;
-                    try
-                    {
-                        ReloadPage(page);
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception.Message);
-                    }
-
-                    CloseInsertCommand.Execute(null);
-
-                    PageIndex = page;
-                    GetPageNumber();
+                    ReloadPage(page);
                 }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+
+                CloseInsertCommand.Execute(null);
+
+                PageIndex = page;
+                GetPageNumber();
             }));
 
         private ICommand _switchPageCommand;
@@ -289,6 +254,16 @@ namespace PdfFlipBook.Views.Pages
             if (f is not string type)
                 return;
             FlipPage(type);
+        });
+
+        private ICommand _buttonClickCommand;
+
+        public ICommand ButtonClickCommand => _buttonClickCommand ??= new Command(f =>
+        {
+            if (f is not string text)
+                return;
+
+            KK.Text += text;
         });
 
         #endregion
@@ -343,8 +318,6 @@ namespace PdfFlipBook.Views.Pages
                     {
                         Console.WriteLine(exception.Message);
                     }
-
-                    FlipPage("+");
                 }
             }
             else
@@ -366,8 +339,6 @@ namespace PdfFlipBook.Views.Pages
                     {
                         Console.WriteLine(exception.Message);
                     }
-
-                    FlipPage("-");
                 }
             }
 
@@ -384,53 +355,16 @@ namespace PdfFlipBook.Views.Pages
 
         #endregion
 
-        private void ReloadBookPages(string newBookTitle)
-        {
-            if (AllPages != null)
-            {
-                AllPages.Clear();
-            }
-
-            AllPhotos?.Clear();
-
-            BookTitle = newBookTitle;
-
-            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + newBookTitle)
-                .ToList()
-                .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
-
-            foreach (var photoPath in AllPhotos)
-            {
-                AllPages.Add(photoPath);
-            }
-        }
-
-        private void ReloadPage(int page)
-        {
-            if (page < 0 || page >= AllPages.Count / 2)
-            {
-                return;
-            }
-
-            var index = page / 2;
-            if (index * 2 < 0 || index * 2 >= AllPages.Count) return;
-            try
-            {
-                AllPages[index * 2] = AllPhotos[index * 2].ToString();
-                AllPages[index * 2 + 1] = AllPhotos[index * 2 + 1].ToString();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
         #region FlipPageMethods
+
         private void GetPageNumber()
         {
-            int currentPage = Book.CurrentSheetIndex * 2 + 1;
-            int totalPages = AllPages.Count;
-            PageNumber = $"{currentPage}-{currentPage + 1} из {totalPages}";
+            var currentPage = Book.CurrentSheetIndex * 2 + 1;
+            var totalPages = AllPages.Count;
+
+            PageNumber = currentPage == totalPages 
+                ? $"{currentPage - 1}-{currentPage} из {totalPages}" 
+                : $"{currentPage}-{currentPage + 1} из {totalPages}";
         }
 
         private void FlipPage(string type)
@@ -440,8 +374,8 @@ namespace PdfFlipBook.Views.Pages
                 case "+":
                     PageIndex = Book.CurrentSheetIndex + 2;
                     type = Flip(type);
-                    if (type == "stop")
-                        return;
+                    //if (type == "stop")
+                    //    return;
                     PlaySound();
                     Book.AnimateToNextPage(false, 1000);
                     GetPageNumber();
@@ -449,8 +383,8 @@ namespace PdfFlipBook.Views.Pages
                 case "-":
                     PageIndex = Book.CurrentSheetIndex - 2;
                     type = Flip(type);
-                    if (type == "stop")
-                        return;
+                    //if (type == "stop")
+                    //    return;
                     PlaySound();
                     Book.AnimateToPreviousPage(false, 1000);
                     GetPageNumber();
@@ -519,5 +453,79 @@ namespace PdfFlipBook.Views.Pages
         }
 
         #endregion
+
+        public Book_Page(string bookTitle, SettingsModel settings, BookFolder selectRazdelBookFolder)
+        {
+            InitializeComponent();
+            SelectRazdel = selectRazdelBookFolder;
+            BookTitle = bookTitle;
+
+            SettingsModel = settings;
+            AllPages = new List<string>();
+
+            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + bookTitle)
+                .ToList().OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+            foreach (var s in AllPhotos)
+            {
+                AllPages.Add(s);
+            }
+
+            _pageFlipTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(Convert.ToDouble(settings.IntervalSwitchPage))
+            };
+
+            _pageFlipTimer.Tick += OnPageFlipTimerTick;
+
+            _inactivityHelper = new BaseInactivityHelper(Convert.ToInt32(settings.InactivityTime));
+            _inactivityHelper.OnInactivity += OnInactivityDetected;
+
+            CurrentPageNumber = 0;
+            PageIndex = 0;
+
+            GetPageNumber();
+
+            _audioHelper = new AudioHelper(settings.SwitchSoundPath, settings.Volume);
+        }
+
+        private void ReloadBookPages(string newBookTitle)
+        {
+            if (AllPages != null)
+            {
+                AllPages.Clear();
+            }
+
+            AllPhotos?.Clear();
+
+            BookTitle = newBookTitle;
+
+            AllPhotos = new List<string>(Directory.GetFiles(Directory.GetCurrentDirectory() + "\\Temp\\" + newBookTitle)
+                .ToList()
+                .OrderBy(x => int.Parse(Path.GetFileNameWithoutExtension(x))));
+
+            foreach (var photoPath in AllPhotos)
+            {
+                AllPages.Add(photoPath);
+            }
+        }
+        private void ReloadPage(int page)
+        {
+            if (page < 0 || page >= AllPages.Count / 2)
+            {
+                return;
+            }
+
+            var index = page / 2;
+            if (index * 2 < 0 || index * 2 >= AllPages.Count) return;
+            try
+            {
+                AllPages[index * 2] = AllPhotos[index * 2].ToString();
+                AllPages[index * 2 + 1] = AllPhotos[index * 2 + 1].ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }

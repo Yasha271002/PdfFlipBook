@@ -7,7 +7,7 @@
             <Setter.Value>
                 <ControlTemplate>
                     <Grid>
-                        <Border BorderBrush="#FFFFFF" BorderThickness="2" CornerRadius="18" Background="Transparent" Width="36" Height="36"
+                        <Border BorderBrush="White" BorderThickness="2" CornerRadius="18" Background="Transparent" Width="36" Height="36"
                                 HorizontalAlignment="Left" VerticalAlignment="Center">
                             <Ellipse Height="20" Width="20" Fill="#FFC34F" x:Name="Ellipse">
                                 <Ellipse.Style>

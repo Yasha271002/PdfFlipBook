@@ -502,8 +502,15 @@ namespace PdfFlipBook.Views.Pages
             {
                 GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(App.CurrentApp.ActualBooks =
                     AllBooks.Where(x => x.FullPath.Contains(c.ToString())).ToList());
-                //var currentRazdel = AllFolders.FirstOrDefault(f=>f.) 
-                var BookData = Tuple.Create(c.ToString(), SettingsModel);
+
+                var book = AllBooks.FirstOrDefault(name => name.Title == c.ToString());
+
+                var folderName = book.FullPath;
+                var word = folderName.Split( 's').LastOrDefault();
+                var lastWord = word.Split( '\\').LastOrDefault();
+                SelectRazdel = AllFolders.FirstOrDefault(name => name.Title == lastWord); 
+
+                var BookData = Tuple.Create(c.ToString(), SettingsModel, SelectRazdel);
                 ExecuteNavigation(BookData);
 
                 NameTB.Text = "";

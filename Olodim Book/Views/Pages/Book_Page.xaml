@@ -13,7 +13,11 @@
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="Book_Page"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
     <Grid Width="3840" Height="2160" MouseDown="Book_Page_OnMouseDown">
+        <Grid.Background>
+            <ImageBrush Stretch="Fill" ImageSource="{Binding SelectRazdel.Background}" />
+        </Grid.Background>
         <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
                                Height="2040"
                                Width="3000"
@@ -24,7 +28,8 @@
                                MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
             <wpfMitsuControls:Book.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderThickness="4" Background="Transparent">
+                    <Border BorderThickness="4"
+                            Background="{Binding SelectRazdel.Background, RelativeSource={RelativeSource AncestorType=Page}, UpdateSourceTrigger=PropertyChanged}">
                         <ContentControl HorizontalAlignment="Center">
                             <ContentControl.Content>
                                 <Image Source="{Binding Converter={StaticResource ImageConverter}}"></Image>
@@ -52,91 +57,102 @@
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Center">
-            <Button Template="{StaticResource SwitchPageButton}"
-                    Content="{StaticResource LeftArrow}" 
-                    Foreground="{StaticResource WhiteColorForeground}"
+            <Button Template="{DynamicResource SwitchPageButton}"
+                    Content="{DynamicResource LeftArrow}"
+                    Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="-"/>
+                    CommandParameter="-" />
             <Button
                 Command="{Binding InsertPageCommand}"
                 Width="1000"
-                Template="{StaticResource SelectPage}"
+                Template="{DynamicResource SelectPage}"
                 Margin="16,0,16,0" />
-            <Button Template="{StaticResource SwitchPageButton}"
-                    Content="{StaticResource RightArrow}" 
-                    Foreground="{StaticResource WhiteColorForeground}"
+            <Button Template="{DynamicResource SwitchPageButton}"
+                    Content="{DynamicResource RightArrow}"
+                    Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="+"/>
+                    CommandParameter="+" />
         </StackPanel>
 
-        <Grid Background="#DDFFFFFF" Name="InsertGrid" Visibility="Collapsed" Panel.ZIndex="2000">
-
-            <Button Height="180"
-                    Width="180"
-                    VerticalAlignment="Top"
-                    Command="{Binding CloseInsertCommand}"
-                    HorizontalAlignment="Right"
-                    Margin="0,181,1252,0" Panel.ZIndex="3000">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Border Background="White" CornerRadius="15" BorderBrush="DimGray" BorderThickness="8">
-                            <Image Source="/Images/close (2).png" Margin="20"></Image>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <Button Height="280" VerticalAlignment="Bottom"
-                    Command="{Binding ToPageCommand}"
-                    Width="1000"
-                    Margin="0,0,0,400">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Border Background="White" CornerRadius="30"
-                                BorderBrush="Gray"
-                                BorderThickness="5">
-                            <TextBlock TextAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Bold"
-                                       FontFamily="Arial"
-                                       Text="ПЕРЕЙТИ"
-                                       FontSize="100">
-                            </TextBlock>
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-            <TextBlock Text="Данная страница отсутствует"
-                       TextAlignment="Center"
-                       VerticalAlignment="Top"
-                       Name="TB"
-                       Opacity="0"
-                       HorizontalAlignment="Center"
-                       Margin="0,340,0,0"
-                       FontSize="60">
-            </TextBlock>
-            <Grid Width="500" Height="1000" Margin="0,-200,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="84*" />
-                    <RowDefinition Height="349*" />
-                </Grid.RowDefinitions>
-
-                <Border BorderBrush="DimGray" Background="White" BorderThickness="10" CornerRadius="20"></Border>
-                <TextBox Name="KK" Margin="20" VerticalAlignment="Center" FontSize="80" TextAlignment="Center"
-                         Text="{Binding Text, ElementName=onScreenKeyboard}" />
-
-                <termControls:OnScreenKeyboard Focusable="False" x:Name="onScreenKeyboard"
-                                               Command="{Binding ButtonClickCommand,ElementName=m}" Grid.Row="1" />
+        <Grid Name="InsertGrid" Visibility="Collapsed" Panel.ZIndex="2000"
+              VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="1130"
+              Height="850" Margin="140 0 0 28">
+            <Grid Background="{DynamicResource BackgroundBorder}"
+                  Opacity="0.8">
+                <Grid.Effect>
+                    <BlurEffect Radius="50"
+                                KernelType="Gaussian"
+                                RenderingBias="Performance"/>
+                </Grid.Effect>
             </Grid>
-            <Button Command="{Binding DeleteCommand}" Width="140" Height="140" Margin="2181,506,1485,1514">
+            <Button Height="64" Margin="0 0 0 32"
+                    Width="64" BorderThickness="0"
+                    VerticalAlignment="Bottom" Foreground="{DynamicResource ForegroundTextBlock}"
+                    Command="{Binding CloseInsertCommand}"
+                    HorizontalAlignment="Center" Panel.ZIndex="3000">
                 <Button.Template>
                     <ControlTemplate>
-                        <Grid>
-                            <Image Source="/Images/button-70x70.png"></Image>
-                            <Image Source="/Images/backspace.png" Margin="20"></Image>
-                        </Grid>
+                        <Border CornerRadius="32" Background="{DynamicResource BackgroundBorder}">
+                            <ContentPresenter ContentTemplate="{DynamicResource PinPadClose}"
+                                              Width="32" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+            
+            <TextBox Name="KK" Margin="20" VerticalAlignment="Top" FontSize="80" TextAlignment="Center"
+                     Text="{Binding Text, ElementName=onScreenKeyboard}" 
+                     Width="806" Template="{DynamicResource BlueBox}" 
+                     Foreground="{DynamicResource ForegroundTextBlock}"/>
+            <Grid
+                Panel.ZIndex="1"
+                Width="440"
+                Height="544"
+                Margin="0 58 0 0"
+                >
+                <Grid
+                    Margin="24">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Grid.Row="0" Template="{DynamicResource PinPadButton}" Content="1"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="1" />
+                    <Button Grid.Column="1" Grid.Row="0" Template="{DynamicResource PinPadButton}" Content="2"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="2" />
+                    <Button Grid.Column="2" Grid.Row="0" Template="{DynamicResource PinPadButton}" Content="3"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="3" />
+                    <Button Grid.Column="0" Grid.Row="1" Template="{DynamicResource PinPadButton}" Content="4"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="4" />
+                    <Button Grid.Column="1" Grid.Row="1" Template="{DynamicResource PinPadButton}" Content="5"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="5" />
+                    <Button Grid.Column="2" Grid.Row="1" Template="{DynamicResource PinPadButton}" Content="6"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="6" />
+                    <Button Grid.Column="0" Grid.Row="2" Template="{DynamicResource PinPadButton}" Content="7"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="7" />
+                    <Button Grid.Column="1" Grid.Row="2" Template="{DynamicResource PinPadButton}" Content="8"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="8" />
+                    <Button Grid.Column="2" Grid.Row="2" Template="{DynamicResource PinPadButton}" Content="9"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="9" />
+                    <Button Grid.Column="1" Grid.Row="3" Template="{DynamicResource PinPadButton}" Content="0"
+                            Command="{Binding ButtonClickCommand}" CommandParameter="0" />
+                    <Button Grid.Column="0" Grid.Row="3"
+                            Template="{DynamicResource PinPadBackButton}"
+                            Content="Back" Command="{Binding DeleteCommand}" 
+                            Foreground="{DynamicResource ForegroundTextBlock}"/>
+                    <Button Grid.Row="3" Grid.Column="2" Template="{DynamicResource PinPadEnterButton}"
+                            Command="{Binding ToPageCommand}"
+                            Foreground="{DynamicResource ForegroundTextBlock}">
+                    </Button>
+                </Grid>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

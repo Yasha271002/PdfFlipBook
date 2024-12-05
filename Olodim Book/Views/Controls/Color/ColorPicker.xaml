@@ -135,16 +135,16 @@
 
     <StackPanel Width="1130" HorizontalAlignment="Left" VerticalAlignment="Bottom">
         <Slider x:Name="HueSlider" Minimum="0" Maximum="360" Value="{Binding Hue, Mode=TwoWay}"
-                Background="{StaticResource LinearGradientBrush}"
-                Style="{StaticResource SliderStyle1}"
+                Background="{DynamicResource LinearGradientBrush}"
+                Style="{DynamicResource SliderStyle1}"
                 Foreground="White"
                 Margin="0 0 0 10" />
         <Slider x:Name="BrightnessSlider" Minimum="0" Maximum="1" Value="{Binding Brightness, Mode=TwoWay}"
                 Foreground="White"
-                Margin="0 0 0 10" Style="{StaticResource SliderStyle1}" Background="{StaticResource BrightnessSlider}" />
+                Margin="0 0 0 10" Style="{DynamicResource SliderStyle1}" Background="{DynamicResource BrightnessSlider}" />
         <Slider x:Name="SaturationSlider" Minimum="0" Maximum="1" Value="{Binding Saturation, Mode=TwoWay}"
                 Foreground="White"
-                Background="{StaticResource SaturationSlider}" Style="{StaticResource SliderStyle1}"
+                Background="{DynamicResource SaturationSlider}" Style="{StaticResource SliderStyle1}"
                 Margin="0 0 0 10" />
         
     </StackPanel>

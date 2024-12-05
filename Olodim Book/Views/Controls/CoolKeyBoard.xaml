@@ -23,19 +23,13 @@
             <Setter Property="FontSize" Value="35" />
             <Setter Property="Margin" Value="6" />
             <Setter Property="FontFamily" Value="/MSPBanck;component/Fonts/#PF Din Text Pro" />
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#FFFFFF" Offset="0" />
-                        <GradientStop Color="#A8A8A8" Offset="1" />
-                    </LinearGradientBrush>
-                </Setter.Value>
+            <Setter Property="Background" Value="{DynamicResource KeyBoardButtonBackground}">
             </Setter>
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Command"
                     Value="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Path=SendKeysCommand}" />
             <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Content}" />
-            <Setter Property="Foreground" Value="#595959" />
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundTextBlock}" />
             <Setter Property="Content">
                 <Setter.Value>
                     <!--<MultiBinding Converter="{StaticResource BoardLanguageConverter}">-->
@@ -63,7 +57,7 @@
             </Setter>
         </Style>
         <Style x:Key="KeyboardBorder" TargetType="Border">
-            <Setter Property="Background" Value="#D8D8D8" />
+            <Setter Property="Background" Value="{DynamicResource ButtonDarkBackground}" />
             <Setter Property="Opacity" Value="0.5" />
             <Setter Property="CornerRadius" Value="20" />
         </Style>
@@ -184,7 +178,7 @@
                         <ToggleButton Name="shiftButton" Visibility="Visible" Width="160" Tag="CapsLock"
                                       IsChecked="{Binding CapsPressed, RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl}, Mode=TwoWay}"
                                       Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=ShiftCommand}"
-                                      Foreground="#595959">
+                                      Foreground="{DynamicResource ForegroundTextBlock}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Grid>
@@ -193,13 +187,7 @@
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Setters>
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                    <GradientStop Color="#FFFFFF" Offset="0" />
-                                                                    <GradientStop Color="#A8A8A8" Offset="1" />
-                                                                </LinearGradientBrush>
-                                                            </Setter.Value>
+                                                        <Setter Property="Background" Value="{DynamicResource KeyBoardButtonBackground}">
                                                         </Setter>
                                                     </Style.Setters>
                                                     <Style.Triggers>

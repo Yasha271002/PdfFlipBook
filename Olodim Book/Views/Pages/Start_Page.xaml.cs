@@ -631,7 +631,6 @@ namespace PdfFlipBook.Views.Pages
             }
         }
 
-
         private SettingsModel _settings;
 
         public SettingsModel SettingsModel
@@ -699,12 +698,27 @@ namespace PdfFlipBook.Views.Pages
                 helper.WriteJsonToFile(jsonPath, settings, false);
 
                 SettingsModel = settings;
+
+                SettingsModel.JsonColor = SettingsModel.SelectedColor;
+                SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
+                SettingsModel.JsonHue = SettingsModel.Hue;
+                SettingsModel.JsonBrightness = SettingsModel.Brightness;
+                SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
+                SettingsModel.JsonSaturation = SettingsModel.Saturation;
+
                 GlobalSettings.Instance.Settings = SettingsModel;
             }
             else
             {
                 var settings = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
                 SettingsModel = settings;
+
+                SettingsModel.JsonColor = SettingsModel.SelectedColor;
+                SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
+                SettingsModel.JsonHue = SettingsModel.Hue;
+                SettingsModel.JsonBrightness = SettingsModel.Brightness;
+                SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
+                SettingsModel.JsonSaturation = SettingsModel.Saturation;
             }
 
             _audioHelper = new AudioHelper(SettingsModel.MainBackgroundSoundPath, SettingsModel.Volume);
@@ -886,6 +900,10 @@ namespace PdfFlipBook.Views.Pages
 
         #endregion
 
-        
+
+        private void FoldersItemsControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            DragButton.Visibility = SearchResultGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+        }
     }
 }

@@ -3,15 +3,34 @@
     <SolidColorBrush x:Key="BackgroundBorder" Color="#FFFFFF"/>
     <SolidColorBrush x:Key="BorderBrush" Color="#7F7F7F"/>
     <SolidColorBrush x:Key="ForegroundTextBlock" Color="#595959"/>
+    <SolidColorBrush x:Key="ForegroundEdit" Color="#595959"/>
     <SolidColorBrush x:Key="BackgroundRadioButton" Color="#E4E4E4"/>
 
     <SolidColorBrush x:Key="ButtonLightBackground" Color="#E4E4E4"/>
     <SolidColorBrush x:Key="ButtonDarkBackground" Color="#FFFFFF"/>
 
+    <SolidColorBrush x:Key="UnCheckedRadioButtonBackground" Color="#E4E4E4"/>
+    <SolidColorBrush x:Key="CheckedRadioButtonBackground" Color="#5C5C5C"/>
+
+    <SolidColorBrush x:Key="UnCheckedRadioButtonForeground" Color="#5C5C5C"/>
+    <SolidColorBrush x:Key="CheckedRadioButtonForeground" Color="#E4E4E4"/>
+
     <LinearGradientBrush x:Key="KeyBoardButtonBackground"
                          StartPoint="0 1"
                          EndPoint="1 0">
         <GradientStop Color="#FFFFFF" Offset="0"/>
-        <GradientStop Color="#A8A8A8" Offset="100"/>
+        <GradientStop Color="#A8A8A8" Offset="1"/>
     </LinearGradientBrush>
+
+        <Storyboard x:Key="RadioButtonAnimationEnter">
+            <ColorAnimation
+                Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                To="#5C5C5C" Duration="0:0:0.5" />
+        </Storyboard>
+
+        <Storyboard x:Key="RadioButtonAnimationExit">
+            <ColorAnimation
+                Storyboard.TargetProperty="Background.(SolidColorBrush.Color)"
+                To="#E4E4E4" Duration="0:0:0.5" />
+        </Storyboard>
 </ResourceDictionary>

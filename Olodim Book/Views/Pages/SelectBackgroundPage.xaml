@@ -12,30 +12,31 @@
         <pages:SelectBackgroundPageViewModel />
     </Page.DataContext>
     <Grid Width="3840" Height="2160">
-        <Button Template="{StaticResource SettingButtonBack}" HorizontalAlignment="Left"
-                Content="На главную" FontSize="50" Foreground="{StaticResource WhiteColorForeground}"
+        <Button Template="{DynamicResource SettingButtonBack}" HorizontalAlignment="Left"
+                Content="На главную" FontSize="50" Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" Width="400" Height="120"
                 Margin="157 60 0 0"
                 Command="helper:CommonCommands.NavigateCommand"
                 CommandParameter="{x:Static helper:PageTypes.StartPage}"
-                Background="{StaticResource DarkBackgroundThemes}" />
-        <Border Width="2016"
-                Height="1860" CornerRadius="20">
-            <Border.Background>
-                <SolidColorBrush Color="{StaticResource DarkColor}"
-                                 Opacity="0.3" />
-            </Border.Background>
-            <Border Style="{StaticResource SettingBorderStyle}"
+                Background="{DynamicResource ButtonDarkBackground}" />
+        <Grid Width="2016"
+                Height="1860" >
+            <Border
+                Background="{DynamicResource ButtonDarkBackground}"
+                CornerRadius="20"
+                Opacity="0.3"/>
+            <Border Style="{DynamicResource SettingBorderStyle}"
                     Width="1916" Height="1764" Padding="32">
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <Button
-                            Template="{StaticResource CancelBackgroundPageButton}"
+                            Template="{DynamicResource CancelBackgroundPageButton}"
                             Command="helper:CommonCommands.GoBackCommand" />
                         <TextBlock
                             Text="Задний фон"
-                            Style="{StaticResource TitleTextBlockStyle}" />
-                        <Button Template="{StaticResource SaveBackgroundButton}"
+                            Foreground="{DynamicResource ForegroundTextBlock}"
+                            Style="{DynamicResource TitleTextBlockStyle}" />
+                        <Button Template="{DynamicResource SaveBackgroundButton}"
                                 Background="Transparent"
                                 Margin="957 0 0 0" Foreground="#00D220"
                                 Command="{Binding SaveBackgroundCommand}"/>
@@ -80,7 +81,7 @@
                                                 <RadioButton GroupName="1"
                                                              VerticalAlignment="Top" HorizontalAlignment="Right"
                                                              Margin="24"
-                                                             Template="{StaticResource SelectBackgroundButton}"
+                                                             Template="{DynamicResource SelectBackgroundButton}"
                                                              IsChecked="{Binding IsSelected}" />
                                             </Grid>
                                         </Border>
@@ -91,6 +92,6 @@
                     </Grid>
                 </Grid>
             </Border>
-        </Border>
+        </Grid>
     </Grid>
 </Page>

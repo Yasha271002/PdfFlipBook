@@ -268,11 +268,14 @@ namespace PdfFlipBook.Views.Pages
 
         #endregion
 
-        #region EventRegion
+        private double _startPoint;
+        private double _endPoint;
 
+        #region EventRegion
         private void Book_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             StartPointX = e.GetPosition(this).X;
+            _startPoint = e.GetPosition(this).X;
         }
 
         private void OnInactivityDetected(int inactivityTime)
@@ -294,53 +297,18 @@ namespace PdfFlipBook.Views.Pages
 
         private void Book_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            int index = Book.CurrentSheetIndex;
-            var xPosition = e.GetPosition(this).X;
+            _endPoint = e.GetPosition(this).X;
 
-            if (AllPages.Count <= 30) return;
+            if (_startPoint >= 2300 && _endPoint < 1920)
+            {
+                GetPageNumber();
+            }
 
-            if (xPosition < 1920 / 2)
+            if (_startPoint < 1500 && _endPoint >1920)
             {
-                if (StartPointX > 1920 / 2)
-                {
-                    try
-                    {
-                        AllPages.RemoveAt(index * 2 + 1);
-                        AllPages.Insert(index * 2 + 1, AllPhotos[index * 2 + 1]);
-                        AllPages.RemoveAt(index * 2 + 2);
-                        AllPages.Insert(index * 2 + 2, AllPhotos[index * 2 + 2]);
-                        AllPages.RemoveAt(index * 2 + 3);
-                        AllPages.Insert(index * 2 + 3, AllPhotos[index * 2 + 3]);
-                        AllPages.RemoveAt(index * 2 + 4);
-                        AllPages.Insert(index * 2 + 4, AllPhotos[index * 2 + 4]);
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception.Message);
-                    }
-                }
+                GetPageNumber();
             }
-            else
-            {
-                if (StartPointX < 1920 / 2)
-                {
-                    try
-                    {
-                        AllPages.RemoveAt(index * 2 - 4);
-                        AllPages.Insert(index * 2 - 4, AllPhotos[index * 2 - 4]);
-                        AllPages.RemoveAt(index * 2 - 5);
-                        AllPages.Insert(index * 2 - 5, AllPhotos[index * 2 - 5]);
-                        AllPages.RemoveAt(index * 2 - 6);
-                        AllPages.Insert(index * 2 - 6, AllPhotos[index * 2 - 6]);
-                        AllPages.RemoveAt(index * 2 - 7);
-                        AllPages.Insert(index * 2 - 7, AllPhotos[index * 2 - 7]);
-                    }
-                    catch (Exception exception)
-                    {
-                        Console.WriteLine(exception.Message);
-                    }
-                }
-            }
+            
 
             PlaySound();
         }
@@ -359,7 +327,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void GetPageNumber()
         {
-            var currentPage = Book.CurrentSheetIndex * 2 + 1;
+            var currentPage = Book.CurrentSheetIndex * 2;
             var totalPages = AllPages.Count;
 
             PageNumber = currentPage == totalPages 

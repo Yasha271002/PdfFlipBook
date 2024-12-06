@@ -103,33 +103,6 @@
                 <ScrollViewer Grid.Column="1" Margin="30,0,30,0" VerticalAlignment="Center"
                               x:Name="PART_ContentHost" />
             </Grid>
-            <VisualStateManager.VisualStateGroups>
-                <VisualStateGroup x:Name="FocusStates">
-                    <VisualStateGroup.Transitions>
-                        <VisualTransition GeneratedDuration="0:0:0.3" />
-                        <VisualTransition GeneratedDuration="0" To="Pressed" />
-                    </VisualStateGroup.Transitions>
-                    <VisualState x:Name="Focused">
-                        <Storyboard>
-                            <ColorAnimationUsingKeyFrames
-                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                Storyboard.TargetName="Border">
-                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource BackgroundBorder}" />
-                            </ColorAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </VisualState>
-                    <VisualState x:Name="Unfocused">
-                        <Storyboard>
-                            <ColorAnimationUsingKeyFrames
-                                Storyboard.TargetProperty="(Border.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)"
-                                Storyboard.TargetName="Border">
-                                <EasingColorKeyFrame KeyTime="0" Value="{DynamicResource BackgroundBorder}" />
-                            </ColorAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </VisualState>
-                    <VisualState x:Name="Normal" />
-                </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
         </Border>
         <ControlTemplate.Triggers>
             <MultiTrigger>

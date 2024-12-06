@@ -32,7 +32,8 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Grid Name="SearchResultGrid" Visibility="Collapsed">
+        <Grid Name="SearchResultGrid" Visibility="Collapsed"
+              IsVisibleChanged="FoldersItemsControl_OnIsVisibleChanged">
             <ItemsControl AlternationCount="{Binding ActualBooks.Count}"
                           ItemsSource="{Binding ActualBooks, IsAsync=True}"
                           VirtualizingStackPanel.IsVirtualizing="True"
@@ -154,41 +155,46 @@
                     <utilities:AlignableWrapPanel HorizontalContentAlignment="Center" Width="3760"></utilities:AlignableWrapPanel>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <b:Interaction.Behaviors>
-                <behavior:ItemsControlDragItemBehavior IsDragging="{Binding IsDragging, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </b:Interaction.Behaviors>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Button Panel.ZIndex="200"
                             Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
-                    Path=RazdelCommand}"
+                            Path=RazdelCommand}"
+                            Background="{Binding DataContext.SettingsModel.SelectedBrush,  
+                            UpdateSourceTrigger=PropertyChanged, 
+                            RelativeSource={RelativeSource AncestorType=Page}}"
                             CommandParameter="{Binding Title }">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Visibility" Value="Visible" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsDragging, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="True">
-                                        <Setter Property="Visibility" Value="Hidden"/>
+                                    <DataTrigger
+                                        Binding="{Binding IsDragging, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                        Value="True">
+                                        <Setter Property="Visibility" Value="Hidden" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                         <Button.Template>
-                            <ControlTemplate>
+                            <ControlTemplate TargetType="Button">
                                 <Border HorizontalAlignment="Center" Width="500" Height="647" Margin="15 "
-                                        Background="{DynamicResource ButtonDarkBackground}" BorderBrush="{DynamicResource BorderBrush}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
                                         BorderThickness="2"
-                                        CornerRadius="50" >
+                                        CornerRadius="50">
                                     <Grid>
                                         <StackPanel Orientation="Vertical" ClipToBounds="True"
                                                     VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" Height="339"></Image>
                                             <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34"
-                                                       Foreground="{DynamicResource ForegroundTextBlock}" Margin="0,20,0,0"
+                                                       Foreground="White"
+                                                       Margin="0,20,0,0"
                                                        TextTrimming="WordEllipsis"
                                                        HorizontalAlignment="Center"
                                                        FontFamily="{DynamicResource Montserrat}"
-                                                       Width="420" TextWrapping="WrapWithOverflow"
+                                                       Width="420"
+                                                       TextWrapping="WrapWithOverflow"
                                                        VerticalAlignment="Center"
                                                        TextAlignment="Center"
                                                        FontWeight="Bold" />
@@ -208,37 +214,12 @@
                     </ScrollViewer>
                 </ControlTemplate>
             </ItemsControl.Template>
+
+            <b:Interaction.Behaviors>
+                <behavior:ItemsControlDragItemBehavior
+                    IsDragging="{Binding IsDragging, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            </b:Interaction.Behaviors>
         </ItemsControl>
-        <!--<Button Command="{Binding BackCommand}"
-                Name="BackButton"
-                Width="400"
-                Height="120"
-                Visibility="Collapsed"
-                Margin="160,60,0,0"
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left">
-            <Button.Template>
-                <ControlTemplate>
-                    <Border Background="White"
-                            CornerRadius="20">
-                        <TextBlock TextAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Text="Назад"
-                                   FontSize="40"
-                                   FontFamily="{StaticResource Montserrat}"
-                                   Padding="20"></TextBlock>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <TextBlock Text="{Binding ActualRazdel}"
-                   Foreground="White"
-                   FontFamily="{StaticResource Montserrat}"
-                   FontSize="40"
-                   FontWeight="Bold"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Left"
-                   Margin="640,80,0,0"></TextBlock>-->
         <Button
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
@@ -388,10 +369,11 @@
         <Button Template="{DynamicResource DraggingButton}" Width="687"
                 Foreground="{DynamicResource ForegroundTextBlock}"
                 Command="{Binding EnableDraggingCommand}"
-                Height="120" VerticalAlignment="Top" 
+                Height="120" VerticalAlignment="Top"
                 Margin="0 429 0 0"
+                x:Name="DragButton"
                 Visibility="{Binding IsDragging,
-            Converter={StaticResource InvertedBooleanToVisibilityConverter}}"/>
+            Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
         <Button Template="{DynamicResource SaveBackgroundButton}"
                 Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" HorizontalAlignment="Right"
@@ -400,7 +382,7 @@
                 Width="499" Height="120"
                 Command="{Binding SaveDraggingCommand}"
                 Visibility="{Binding IsDragging,
-            Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Template="{DynamicResource CancelBackgroundButton}"
                 Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" HorizontalAlignment="Left"
@@ -408,6 +390,6 @@
                 Width="499" Height="120"
                 Command="{Binding CancelDraggingCommand}"
                 Visibility="{Binding IsDragging,
-            Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 </Page>

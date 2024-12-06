@@ -7,7 +7,7 @@
         <Border
             x:Name="Border"
             CornerRadius="10"
-            BorderBrush="#808080"
+            BorderBrush="{DynamicResource BackgroundBorder}"
             Focusable="False"
             BorderThickness="1"
             Background="{TemplateBinding Background}"
@@ -35,8 +35,8 @@
     </ControlTemplate>
 
     <Style TargetType="ComboBox" x:Key="ComboBox">
-        <Setter Property="Foreground" Value="#808080" />
-        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundTextBlock}" />
+        <Setter Property="Background" Value="{DynamicResource BackgroundBorder}" />
         <Setter Property="FontSize" Value="50" />
         <Setter Property="Padding" Value="4 " />
         <Setter Property="Template">
@@ -47,6 +47,8 @@
                             Name="ToggleButton"
                             Template="{StaticResource ComboBoxToggleButton}"
                             Grid.Column="2"
+                            Background="{DynamicResource ButtonLightBackground}"
+                            Foreground="{DynamicResource ForegroundTextBlock}"
                             Focusable="False"
                             IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                             ClickMode="Press" />
@@ -73,8 +75,8 @@
                                 SnapsToDevicePixels="True"
                                 MaxHeight="780"
                                 MinWidth="{TemplateBinding ActualWidth}"
-                                Background="White"
-                                BorderBrush="#808080"
+                                Background="{DynamicResource BackgroundBorder}"
+                                BorderBrush="{DynamicResource BorderBrush}"
                                 Focusable="False"
                                 FocusVisualStyle="{x:Null}"
                                 BorderThickness="0">

@@ -1,5 +1,8 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 using Core;
+using Newtonsoft.Json;
+using PdfFlipBook.Helper;
 using PdfFlipBook.Properties;
 
 namespace PdfFlipBook.Models
@@ -13,6 +16,9 @@ namespace PdfFlipBook.Models
 
     public class SettingsModel:ObservableObject
     {
+        [JsonIgnore]
+        private JsonHelper _jsonHelper;
+
         [CanBeNull]
         public string Password
         {
@@ -70,6 +76,16 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
 
+        public bool IsDarkTheme
+        {
+            get => GetOrCreate<bool>();
+            set
+            {
+                SetAndNotify(value);
+                SwitchThemes();
+            }
+        }
+
         public string? MainBackgroundSoundPath
         {
             get => GetOrCreate<string>();
@@ -81,5 +97,160 @@ namespace PdfFlipBook.Models
             get => GetOrCreate<string>();
             set => SetAndNotify(value);
         }
+
+        public double Hue
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+                GetColorFromHueWithOffset(value, 1);
+            }
+        }
+        public double Saturation
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+            }
+        }
+        public double Brightness
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+            }
+        }
+        public Color HueBrush
+        {
+            get => GetOrCreate<Color>();
+            set => SetAndNotify(value);
+        }
+
+        [JsonIgnore]
+        public double JsonHue
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+                GetColorFromHueWithOffset(value, 1);
+            }
+        }
+        [JsonIgnore]
+        public double JsonSaturation
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+            }
+        }
+        [JsonIgnore]
+        public double JsonBrightness
+        {
+            get => GetOrCreate<double>();
+            set
+            {
+                SetAndNotify(value);
+                UpdateColor();
+            }
+        }
+        [JsonIgnore]
+        public Color JsonHueBrush
+        {
+            get => GetOrCreate<Color>();
+            set => SetAndNotify(value);
+        }
+        [JsonIgnore]
+        public SolidColorBrush JsonBrush
+        {
+            get => GetOrCreate<SolidColorBrush>();
+            set => SetAndNotify(value);
+        }
+        [JsonIgnore]
+        public Color JsonColor
+        {
+            get => GetOrCreate<Color>();
+            set => SetAndNotify(value);
+        }
+
+        #region ColorUpdate
+
+        private void UpdateColor()
+        {
+            SelectedColor = ConvertHsbToRgb(Hue, Saturation, Brightness);
+            SelectedBrush = new SolidColorBrush(SelectedColor);
+
+            HueBrush = GetColorFromHueWithOffset(Hue, 1);
+        }
+
+        private static System.Windows.Media.Color ConvertHsbToRgb(double hue, double saturation, double brightness)
+        {
+            var c = brightness * saturation;
+            var x = c * (1 - Math.Abs((hue / 60) % 2 - 1));
+            var m = brightness - c;
+
+            double r = 0, g = 0, b = 0;
+            switch (hue)
+            {
+                case < 60:
+                    r = c; g = x; b = 0;
+                    break;
+                case < 120:
+                    r = x; g = c; b = 0;
+                    break;
+                case < 180:
+                    r = 0; g = c; b = x;
+                    break;
+                case < 240:
+                    r = 0; g = x; b = c;
+                    break;
+                case < 300:
+                    r = x; g = 0; b = c;
+                    break;
+                default:
+                    r = c; g = 0; b = x;
+                    break;
+            }
+
+            return System.Windows.Media.Color.FromScRgb(1.0f, (float)(r + m), (float)(g + m), (float)(b + m));
+        }
+
+        public System.Windows.Media.Color GetColorFromHueWithOffset(double hue, double offset)
+        {
+            hue += offset;
+            hue = hue % 360;
+            if (hue < 0) hue += 360;
+            return ConvertHsbToRgb(hue, 1.0, 1.0);
+        }
+
+        private void SwitchThemes()
+        {
+            _jsonHelper = new JsonHelper();
+            var jsonThemesPath = "Themes.json";
+            var dark = "Dark";
+            var light = "Light";
+
+            if (IsDarkTheme)
+            {
+                App.CurrentApp.ChangeTheme(dark);
+                _jsonHelper.WriteJsonToFile(jsonThemesPath, dark, false);
+            }
+            else
+            {
+                App.CurrentApp.ChangeTheme(light);
+                _jsonHelper.WriteJsonToFile(jsonThemesPath, light, false);
+            }
+        }
+
+        #endregion
     }
 }

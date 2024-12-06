@@ -46,7 +46,7 @@
             <Button Grid.Column="0" Grid.Row="3" Template="{StaticResource PinPadButton}" Content="0"
                     Command="{Binding ButtonPinPadCommand}" CommandParameter="0" />
             <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3" Template="{StaticResource PinPadBackButton}"
-                    Content="Back" Command="{Binding BackPinPad}" />
+                    Content="Back" Command="{Binding BackPinPad}" Foreground="{DynamicResource ForegroundTextBlock}"/>
         </Grid>
     </Grid>
 </UserControl>

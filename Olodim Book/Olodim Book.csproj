@@ -272,6 +272,7 @@
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Helper\Logger\Logger.cs" />
     <Compile Include="Helper\NavigationManager.cs" />
+    <Compile Include="Helper\OpacityExtension.cs" />
     <Compile Include="Helper\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Helper\Singleton\BackgroundSingleton.cs" />
     <Compile Include="Helper\Singleton\GlobalSettings.cs" />
@@ -329,6 +330,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Styles\ScrollViewerRazdelStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Styles\SlidersStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

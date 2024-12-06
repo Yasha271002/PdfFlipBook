@@ -24,6 +24,7 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Top"
                                Name="Book"
+                               
                                MouseLeftButtonUp="Book_OnMouseLeftButtonUp"
                                MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
             <wpfMitsuControls:Book.ItemTemplate>
@@ -45,11 +46,13 @@
                 VerticalAlignment="Top"
                 Command="{Binding BackCommand}"
                 HorizontalAlignment="Right"
+                Foreground="{DynamicResource ForegroundTextBlock}"
                 Margin="40" Panel.ZIndex="1000">
             <Button.Template>
                 <ControlTemplate>
-                    <Border Background="White" CornerRadius="15">
-                        <Image Source="/Images/close (2).png" Margin="20"></Image>
+                    <Border Background="{DynamicResource BackgroundBorder}" CornerRadius="15">
+                        <ContentPresenter ContentTemplate="{StaticResource PinPadClose}"
+                                          Width="70"/>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -66,7 +69,7 @@
                 Command="{Binding InsertPageCommand}"
                 Width="1000"
                 Template="{DynamicResource SelectPage}"
-                Margin="16,0,16,0" />
+                Margin="16,0,16,5" />
             <Button Template="{DynamicResource SwitchPageButton}"
                     Content="{DynamicResource RightArrow}"
                     Foreground="{DynamicResource ForegroundTextBlock}"

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Core;
@@ -12,6 +11,7 @@ namespace PdfFlipBook.ViewModel.Pages
     {
         DispatcherTimer _timer = new();
         private int _sec = 0;
+        private JsonHelper _jsonHelper;
 
         public SettingsModel SettingsModel
         {
@@ -25,21 +25,10 @@ namespace PdfFlipBook.ViewModel.Pages
             set => SetAndNotify(value);
         }
 
-        public SolidColorBrush SelectedBrush
-        {
-            get => GetOrCreate<SolidColorBrush>();
-            set => SetAndNotify(value);
-        }
-
-        public System.Windows.Media.Color SelectedColor
-        {
-            get => GetOrCreate<System.Windows.Media.Color>();
-            set => SetAndNotify(value);
-        }
-
         public SettingsPageViewModel(SettingsModel settings)
         {
             SettingsModel = settings;
+            _jsonHelper = new JsonHelper();
             StartPageSettings();
         }
 
@@ -86,9 +75,45 @@ namespace PdfFlipBook.ViewModel.Pages
             CommonCommands.GoBackCommand!.Execute(null);
         }));
 
+        public ICommand EditBrushCommand => GetOrCreate(new RelayCommand(f =>
+        {
+            if (f is not string type)
+                return;
+            EditBrush(type);
+        }));
+
         #endregion
+
         #region MethodsRegion
 
+        private void EditBrush(string type)
+        {
+            switch (type)
+            {
+                case "Save":
+                    SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
+                    SettingsModel.JsonColor = SettingsModel.SelectedColor;
+
+                    SettingsModel.JsonColor = SettingsModel.SelectedColor;
+                    SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
+                    SettingsModel.JsonHue = SettingsModel.Hue;
+                    SettingsModel.JsonBrightness = SettingsModel.Brightness;
+                    SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
+                    SettingsModel.JsonSaturation = SettingsModel.Saturation;
+                    break;
+                case "Cancel":
+                    SettingsModel.SelectedBrush = SettingsModel.JsonBrush;
+                    SettingsModel.SelectedColor = SettingsModel.JsonColor;
+
+                    SettingsModel.SelectedColor = SettingsModel.JsonColor;
+                    SettingsModel.SelectedBrush = SettingsModel.JsonBrush;
+                    SettingsModel.Hue = SettingsModel.JsonHue; 
+                    SettingsModel.Brightness = SettingsModel.JsonBrightness;
+                    SettingsModel.HueBrush = SettingsModel.JsonHueBrush;
+                    SettingsModel.Saturation = SettingsModel.JsonSaturation;
+                    break;
+            }
+        }
 
         private void EditSettings(string type)
         {

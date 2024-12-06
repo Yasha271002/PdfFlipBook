@@ -215,12 +215,13 @@
                     Visibility="Visible">
                 <Button.Template>
                     <ControlTemplate>
-                        <Border Background="White"
+                        <Border Background="{DynamicResource BackgroundBorder}"
                                 CornerRadius="20">
                             <TextBlock TextAlignment="Center"
                                        VerticalAlignment="Center"
                                        Text="Назад"
                                        FontSize="40"
+                                       Foreground="{DynamicResource ForegroundTextBlock}"
                                        FontFamily="{StaticResource Montserrat}"
                                        Padding="20">
                             </TextBlock>
@@ -241,13 +242,13 @@
 
         <Border Margin="2979 60 0 0"
                 VerticalAlignment="Top"
-                Background="#FFFFFF"
+                Background="{DynamicResource BackgroundBorder}"
                 Width="704" Height="120"
                 CornerRadius="10">
             <Grid>
                 <TextBlock Text="Расположение"
                            FontSize="50" FontFamily="{DynamicResource Montserrat}"
-                           FontWeight="Normal" Foreground="#808080"
+                           FontWeight="Normal" Foreground="{DynamicResource ForegroundTextBlock}"
                            VerticalAlignment="Center"
                            Margin="32 0 0 0" />
                 <ComboBox Width="217" Height="77"
@@ -267,6 +268,7 @@
                                 FocusVisualStyle="{x:Null}">
                                 <TextBlock Text="{Binding Size}"
                                            FontSize="50"
+                                           Foreground="{DynamicResource ForegroundTextBlock}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center" />
 

@@ -31,33 +31,7 @@ namespace PdfFlipBook.Views.Controls.Color
             set => SetValue(SelectedBrushProperty, value);
         }
 
-        public double Hue
-        {
-            get => _hue;
-            set
-            {
-                _hue = value;
-                UpdateColor();
-            }
-        }
-        public double Saturation
-        {
-            get => _saturation;
-            set
-            {
-                _saturation = value;
-                UpdateColor();
-            }
-        }
-        public double Brightness
-        {
-            get => _brightness;
-            set
-            {
-                _brightness = value;
-                UpdateColor();
-            }
-        }
+        
 
         private double _hue;
         private double _saturation;
@@ -77,42 +51,8 @@ namespace PdfFlipBook.Views.Controls.Color
             }
         }
 
-        private void UpdateColor()
-        {
-            SelectedColor = ConvertHsbToRgb(Hue, Saturation, Brightness);
-            SelectedBrush = new SolidColorBrush(SelectedColor);
-        }
+        
 
-        private static System.Windows.Media.Color ConvertHsbToRgb(double hue, double saturation, double brightness)
-        {
-            var c = brightness * saturation;
-            var x = c * (1 - Math.Abs((hue / 60) % 2 - 1));
-            var m = brightness - c;
-
-            double r = 0, g = 0, b = 0;
-            switch (hue)
-            {
-                case < 60:
-                    r = c; g = x; b = 0;
-                    break;
-                case < 120:
-                    r = x; g = c; b = 0;
-                    break;
-                case < 180:
-                    r = 0; g = c; b = x;
-                    break;
-                case < 240:
-                    r = 0; g = x; b = c;
-                    break;
-                case < 300:
-                    r = x; g = 0; b = c;
-                    break;
-                default:
-                    r = c; g = 0; b = x;
-                    break;
-            }
-
-            return System.Windows.Media.Color.FromScRgb(1.0f, (float)(r + m), (float)(g + m), (float)(b + m));
-        }
+        
     }
 }

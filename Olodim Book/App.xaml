@@ -22,6 +22,7 @@
                 <ResourceDictionary Source="Resources/Styles/ScrollViewerRazdelStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles/BorderStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles/ComboBoxStyle.xaml" />
+                <ResourceDictionary Source="Resources/Styles/SlidersStyle.xaml" />
 
                 <ResourceDictionary Source="Resources/Templates/Icons.xaml" />
                 <ResourceDictionary Source="Resources/Templates/RadioButtonTemplate.xaml" />

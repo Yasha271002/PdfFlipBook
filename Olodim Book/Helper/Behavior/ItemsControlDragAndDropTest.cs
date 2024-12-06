@@ -5,6 +5,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Xaml.Behaviors;
+using PdfFlipBook.Helper.Singleton;
+using PdfFlipBook.Models;
 
 namespace PdfFlipBook.Helper.Behavior
 {
@@ -133,6 +135,8 @@ namespace PdfFlipBook.Helper.Behavior
             _adornerControl = new ContentControl();
             _adornerControl.Content = (element as ContentPresenter)?.ContentTemplate.LoadContent();
             _adornerControl.DataContext = element.DataContext;
+            _adornerControl.Background = new SolidColorBrush(Colors.LightSlateGray);
+            _adornerControl.Opacity = 0.5;
 
             _adornerSourcePosition = element.TranslatePoint(new Point(), AssociatedObject);
 

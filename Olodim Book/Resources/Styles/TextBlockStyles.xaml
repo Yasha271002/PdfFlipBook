@@ -25,7 +25,7 @@
     <Style TargetType="TextBlock" x:Key="SettingsTextBlock" BasedOn="{StaticResource TitleTextBlockStyle}">
         <Setter Property="FontSize" Value="50" />
         <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="Foreground" Value="{StaticResource WhiteColorForeground}" />
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundTextBlock}" />
         <Setter Property="Margin" Value="0" />
     </Style>
 

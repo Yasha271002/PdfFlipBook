@@ -1,4 +1,7 @@
-﻿using NAudio.Wave;
+﻿using System;
+using System.Timers;
+using System.Windows.Threading;
+using NAudio.Wave;
 
 public class AudioHelper
 {
@@ -7,11 +10,21 @@ public class AudioHelper
     private string _audioFilePath;
     private float _volume;
 
+    private DispatcherTimer _timer;
+
     public AudioHelper(string audioFilePath, float volume)
     {
         _audioFilePath = audioFilePath;
         _volume = volume;
         InitializeAudio();
+        _timer = new DispatcherTimer();
+    }
+
+    private void InitializeTimer()
+    {
+        _timer.Tick += TimerOnTick;
+        _timer.Interval = TimeSpan.FromSeconds(1);
+        _timer.Start();
     }
 
     private void InitializeAudio()
@@ -25,9 +38,8 @@ public class AudioHelper
     public void Play()
     {
         if (_audioFileReader.Position > 0)
-        {
             _audioFileReader.Position = 0;
-        }
+
         _waveOut.Play();
     }
 
@@ -36,36 +48,29 @@ public class AudioHelper
         _waveOut.Stop();
     }
 
-    public void Pause()
+    public void InfinityPlay()
     {
-        _waveOut.Pause();
-    }
-
-    public void Resume()
-    {
+        if (_audioFileReader.Position > 0)
+            _audioFileReader.Position = 0;
         _waveOut.Play();
+        InitializeTimer();
     }
 
     public bool IsPlaying => _waveOut.PlaybackState == PlaybackState.Playing;
 
-    public void SetVolume(float volume)
-    {
-        _volume = volume;
-        if (_audioFileReader != null)
-        {
-            _audioFileReader.Volume = volume;
-        }
-    }
-
-    public float GetVolume()
-    {
-        return _volume;
-    }
-
     public void Exit()
     {
+        _timer.Tick -= TimerOnTick;
+        _timer?.Stop();
         _waveOut.Stop();
         _audioFileReader.Dispose();
         _waveOut.Dispose();
+    }
+
+
+    private void TimerOnTick(object sender, EventArgs e)
+    {
+        if (_waveOut.PlaybackState != PlaybackState.Stopped) return;
+        InfinityPlay();
     }
 }

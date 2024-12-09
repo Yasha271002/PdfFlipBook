@@ -18,29 +18,45 @@
         <Grid.Background>
             <ImageBrush Stretch="Fill" ImageSource="{Binding SelectRazdel.Background}" />
         </Grid.Background>
-        <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
-                               Height="2040"
-                               Width="3000"
+        <Grid Height="1944" VerticalAlignment="Top" Margin="0 25 0 0"
+              Width="3000">
+            <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
+                                   Height="1944"
+                                   Width="3000"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Top"
                                Name="Book"
-                               
                                MouseLeftButtonUp="Book_OnMouseLeftButtonUp"
                                MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
-            <wpfMitsuControls:Book.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderThickness="4"
+                <wpfMitsuControls:Book.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="4"
                             Background="{Binding SelectRazdel.Background, RelativeSource={RelativeSource AncestorType=Page}, UpdateSourceTrigger=PropertyChanged}">
-                        <ContentControl HorizontalAlignment="Center">
-                            <ContentControl.Content>
-                                <Image Source="{Binding Converter={StaticResource ImageConverter}}"></Image>
-                            </ContentControl.Content>
-                        </ContentControl>
-                    </Border>
-                </DataTemplate>
-            </wpfMitsuControls:Book.ItemTemplate>
+                            <ContentControl HorizontalAlignment="Center">
+                                <ContentControl.Content>
+                                    <Image Source="{Binding Converter={StaticResource ImageConverter}}"></Image>
+                                </ContentControl.Content>
+                            </ContentControl>
+                        </Border>
+                    </DataTemplate>
+                </wpfMitsuControls:Book.ItemTemplate>
 
-        </wpfMitsuControls:Book>
+            </wpfMitsuControls:Book>
+            <Border Background="Transparent">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
+                                         Value="True">
+                                <Setter Property="IsHitTestVisible" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+        </Grid>
+
         <Button Height="180"
                 Width="180"
                 VerticalAlignment="Top"
@@ -59,22 +75,47 @@
         </Button>
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Bottom"
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,25">
             <Button Template="{DynamicResource SwitchPageButton}"
                     Content="{DynamicResource LeftArrow}"
                     Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="-" />
+                    CommandParameter="-" >
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
+                                         Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button
                 Command="{Binding InsertPageCommand}"
                 Width="1000"
                 Template="{DynamicResource SelectPage}"
-                Margin="16,0,16,5" />
+                Margin="16,0,16,0" />
             <Button Template="{DynamicResource SwitchPageButton}"
                     Content="{DynamicResource RightArrow}"
                     Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="+" />
+                    CommandParameter="+" >
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
+                                         Value="True">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <Grid Name="InsertGrid" Visibility="Collapsed" Panel.ZIndex="2000"

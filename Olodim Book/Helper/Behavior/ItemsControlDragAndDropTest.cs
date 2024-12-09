@@ -135,8 +135,6 @@ namespace PdfFlipBook.Helper.Behavior
             _adornerControl = new ContentControl();
             _adornerControl.Content = (element as ContentPresenter)?.ContentTemplate.LoadContent();
             _adornerControl.DataContext = element.DataContext;
-            _adornerControl.Background = new SolidColorBrush(Colors.LightSlateGray);
-            _adornerControl.Opacity = 0.5;
 
             _adornerSourcePosition = element.TranslatePoint(new Point(), AssociatedObject);
 

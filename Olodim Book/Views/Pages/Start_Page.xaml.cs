@@ -328,6 +328,8 @@ namespace PdfFlipBook.Views.Pages
             InitializeComponent();
             AuthorBookRB.IsChecked = true;
 
+            CloseSearchButton.Visibility = Visibility.Collapsed;
+
             if (Directory.Exists("PDFs"))
                 Directory.CreateDirectory("PDFs");
 
@@ -706,7 +708,6 @@ namespace PdfFlipBook.Views.Pages
                 SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
                 SettingsModel.JsonSaturation = SettingsModel.Saturation;
 
-                GlobalSettings.Instance.Settings = SettingsModel;
             }
             else
             {
@@ -720,6 +721,9 @@ namespace PdfFlipBook.Views.Pages
                 SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
                 SettingsModel.JsonSaturation = SettingsModel.Saturation;
             }
+
+            GlobalSettings.Instance.Settings = SettingsModel;
+
 
             _audioHelper = new AudioHelper(SettingsModel.MainBackgroundSoundPath, SettingsModel.Volume);
             PlaySound();
@@ -780,9 +784,21 @@ namespace PdfFlipBook.Views.Pages
                 }
             });
 
+        private ICommand _hideSearchGridCommand;
+
+        public ICommand HideSearchGridCommand => new Command(f =>
+        {
+            NameTB.Text = string.Empty;
+            SearchResultGrid.Visibility = Visibility.Collapsed;
+            CloseSearchButton.Visibility = Visibility.Collapsed;
+            FoldersItemsControl.Visibility = Visibility.Visible;
+        });
+
         private void NameTB_OnGotFocus(object sender, RoutedEventArgs e)
         {
             if (!(CoolKeyBoard.Margin.Bottom < -200)) return;
+
+            CloseSearchButton.Visibility = Visibility.Visible;
 
             var sb = new Storyboard();
             var animation = new ThicknessAnimation
@@ -805,7 +821,7 @@ namespace PdfFlipBook.Views.Pages
             if (_audioHelper.IsPlaying)
                 _audioHelper.Stop();
 
-            _audioHelper.Play();
+            _audioHelper.InfinityPlay();
         }
 
         private void StopSound()

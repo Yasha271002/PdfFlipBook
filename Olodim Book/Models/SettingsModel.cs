@@ -58,15 +58,21 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
 
+        public bool OnTapSwitchPage
+        {
+            get => GetOrCreate<bool>();
+            set => SetAndNotify(value);
+        }
+
         public SelectThemes SelectedThemes
         {
             get => GetOrCreate<SelectThemes>();
             set => SetAndNotify(value);
         }
 
-        public SolidColorBrush SelectedBrush
+        public System.Windows.Media.Brush SelectedBrush
         {
-            get => GetOrCreate<SolidColorBrush>();
+            get => GetOrCreate<Brush>();
             set => SetAndNotify(value);
         }
 
@@ -170,9 +176,9 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
         [JsonIgnore]
-        public SolidColorBrush JsonBrush
+        public Brush JsonBrush
         {
-            get => GetOrCreate<SolidColorBrush>();
+            get => GetOrCreate<Brush>();
             set => SetAndNotify(value);
         }
         [JsonIgnore]
@@ -243,11 +249,21 @@ namespace PdfFlipBook.Models
             {
                 App.CurrentApp.ChangeTheme(dark);
                 _jsonHelper.WriteJsonToFile(jsonThemesPath, dark, false);
+
+                Hue = 240;
+                Brightness = 0.025;
+                Saturation = 0.002;
+
             }
             else
             {
                 App.CurrentApp.ChangeTheme(light);
                 _jsonHelper.WriteJsonToFile(jsonThemesPath, light, false);
+
+                Hue = 0;
+                Brightness = 100;
+                Saturation = 0;
+
             }
         }
 

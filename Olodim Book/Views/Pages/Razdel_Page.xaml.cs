@@ -575,7 +575,7 @@ namespace PdfFlipBook.Views.Pages
             if (_audioHelper.IsPlaying)
                 _audioHelper.Stop();
 
-            _audioHelper.Play();
+            _audioHelper.InfinityPlay();
         }
 
         private void StopSound()

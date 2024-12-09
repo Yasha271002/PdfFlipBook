@@ -13,6 +13,7 @@
       xmlns:dd="urn:gong-wpf-dragdrop"
       xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:behavior="clr-namespace:PdfFlipBook.Helper.Behavior"
+      xmlns:singleton="clr-namespace:PdfFlipBook.Helper.Singleton"
       mc:Ignorable="d"
       Loaded="Start_Page_OnLoaded"
       d:DesignHeight="2160" d:DesignWidth="3840"
@@ -20,6 +21,9 @@
       Unloaded="Start_Page_OnUnloaded"
       Background="Transparent"
       DataContext="{Binding RelativeSource= {RelativeSource Self}}">
+    <Page.Resources>
+        <SolidColorBrush x:Key="Background" Color="LightGray"/>
+    </Page.Resources>
     <Grid Width="3840" Height="2160">
 
         <!--<moonPdfLib:MoonPdfPanel Background="LightGray" ViewType="BookView" Name="BookView"  PageMargin="0,2,4,2" AllowDrop="True"/>-->
@@ -136,6 +140,16 @@
                     </ControlTemplate>
                 </ItemsControl.Template>
             </ItemsControl>
+
+            <Button Template="{DynamicResource SettingButtonBack}"
+                    Width="400" Height="100"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Content="Закрыть поиск"
+                    FontSize="40"
+                    x:Name="CloseSearchButton"
+                    Command="{Binding HideSearchGridCommand}"
+                    Margin="0 150 100 0"/>
         </Grid>
         <ItemsControl AlternationCount="{Binding AllFolders.Count}"
                       ItemsSource="{Binding AllFolders, IsAsync=True,UpdateSourceTrigger=PropertyChanged}"
@@ -188,16 +202,17 @@
                                                     VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Image Source="{Binding Icon}" Height="339"></Image>
                                             <TextBlock Text="{Binding Title, IsAsync=True}" FontSize="34"
-                                                       Foreground="White"
                                                        Margin="0,20,0,0"
                                                        TextTrimming="WordEllipsis"
                                                        HorizontalAlignment="Center"
                                                        FontFamily="{DynamicResource Montserrat}"
                                                        Width="420"
+                                                       Foreground="{DynamicResource ForegroundTextBlock}"
                                                        TextWrapping="WrapWithOverflow"
                                                        VerticalAlignment="Center"
                                                        TextAlignment="Center"
-                                                       FontWeight="Bold" />
+                                                       FontWeight="Bold">
+                                            </TextBlock>
                                         </StackPanel>
                                     </Grid>
                                 </Border>

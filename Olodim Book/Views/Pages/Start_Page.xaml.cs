@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using iTextSharp.text.pdf;
@@ -24,6 +25,7 @@ using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
+using Color = System.Windows.Media.Color;
 using Path = System.IO.Path;
 
 namespace PdfFlipBook.Views.Pages
@@ -694,12 +696,19 @@ namespace PdfFlipBook.Views.Pages
                     Repeat = false,
                     NextPage = true,
                     Volume = 0.5f,
+                    SelectedBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+                    SelectedColor = Color.FromRgb(255, 255, 255),
                     MainBackgroundSoundPath = Path.GetFullPath(backgroundSound),
                     SwitchSoundPath = Path.GetFullPath(switchSound),
+                    Hue = 0,
+                    Brightness = 100,
+                    Saturation = 0,
                 };
                 helper.WriteJsonToFile(jsonPath, settings, false);
 
-                SettingsModel = settings;
+                SettingsModel = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
+
+               
 
                 SettingsModel.JsonColor = SettingsModel.SelectedColor;
                 SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
@@ -741,6 +750,7 @@ namespace PdfFlipBook.Views.Pages
         {
             if (NameTB.Text.Length != 0) return;
 
+            HideButton.Visibility = Visibility.Visible;
             SearchResultGrid.Visibility = Visibility.Collapsed;
             FoldersItemsControl.Visibility = Visibility.Visible;
         }
@@ -750,6 +760,8 @@ namespace PdfFlipBook.Views.Pages
         public ICommand SearchCommand =>
             _searchCommand ??= new Command(async c =>
             {
+                ActualBooks = new();
+
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
 
@@ -763,7 +775,6 @@ namespace PdfFlipBook.Views.Pages
                                         x.Title.ToLower().Contains(searchQuery))
                             .ToList());
 
-                    ActualBooks = new();
                     foreach (var book in filteredBooks)
                     {
                         ActualBooks.Add(book);

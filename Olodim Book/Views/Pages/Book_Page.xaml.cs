@@ -205,7 +205,7 @@ namespace PdfFlipBook.Views.Pages
                     page--;
 
                 Book.CurrentSheetIndex = page / 2;
-                int index = Book.CurrentSheetIndex;
+                int index = Book.CurrentSheetIndex*2;
                 try
                 {
                     ReloadPage(page);
@@ -217,7 +217,8 @@ namespace PdfFlipBook.Views.Pages
 
                 CloseInsertCommand.Execute(null);
 
-                GetPageNumber("+");
+                PageNumber = $"{index}-{index + 1} из {AllPages.Count}";
+
             }));
 
         private ICommand _switchPageCommand;

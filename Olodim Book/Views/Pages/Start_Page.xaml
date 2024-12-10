@@ -174,7 +174,7 @@
                     <Button Panel.ZIndex="200"
                             Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Page},
                             Path=RazdelCommand}"
-                            Background="{Binding DataContext.SettingsModel.SelectedBrush,  
+                            Background="{Binding DataContext.SettingsModel.SelectedBrush, Mode=OneWay, 
                             UpdateSourceTrigger=PropertyChanged, 
                             RelativeSource={RelativeSource AncestorType=Page}}"
                             CommandParameter="{Binding Title }">

@@ -291,7 +291,6 @@ namespace PdfFlipBook.Views.Controls
 
         public ICommand DeleteCommand =>
             _deleteCommand ?? (_deleteCommand = new Command(() => {  Send(Keys.Back, false); }));
-
         public ICommand EnterCommand =>
             _enterCommand ?? (_enterCommand = new Command(() =>
             {

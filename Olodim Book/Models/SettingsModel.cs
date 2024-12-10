@@ -253,7 +253,6 @@ namespace PdfFlipBook.Models
                 Hue = 240;
                 Brightness = 0.025;
                 Saturation = 0.002;
-
             }
             else
             {

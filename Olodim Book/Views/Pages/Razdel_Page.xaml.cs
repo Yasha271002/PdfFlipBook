@@ -62,6 +62,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private GridSizeModel _selectedGridSize;
+
         public GridSizeModel SelectedGridSize
         {
             get { return _selectedGridSize; }
@@ -74,6 +75,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _scrollViewerHeight;
+
         public double ScrollViewerHeights
         {
             get => _scrollViewerHeight;
@@ -85,6 +87,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _wrapPanelWidth;
+
         public double WrapPanelWidths
         {
             get => _wrapPanelWidth;
@@ -96,6 +99,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _verticalScrollBarVisibility;
+
         public bool VerticalScrollBarVisibility
         {
             get => _verticalScrollBarVisibility;
@@ -107,6 +111,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isFirstPage;
+
         public bool IsFirstPage
         {
             get => _isFirstPage;
@@ -118,6 +123,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isLastPage;
+
         public bool IsLastPage
         {
             get => _isLastPage;
@@ -129,6 +135,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private int _selectedBookIndex;
+
         public int SelectedBookIndex
         {
             get => _selectedBookIndex;
@@ -147,6 +154,7 @@ namespace PdfFlipBook.Views.Pages
 
 
         private List<CountBooksModel> _countBooks;
+
         public List<CountBooksModel> CountBooks
         {
             get => _countBooks;
@@ -158,6 +166,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private SettingsModel _settings;
+
         public SettingsModel SettingsModel
         {
             get => _settings;
@@ -169,6 +178,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isDotsVisibility;
+
         public bool IsDotsVisibility
         {
             get => _isDotsVisibility;
@@ -180,6 +190,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isCheckedRadio;
+
         public bool IsCheckedRadio
         {
             get => _isCheckedRadio;
@@ -191,6 +202,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private string _isLastBookCount;
+
         public string IsLastBookCount
         {
             get => _isLastBookCount;
@@ -202,6 +214,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private double _itemsControlHeight;
+
         public double ItemsControlHeight
         {
             get => _itemsControlHeight;
@@ -213,6 +226,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private BookFolder _selectRazdel;
+
         public BookFolder SelectRazdel
         {
             get => _selectRazdel;
@@ -227,8 +241,8 @@ namespace PdfFlipBook.Views.Pages
         private ScrollViewer _radioScrollViewer;
 
         private ObservableCollection<BookPDF> _allBooks;
-        private const int _initialLoadCount = 20; 
-        private const int _incrementLoadCount = 10; 
+        private const int _initialLoadCount = 20;
+        private const int _incrementLoadCount = 10;
         private bool _isLoadingMoreBooks = false;
         private AudioHelper _audioHelper;
 
@@ -246,6 +260,7 @@ namespace PdfFlipBook.Views.Pages
 
             UpdatePageButtonsState();
 
+            _audioHelper = new AudioHelper(SelectRazdel.Sound, SettingsModel.Volume);
 
             GridSizes = new ObservableCollection<GridSizeModel>
             {
@@ -258,25 +273,16 @@ namespace PdfFlipBook.Views.Pages
             };
             SelectedGridSize = GridSizes.FirstOrDefault();
             UpdatePageButtonsState();
-
-            _audioHelper = new AudioHelper(SelectRazdel.Sound, GlobalSettings.Instance.Settings.Volume);
-            PlaySound();
         }
 
         private ICommand _moveUpCommand;
         private ICommand _moveDownCommand;
 
         public ICommand MoveUpCommand =>
-            _moveUpCommand ??= new Command(c =>
-            {
-                MoveUp();
-            });
+            _moveUpCommand ??= new Command(c => { MoveUp(); });
 
         public ICommand MoveDownCommand =>
-            _moveDownCommand ??= new Command(c =>
-            {
-                MoveDown();
-            });
+            _moveDownCommand ??= new Command(c => { MoveDown(); });
 
         private ICommand _bookCommand;
 
@@ -292,10 +298,7 @@ namespace PdfFlipBook.Views.Pages
         private ICommand _backCommand;
 
         public ICommand BackCommand =>
-            _backCommand ??= (_backCommand = new Command(c =>
-            {
-                NavigationService?.Navigate(new Start_Page());
-            }));
+            _backCommand ??= (_backCommand = new Command(c => { NavigationService?.Navigate(new Start_Page()); }));
 
         private ICommand _selectBookCommand;
 
@@ -357,8 +360,10 @@ namespace PdfFlipBook.Views.Pages
                 ItemsControlHeight = 482.0;
                 IsDotsVisibility = false;
             }
+
             IsLastBookCount = CountBooks.Count.ToString();
         }
+
 
         private void Razdel_Page_OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -369,8 +374,13 @@ namespace PdfFlipBook.Views.Pages
                                                        actualBook.Title)[0];
                 ActualBooks.Add(actualBook);
             }
+            InitializeAudio();
+        }
 
-            
+        private void InitializeAudio()
+        {
+            _audioHelper = new AudioHelper(SelectRazdel.Sound, SettingsModel.Volume);
+            PlaySound();
         }
 
         private void Razdel_Page_OnUnloaded(object sender, RoutedEventArgs e)
@@ -420,7 +430,7 @@ namespace PdfFlipBook.Views.Pages
                 ItemsControlHeight = 482.0;
                 IsDotsVisibility = false;
             }
-            else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2 )
+            else if (SelectedBookIndex >= (CountBooks.Count - 3) - visibleRadioItemsCount / 2)
             {
                 ItemsControlHeight = 482.0;
                 double offset = ((CountBooks.Count - visibleRadioItemsCount) * radioItemHeight) - radioItemHeight;

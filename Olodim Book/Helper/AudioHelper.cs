@@ -50,6 +50,7 @@ public class AudioHelper
 
     public void InfinityPlay()
     {
+       
         if (_audioFileReader.Position > 0)
             _audioFileReader.Position = 0;
         _waveOut.Play();

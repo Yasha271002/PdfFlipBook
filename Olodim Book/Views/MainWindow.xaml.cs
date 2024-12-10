@@ -29,6 +29,8 @@ namespace PdfFlipBook.Views
             // UpdatePhotos();
             //Frame1.NavigationService?.Navigate(App.CurrentApp.SP, UriKind.Relative);
             NavigationManager.Frame1 = Frame1.NavigationService;
+            NavigationCommands.BrowseBack.InputGestures.Clear();
+            NavigationCommands.BrowseForward.InputGestures.Clear();
             CommonCommands.NavigateCommand.Execute(PageTypes.StartPage);
 
 

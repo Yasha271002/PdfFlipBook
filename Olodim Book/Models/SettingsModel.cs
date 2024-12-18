@@ -34,6 +34,13 @@ namespace PdfFlipBook.Models
         }
 
         [CanBeNull]
+        public int InactivityTimePage
+        {
+            get => GetOrCreate<int>(60);
+            set => SetAndNotify(value);
+        }
+
+        [CanBeNull]
         public string IntervalSwitchPage
         {
             get => GetOrCreate<string>();

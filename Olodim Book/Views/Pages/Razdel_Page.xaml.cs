@@ -490,7 +490,6 @@ namespace PdfFlipBook.Views.Pages
                     WrapPanelWidth = 1270;
 
                     ScrollViewerHeight = 1513.0;
-
                     VerticalScrollBarVisibility = false;
                     break;
                 case "2x2":
@@ -505,6 +504,7 @@ namespace PdfFlipBook.Views.Pages
                     ScrollViewerHeight = 1860.0;
 
                     VerticalScrollBarVisibility = true;
+
                     break;
                 case "3x3":
                     BorderWidth = 500.0;
@@ -518,6 +518,7 @@ namespace PdfFlipBook.Views.Pages
                     ScrollViewerHeight = 1860.0;
 
                     VerticalScrollBarVisibility = true;
+
                     break;
                 case "3x2":
                     BorderWidth = 658.0;
@@ -531,6 +532,7 @@ namespace PdfFlipBook.Views.Pages
                     ScrollViewerHeight = 1980.0;
 
                     VerticalScrollBarVisibility = true;
+
                     break;
                 case "6x2":
                     BorderWidth = 539.0;

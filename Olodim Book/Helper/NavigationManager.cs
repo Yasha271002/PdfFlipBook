@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
 using Core;
+using PdfFlipBook.Views.Pages;
+using WPFMitsuControls;
 
 namespace PdfFlipBook.Helper
 {
@@ -62,6 +64,10 @@ namespace PdfFlipBook.Helper
         {
             return Frame1.Content switch
             {
+                Start_Page => PageTypes.StartPage,
+                Razdel_Page => PageTypes.RazdelPage,
+                Book_Page => PageTypes.BookPage,
+                SelectBackgroundPage => PageTypes.SelectBackground,
                 _ => PageTypes.None
             };
         }

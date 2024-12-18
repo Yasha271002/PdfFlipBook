@@ -352,7 +352,20 @@ namespace PdfFlipBook.Views.Pages
                 AllFolders.Add(BF);
             }
 
+            
+
+
             LoadFoldersOrder();
+        }
+
+        private DispatcherTimer _pageFlipTimer;
+        private BaseInactivityHelper _inactivityHelper;
+
+        private void OnInactivityDetected(int inactivityTime)
+        {
+            if (NavigationManager.Instance.CurrentPage == PageTypes.BookPage )
+                return;
+            CommonCommands.NavigateCommand.Execute(PageTypes.StartPage);
         }
 
         private void CreateFolders(List<string> pathList)
@@ -663,6 +676,7 @@ namespace PdfFlipBook.Views.Pages
         private void Start_Page_OnUnloaded(object sender, RoutedEventArgs e)
         {
             _audioHelper.Exit();
+            HideButton.Visibility = Visibility.Collapsed;
         }
 
         private async void Start_Page_OnLoaded(object sender, RoutedEventArgs e)
@@ -697,6 +711,7 @@ namespace PdfFlipBook.Views.Pages
                 {
                     InactivityTime = "60",
                     IntervalSwitchPage = "5",
+                    InactivityTimePage = 60,
                     Password = "1234",
                     Repeat = false,
                     NextPage = true,
@@ -739,6 +754,9 @@ namespace PdfFlipBook.Views.Pages
             GlobalSettings.Instance.Settings = SettingsModel;
 
 
+            _inactivityHelper = new BaseInactivityHelper(Convert.ToInt32(SettingsModel.InactivityTimePage));
+            _inactivityHelper.OnInactivity += OnInactivityDetected;
+
             _audioHelper = new AudioHelper(SettingsModel.MainBackgroundSoundPath, SettingsModel.Volume);
             PlaySound();
         }
@@ -766,7 +784,7 @@ namespace PdfFlipBook.Views.Pages
             _searchCommand ??= new Command(async c =>
             {
                 ActualBooks = new();
-
+                IsDragging = false;
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
                 CloseSearchButton.Visibility = Visibility.Visible;

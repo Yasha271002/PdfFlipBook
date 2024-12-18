@@ -13,10 +13,13 @@
         Title="MainWindow" Height="2160" Width="3840"
         WindowState="Maximized"
         WindowStyle="None">
+    <Window.Resources>
+        <Image x:Key="Background" Source="../Images/wood-86 1.png"/>
+    </Window.Resources>
     <Grid>
         <Viewbox>
             <Grid Width="3840" Height="2160">
-            <Image Source="{Binding Background, UpdateSourceTrigger=PropertyChanged,Source={x:Static singleton:BackgroundSingleton.Instance}}"
+            <Image Source="{Binding Background, UpdateSourceTrigger=PropertyChanged,Source={x:Static singleton:BackgroundSingleton.Instance}, TargetNullValue={StaticResource Background}}"
                    Stretch="Fill"/>
                 <Frame Name="Frame1"
                        NavigationUIVisibility="Hidden"/>

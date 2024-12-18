@@ -25,6 +25,7 @@ using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 using PdfFlipBook.Properties;
 using PdfFlipBook.Utilities;
+using PdfFlipBook.Views.Controls;
 using Color = System.Windows.Media.Color;
 using Path = System.IO.Path;
 
@@ -549,6 +550,10 @@ namespace PdfFlipBook.Views.Pages
         public ICommand RazdelCommand =>
             _razdelCommand ?? (_razdelCommand = new Command(c =>
             {
+                HideButton.Visibility = Visibility.Collapsed;
+
+                CoolKeyBoard.Visibility = Visibility.Collapsed;
+
                 ActualRazdel = c.ToString();
                 SelectRazdel = AllFolders.FirstOrDefault(f => f.Title == c.ToString());
 
@@ -764,6 +769,7 @@ namespace PdfFlipBook.Views.Pages
 
                 SearchResultGrid.Visibility = Visibility.Visible;
                 FoldersItemsControl.Visibility = Visibility.Collapsed;
+                CloseSearchButton.Visibility = Visibility.Visible;
 
                 var searchQuery = NameTB.Text.ToLower();
 
@@ -800,6 +806,7 @@ namespace PdfFlipBook.Views.Pages
         public ICommand HideSearchGridCommand => new Command(f =>
         {
             NameTB.Text = string.Empty;
+            HideButton.Visibility = Visibility.Collapsed;
             SearchResultGrid.Visibility = Visibility.Collapsed;
             CloseSearchButton.Visibility = Visibility.Collapsed;
             FoldersItemsControl.Visibility = Visibility.Visible;
@@ -808,7 +815,7 @@ namespace PdfFlipBook.Views.Pages
         private void NameTB_OnGotFocus(object sender, RoutedEventArgs e)
         {
             if (!(CoolKeyBoard.Margin.Bottom < -200)) return;
-
+            IsDragging = false;
             CloseSearchButton.Visibility = Visibility.Visible;
 
             var sb = new Storyboard();

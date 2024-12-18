@@ -187,9 +187,11 @@ namespace PdfFlipBook.Views.Pages
         public ICommand ToPageCommand =>
             _toPageCommand ?? (_toPageCommand = new Command(c =>
             {
-                if (KK.Text == "" && AllPages.Count > int.Parse(KK.Text)) return;
+                if (KK.Text == "" || AllPages.Count > int.Parse(KK.Text) || KK.Text == " ") return;
                 int page = int.Parse(KK.Text);
 
+                if (page > AllPages.Count)
+                    return;
                 AllPages = new List<string>();
 
                 AllPhotos = new List<string>(Directory
@@ -203,6 +205,8 @@ namespace PdfFlipBook.Views.Pages
                 var ostatok = page % 2;
                 if (ostatok == 1)
                     page--;
+
+                
 
                 Book.CurrentSheetIndex = page / 2;
                 int index = Book.CurrentSheetIndex*2;

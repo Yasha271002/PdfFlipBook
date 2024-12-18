@@ -273,6 +273,7 @@ namespace PdfFlipBook.Views.Pages
             };
             SelectedGridSize = GridSizes.FirstOrDefault();
             UpdatePageButtonsState();
+            InitializeAudio();
         }
 
         private ICommand _moveUpCommand;
@@ -379,6 +380,8 @@ namespace PdfFlipBook.Views.Pages
 
         private void InitializeAudio()
         {
+            if (_audioHelper.IsPlaying)
+                return;
             _audioHelper = new AudioHelper(SelectRazdel.Sound, SettingsModel.Volume);
             PlaySound();
         }

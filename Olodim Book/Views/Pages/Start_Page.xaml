@@ -282,8 +282,8 @@
             </TextBox.Effect>
         </TextBox>
         <StackPanel
-            Width="1200" Height="55" Margin="0 298 0 0"
-            VerticalAlignment="Top" Orientation="Horizontal">
+            Width="1200" Height="55" Margin="1430 298 0 0"
+            VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal">
             <RadioButton Tag="По автору или названию"
                          Style="{DynamicResource StartPageRadioButtonTemplate}"
                          x:Name="AuthorBookRB"
@@ -317,7 +317,7 @@
                     VerticalAlignment="Top"
                     Name="SearchOptionSP"
                     HorizontalAlignment="Center"
-                    Margin="0,250,0,0">
+                    Margin="100,250,0,0">
             <RadioButton Style="{DynamicResource CircleCheckbox}"
                          Width="60"
                          IsChecked="True"

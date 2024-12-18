@@ -36,7 +36,8 @@
             <GradientStop
                 Color="{Binding SettingsModel.HueBrush,
                              Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Offset="1" />
+                Offset="0.5" />
+            <GradientStop Color="White" Offset="1" />
         </LinearGradientBrush>
 
         <SolidColorBrush x:Key="SliderThumb.Static.Background" Color="#FFF0F0F0" />
@@ -293,8 +294,7 @@
                 <Grid>
                     <TextBlock
                         Text="Задний фон" HorizontalAlignment="Left"
-                        Style="{DynamicResource SettingsTextBlock}"
-                        Margin="32" />
+                        Style="{DynamicResource SettingsTextBlock}" />
                     <Button Content="Изменить" HorizontalAlignment="Right"
                             Width="500" Height="125" Foreground="{DynamicResource ForegroundEdit}"
                             Background="{DynamicResource ButtonLightBackground}"

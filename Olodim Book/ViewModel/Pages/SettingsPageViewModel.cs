@@ -71,7 +71,17 @@ namespace PdfFlipBook.ViewModel.Pages
         {
             var helper = new JsonHelper();
             var filePath = "Settings/Settings.json";
+
+            SettingsModel.SelectedColor = SettingsModel.JsonColor;
+            SettingsModel.SelectedBrush = SettingsModel.JsonBrush;
+            SettingsModel.Hue = SettingsModel.JsonHue;
+            SettingsModel.Brightness = SettingsModel.JsonBrightness;
+            SettingsModel.HueBrush = SettingsModel.JsonHueBrush;
+            SettingsModel.Saturation = SettingsModel.JsonSaturation;
+
             helper.WriteJsonToFile(filePath, SettingsModel, false);
+
+
             CommonCommands.GoBackCommand!.Execute(null);
         }));
 
@@ -125,11 +135,13 @@ namespace PdfFlipBook.ViewModel.Pages
                         SettingsModel.InactivityTime = PageSettings.InactivityTime;
                         PageSettings.InactivityTime = string.Empty;
                         OnPropertyChanged(nameof(SettingsModel.InactivityTime));
+                        PageSettings.IsPinPadVisible = false;
                         break;
                     case "Interval":
                         SettingsModel.IntervalSwitchPage = PageSettings.Interval;
                         PageSettings.Interval = string.Empty;
                         OnPropertyChanged(nameof(SettingsModel.IntervalSwitchPage));
+                        PageSettings.IsPinPadVisible = false;
                         break;
                 }
             }

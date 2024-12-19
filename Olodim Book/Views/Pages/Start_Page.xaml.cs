@@ -79,6 +79,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private BookFolder _selectRazdel;
+
         public BookFolder SelectRazdel
         {
             get => _selectRazdel;
@@ -338,7 +339,7 @@ namespace PdfFlipBook.Views.Pages
 
             var a = Directory.GetDirectories(Directory.GetCurrentDirectory() + "\\PDFs").ToList();
             AllFolders = new ObservableCollection<BookFolder>();
-            
+
             CreateFolders(a);
 
             foreach (var BF in a.Select(s => new BookFolder()
@@ -347,12 +348,10 @@ namespace PdfFlipBook.Views.Pages
                          Icon = Directory.GetFiles(s + "\\Logo\\")[0].ToString(),
                          Background = Directory.GetFiles(s + "\\Background\\").FirstOrDefault()!.ToString(),
                          Sound = Directory.GetFiles(s + "\\Sound\\").FirstOrDefault()!.ToString()
-            }))
+                     }))
             {
                 AllFolders.Add(BF);
             }
-
-            
 
 
             LoadFoldersOrder();
@@ -363,7 +362,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void OnInactivityDetected(int inactivityTime)
         {
-            if (NavigationManager.Instance.CurrentPage == PageTypes.BookPage )
+            if (NavigationManager.Instance.CurrentPage == PageTypes.BookPage)
                 return;
             CommonCommands.NavigateCommand.Execute(PageTypes.StartPage);
         }
@@ -524,9 +523,9 @@ namespace PdfFlipBook.Views.Pages
                 var book = AllBooks.FirstOrDefault(name => name.Title == c.ToString());
 
                 var folderName = book.FullPath;
-                var word = folderName.Split( 's').LastOrDefault();
-                var lastWord = word.Split( '\\').LastOrDefault();
-                SelectRazdel = AllFolders.FirstOrDefault(name => name.Title == lastWord); 
+                var word = folderName.Split('s').LastOrDefault();
+                var lastWord = word.Split('\\').LastOrDefault();
+                SelectRazdel = AllFolders.FirstOrDefault(name => name.Title == lastWord);
 
                 var BookData = Tuple.Create(c.ToString(), SettingsModel, SelectRazdel);
                 ExecuteNavigation(BookData);
@@ -574,7 +573,7 @@ namespace PdfFlipBook.Views.Pages
                     new List<BookPDF>(AllBooks.Where(x => x.FullPath.Contains(c.ToString()))));
 
                 GlobalSettings.Instance.Books = new ObservableCollection<BookPDF>(actualBooks);
-                var razdelData = Tuple.Create(ActualRazdel, actualBooks,SettingsModel, SelectRazdel);
+                var razdelData = Tuple.Create(ActualRazdel, actualBooks, SettingsModel, SelectRazdel);
                 ExecuteNavigation(razdelData);
             }));
 
@@ -592,6 +591,7 @@ namespace PdfFlipBook.Views.Pages
             _timer.Stop();
             _sec = 0;
         }));
+
         public ICommand StartTimerCommand => _startTimerCommand ??= (_startTimerCommand = new Command(a =>
         {
             _timer?.Stop();
@@ -620,6 +620,7 @@ namespace PdfFlipBook.Views.Pages
             _timer2.Stop();
             _sec2 = 0;
         }));
+
         public ICommand StartTimer2Command => _startTimer2Command ??= (_startTimer2Command = new Command(a =>
         {
             _timer2?.Stop();
@@ -728,7 +729,6 @@ namespace PdfFlipBook.Views.Pages
 
                 SettingsModel = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
 
-               
 
                 SettingsModel.JsonColor = SettingsModel.SelectedColor;
                 SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
@@ -736,12 +736,14 @@ namespace PdfFlipBook.Views.Pages
                 SettingsModel.JsonBrightness = SettingsModel.Brightness;
                 SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
                 SettingsModel.JsonSaturation = SettingsModel.Saturation;
-
             }
             else
             {
                 var settings = helper.ReadJsonFromFile<SettingsModel>(jsonPath);
                 SettingsModel = settings;
+
+                SettingsModel.MainBackgroundSoundPath = Path.GetFullPath(backgroundSound);
+                SettingsModel.SwitchSoundPath = Path.GetFullPath(switchSound);
 
                 SettingsModel.JsonColor = SettingsModel.SelectedColor;
                 SettingsModel.JsonBrush = SettingsModel.SelectedBrush;
@@ -919,6 +921,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private bool _isDragging;
+
         public bool IsDragging
         {
             get => _isDragging;
@@ -930,6 +933,7 @@ namespace PdfFlipBook.Views.Pages
         }
 
         private ICommand _enableDraggingCommand;
+
         public ICommand EnableDraggingCommand => _enableDraggingCommand ??= new Command(f =>
         {
             IsDragging = !IsDragging;
@@ -937,6 +941,7 @@ namespace PdfFlipBook.Views.Pages
 
 
         private ICommand _cancelDraggingCommand;
+
         public ICommand CancelDraggingCommand => _cancelDraggingCommand ??= new Command(f =>
         {
             IsDragging = !IsDragging;
@@ -944,6 +949,7 @@ namespace PdfFlipBook.Views.Pages
         });
 
         private ICommand _saveDraggingCommand;
+
         public ICommand SaveDraggingCommand => _saveDraggingCommand ??= new Command(f =>
         {
             IsDragging = !IsDragging;
@@ -955,7 +961,9 @@ namespace PdfFlipBook.Views.Pages
 
         private void FoldersItemsControl_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            DragButton.Visibility = SearchResultGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            DragButton.Visibility = SearchResultGrid.Visibility == Visibility.Visible
+                ? Visibility.Hidden
+                : Visibility.Visible;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using Core;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Crmf;
 using PdfFlipBook.Helper;
 using PdfFlipBook.Properties;
 
@@ -249,6 +250,7 @@ namespace PdfFlipBook.Models
         {
             _jsonHelper = new JsonHelper();
             var jsonThemesPath = "Themes.json";
+            var settingsPath = "Settings/Settings.json";
             var dark = "Dark";
             var light = "Light";
 
@@ -269,10 +271,25 @@ namespace PdfFlipBook.Models
                 Hue = 0;
                 Brightness = 100;
                 Saturation = 0;
-
             }
+
+            SaveSettings();
         }
 
+
+        private void SaveSettings()
+        {
+            var settingsPath = "Settings/Settings.json";
+
+            JsonBrightness = Brightness;
+            JsonBrush = SelectedBrush;
+            JsonColor = SelectedColor;
+            JsonHue = Hue;
+            JsonSaturation = Saturation;
+            JsonHueBrush = HueBrush;
+
+            _jsonHelper.WriteJsonToFile(settingsPath, this, false);
+        }
         #endregion
     }
 }

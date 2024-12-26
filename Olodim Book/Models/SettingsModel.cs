@@ -66,7 +66,19 @@ namespace PdfFlipBook.Models
             set => SetAndNotify(value);
         }
 
+        public bool SwitchPageSoundOff
+        {
+            get => GetOrCreate<bool>();
+            set => SetAndNotify(value);
+        }
+
         public bool OnTapSwitchPage
+        {
+            get => GetOrCreate<bool>();
+            set => SetAndNotify(value);
+        }
+
+        public bool DraggingVisibleButtonCommand
         {
             get => GetOrCreate<bool>();
             set => SetAndNotify(value);
@@ -272,7 +284,7 @@ namespace PdfFlipBook.Models
                 Brightness = 100;
                 Saturation = 0;
             }
-
+            UpdateColor();
             SaveSettings();
         }
 

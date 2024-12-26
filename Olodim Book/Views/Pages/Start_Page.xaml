@@ -387,8 +387,8 @@
                 Height="120" VerticalAlignment="Top"
                 Margin="0 429 0 0"
                 x:Name="DragButton"
-                Visibility="{Binding IsDragging,
-            Converter={StaticResource InvertedBooleanToVisibilityConverter}}" />
+                Visibility="{Binding Settings.DraggingVisibleButtonCommand, Source={x:Static singleton:GlobalSettings.Instance},
+            Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Template="{DynamicResource SaveBackgroundButton}"
                 Foreground="{DynamicResource ForegroundTextBlock}"
                 VerticalAlignment="Top" HorizontalAlignment="Right"

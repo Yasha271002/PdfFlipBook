@@ -282,6 +282,7 @@
     <Compile Include="Models\GridSizeModel.cs" />
     <Compile Include="Models\PageSettingsModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
+    <Compile Include="Models\VideoModel.cs" />
     <Compile Include="Utilities\AlignableWrapPanel.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="Utilities\UserInactivity.cs" />

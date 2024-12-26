@@ -1,12 +1,11 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Xaml.Behaviors;
-using PdfFlipBook.Helper.Singleton;
-using PdfFlipBook.Models;
 
 namespace PdfFlipBook.Helper.Behavior
 {
@@ -21,19 +20,21 @@ namespace PdfFlipBook.Helper.Behavior
             set { SetValue(IsDraggingProperty, value); }
         }
 
-        private FrameworkElement? _draggingElement;
-        private ContentControl? _adornerControl;
-        private AdornerLayer? _adornerLayer;
-        private TemplateAdorner? _templateAdorner;
+        // Dictionary to track active drag states by their keys
+        private readonly Dictionary<int, DragState> _activeDrags = new();
 
-        private Point _adornerSourcePosition;
-        private Point _mouseDownPosition;
+        // Variable to track if a touch drag is already active
+        private bool _isTouchDragActive = false;
 
         protected override void OnAttached()
         {
             AssociatedObject.PreviewMouseDown += AssociatedObjectOnPreviewMouseDown;
             AssociatedObject.MouseMove += AssociatedObjectOnMouseMove;
             AssociatedObject.MouseUp += AssociatedObjectOnMouseUp;
+
+            AssociatedObject.TouchDown += AssociatedObjectOnTouchDown;
+            AssociatedObject.TouchMove += AssociatedObjectOnTouchMove;
+            AssociatedObject.TouchUp += AssociatedObjectOnTouchUp;
         }
 
         protected override void OnDetaching()
@@ -41,71 +42,170 @@ namespace PdfFlipBook.Helper.Behavior
             AssociatedObject.PreviewMouseDown -= AssociatedObjectOnPreviewMouseDown;
             AssociatedObject.MouseMove -= AssociatedObjectOnMouseMove;
             AssociatedObject.MouseUp -= AssociatedObjectOnMouseUp;
+
+            AssociatedObject.TouchDown -= AssociatedObjectOnTouchDown;
+            AssociatedObject.TouchMove -= AssociatedObjectOnTouchMove;
+            AssociatedObject.TouchUp -= AssociatedObjectOnTouchUp;
+        }
+
+        private void BeginDrag(Point position, FrameworkElement element, int key, TouchDevice? touchDevice = null)
+        {
+            // For touch, ensure only one touch drag is active
+            if (key != -1 && _isTouchDragActive)
+                return; // Another touch drag is already active
+
+            if (_activeDrags.ContainsKey(key))
+                return; // Drag already in progress for this key
+
+            var dragState = new DragState
+            {
+                MouseDownPosition = position,
+                DraggingElement = element,
+                AdornerSourcePosition = element.TranslatePoint(new Point(), AssociatedObject),
+                TouchDevice = touchDevice
+            };
+
+            if (element != null)
+            {
+                if (key == -1)
+                {
+                    // Mouse
+                    Mouse.Capture(AssociatedObject);
+                }
+                else if (touchDevice != null)
+                {
+                    // Touch
+                    AssociatedObject.CaptureTouch(touchDevice);
+                    _isTouchDragActive = true; // Mark that a touch drag is active
+                }
+
+                ShowAdornerFromElement(element, dragState);
+                MoveAdorner(position, dragState);
+                element.Visibility = Visibility.Hidden;
+            }
+
+            _activeDrags[key] = dragState;
+        }
+
+        private void EndDrag(int key)
+        {
+            if (!_activeDrags.TryGetValue(key, out var dragState))
+                return;
+
+            if (key == -1)
+            {
+                // Mouse
+                Mouse.Capture(null);
+            }
+            else if (dragState.TouchDevice != null)
+            {
+                // Touch
+                AssociatedObject.ReleaseTouchCapture(dragState.TouchDevice);
+                _isTouchDragActive = false; // Reset the touch drag active flag
+            }
+
+            HideAdorner(dragState);
+
+            if (dragState.DraggingElement != null)
+            {
+                dragState.DraggingElement.Visibility = Visibility.Visible;
+            }
+
+            _activeDrags.Remove(key);
+        }
+
+        private void DragMove(Point position, int key)
+        {
+            if (!_activeDrags.TryGetValue(key, out var dragState))
+                return;
+
+            var currentElement = GetItemByPoint(position);
+            MoveAdorner(position, dragState);
+
+            if (currentElement == null || currentElement == dragState.DraggingElement)
+                return;
+
+            var draggingIndex = AssociatedObject.ItemContainerGenerator.IndexFromContainer(dragState.DraggingElement);
+            var currentIndex = AssociatedObject.ItemContainerGenerator.IndexFromContainer(currentElement);
+
+            if (AssociatedObject.ItemsSource is IList itemList &&
+                CheckListIndex(itemList, draggingIndex) &&
+                CheckListIndex(itemList, currentIndex))
+            {
+                var temp = itemList[draggingIndex];
+                itemList.RemoveAt(draggingIndex);
+                itemList.Insert(currentIndex, temp);
+
+                dragState.DraggingElement = AssociatedObject.ItemContainerGenerator.ContainerFromIndex(currentIndex) as FrameworkElement;
+
+                if (dragState.DraggingElement != null)
+                    dragState.DraggingElement.Visibility = Visibility.Hidden;
+            }
         }
 
         private void AssociatedObjectOnPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!IsDragging) return;
 
-            _mouseDownPosition = e.GetPosition(AssociatedObject);
-            _draggingElement = GetItemByPoint(_mouseDownPosition);
-
-            if (_draggingElement is null)
-                return;
-
-            Mouse.Capture(AssociatedObject);
-            ShowAdornerFromElement(_draggingElement);
-            MoveAdorner(_mouseDownPosition);
-            _draggingElement.Visibility = Visibility.Hidden;
-        }
-
-        private void AssociatedObjectOnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (!IsDragging) return;
-
-            Mouse.Capture(null);
-            HideAdorner();
-
-            if (_draggingElement is null)
-                return;
-
-            _draggingElement.Visibility = Visibility.Visible;
-            _draggingElement = null;
+            var position = e.GetPosition(AssociatedObject);
+            var element = GetItemByPoint(position);
+            if (element != null)
+            {
+                BeginDrag(position, element, -1); // -1 for mouse
+            }
         }
 
         private void AssociatedObjectOnMouseMove(object sender, MouseEventArgs e)
         {
             if (!IsDragging) return;
+            if (e.LeftButton != MouseButtonState.Pressed) return;
 
-            if (_draggingElement is null)
+            var position = e.GetPosition(AssociatedObject);
+            DragMove(position, -1); // -1 for mouse
+        }
+
+        private void AssociatedObjectOnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!IsDragging) return;
+            EndDrag(-1); // -1 for mouse
+        }
+
+        private void AssociatedObjectOnTouchDown(object sender, TouchEventArgs e)
+        {
+            if (!IsDragging) return;
+
+            var touchDevice = e.TouchDevice;
+            var key = touchDevice.Id;
+
+            // Prevent multiple touch drags by checking if a touch drag is already active
+            if (_isTouchDragActive)
                 return;
 
-            var point = e.GetPosition(AssociatedObject);
-            var currentElement = GetItemByPoint(point);
+            var position = e.GetTouchPoint(AssociatedObject).Position;
+            var element = GetItemByPoint(position);
+            if (element != null)
+            {
+                BeginDrag(position, element, key, touchDevice);
+            }
+        }
 
-            MoveAdorner(point);
+        private void AssociatedObjectOnTouchMove(object sender, TouchEventArgs e)
+        {
+            if (!IsDragging) return;
 
-            if (currentElement is null || currentElement == _draggingElement)
-                return;
+            var touchDevice = e.TouchDevice;
+            var key = touchDevice.Id;
+            var position = e.GetTouchPoint(AssociatedObject).Position;
+            DragMove(position, key);
+        }
 
-            var draggingElementIndex = AssociatedObject.ItemContainerGenerator.IndexFromContainer(_draggingElement);
-            var currentElementIndex = AssociatedObject.ItemContainerGenerator.IndexFromContainer(currentElement);
+        private void AssociatedObjectOnTouchUp(object sender, TouchEventArgs e)
+        {
+            if (!IsDragging) return;
 
-            if (AssociatedObject.ItemsSource is not IList itemList ||
-                !CheckListIndex(itemList, draggingElementIndex) ||
-                !CheckListIndex(itemList, currentElementIndex))
-                return;
-
-            var temp = itemList[draggingElementIndex];
-            itemList.RemoveAt(draggingElementIndex);
-            itemList.Insert(currentElementIndex, temp);
-
-            _draggingElement = AssociatedObject.ItemContainerGenerator.ContainerFromIndex(currentElementIndex) as FrameworkElement;
-
-            if (_draggingElement is null)
-                return;
-
-            _draggingElement.Visibility = Visibility.Hidden;
+            var touchDevice = e.TouchDevice;
+            var key = touchDevice.Id;
+            EndDrag(key);
         }
 
         private bool CheckListIndex(IList list, int index)
@@ -130,75 +230,93 @@ namespace PdfFlipBook.Helper.Behavior
             return null;
         }
 
-        private void ShowAdornerFromElement(FrameworkElement element)
+        private void ShowAdornerFromElement(FrameworkElement element, DragState dragState)
         {
-            _adornerControl = new ContentControl();
-            _adornerControl.Content = (element as ContentPresenter)?.ContentTemplate.LoadContent();
-            _adornerControl.DataContext = element.DataContext;
+            dragState.AdornerControl = new ContentControl();
+            if (element is ContentPresenter contentPresenter)
+            {
+                dragState.AdornerControl.Content = contentPresenter.ContentTemplate.LoadContent();
+                dragState.AdornerControl.DataContext = contentPresenter.DataContext;
+            }
 
-            _adornerSourcePosition = element.TranslatePoint(new Point(), AssociatedObject);
+            var adornerCanvas = new Canvas
+            {
+                IsHitTestVisible = false
+            };
+            adornerCanvas.Children.Add(dragState.AdornerControl);
 
-            var adornerCanvas = new Canvas();
-            adornerCanvas.IsHitTestVisible = false;
-            adornerCanvas.Children.Add(_adornerControl);
+            dragState.TemplateAdorner = new TemplateAdorner(AssociatedObject, adornerCanvas);
 
-            _templateAdorner = new TemplateAdorner(AssociatedObject, adornerCanvas);
-
-            _adornerLayer ??= AdornerLayer.GetAdornerLayer(AssociatedObject);
-            _adornerLayer?.Add(_templateAdorner);
+            dragState.AdornerLayer = AdornerLayer.GetAdornerLayer(AssociatedObject);
+            dragState.AdornerLayer?.Add(dragState.TemplateAdorner);
         }
 
-        private void HideAdorner()
+        private void HideAdorner(DragState dragState)
         {
-            if (_adornerLayer is null || _templateAdorner is null)
+            if (dragState.AdornerLayer == null || dragState.TemplateAdorner == null)
                 return;
 
-            _adornerLayer.Remove(_templateAdorner);
+            dragState.AdornerLayer.Remove(dragState.TemplateAdorner);
+            dragState.TemplateAdorner = null;
+            dragState.AdornerControl = null;
+            dragState.AdornerLayer = null;
         }
 
-        private void MoveAdorner(Point mousePosition)
+        private void MoveAdorner(Point mousePosition, DragState dragState)
         {
-            if (_adornerControl is null)
+            if (dragState.AdornerControl == null)
                 return;
 
-            var mouseDeltaMove = mousePosition - _mouseDownPosition;
-            var adornerPosition = _adornerSourcePosition + mouseDeltaMove;
+            var mouseDeltaMove = mousePosition - dragState.MouseDownPosition;
+            var adornerPosition = dragState.AdornerSourcePosition + mouseDeltaMove;
 
-            Canvas.SetLeft(_adornerControl, adornerPosition.X);
-            Canvas.SetTop(_adornerControl, adornerPosition.Y);
-        }
-    }
-
-    public class TemplateAdorner : Adorner
-    {
-        private readonly FrameworkElement _frameworkElementAdorner;
-
-        public TemplateAdorner(UIElement adornedElement, FrameworkElement frameworkElementAdorner) : base(adornedElement)
-        {
-            _frameworkElementAdorner = frameworkElementAdorner;
-            AddVisualChild(frameworkElementAdorner);
-            AddLogicalChild(frameworkElementAdorner);
+            Canvas.SetLeft(dragState.AdornerControl, adornerPosition.X);
+            Canvas.SetTop(dragState.AdornerControl, adornerPosition.Y);
         }
 
-        protected override int VisualChildrenCount => 1;
-
-        protected override Size ArrangeOverride(Size finalSize)
+        // Helper class to store drag state
+        private class DragState
         {
-            _frameworkElementAdorner.Arrange(new Rect(new Point(0, 0), finalSize));
-            return finalSize;
+            public Point AdornerSourcePosition { get; set; }
+            public Point MouseDownPosition { get; set; }
+            public FrameworkElement? DraggingElement { get; set; }
+            public ContentControl? AdornerControl { get; set; }
+            public AdornerLayer? AdornerLayer { get; set; }
+            public TemplateAdorner? TemplateAdorner { get; set; }
+            public TouchDevice? TouchDevice { get; set; }
         }
 
-        protected override Visual GetVisualChild(int index)
+        public class TemplateAdorner : Adorner
         {
-            return _frameworkElementAdorner;
-        }
+            private readonly FrameworkElement _frameworkElementAdorner;
 
-        protected override Size MeasureOverride(Size constraint)
-        {
-            _frameworkElementAdorner.Width = constraint.Width;
-            _frameworkElementAdorner.Height = constraint.Height;
+            public TemplateAdorner(UIElement adornedElement, FrameworkElement frameworkElementAdorner) : base(adornedElement)
+            {
+                _frameworkElementAdorner = frameworkElementAdorner;
+                AddVisualChild(_frameworkElementAdorner);
+                AddLogicalChild(_frameworkElementAdorner);
+            }
 
-            return constraint;
+            protected override int VisualChildrenCount => 1;
+
+            protected override Size ArrangeOverride(Size finalSize)
+            {
+                _frameworkElementAdorner.Arrange(new Rect(new Point(0, 0), finalSize));
+                return finalSize;
+            }
+
+            protected override Visual GetVisualChild(int index)
+            {
+                return _frameworkElementAdorner;
+            }
+
+            protected override Size MeasureOverride(Size constraint)
+            {
+                _frameworkElementAdorner.Width = constraint.Width;
+                _frameworkElementAdorner.Height = constraint.Height;
+                _frameworkElementAdorner.Measure(constraint);
+                return constraint;
+            }
         }
     }
 }

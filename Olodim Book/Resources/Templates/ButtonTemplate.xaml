@@ -143,10 +143,10 @@
     </ControlTemplate>
     <ControlTemplate x:Key="SwitchPageButton" TargetType="Button">
         <Border CornerRadius="10"
-                Width="114" Height="114"
+                Width="164" Height="164"
                 Background="{DynamicResource ButtonDarkBackground}">
             <ContentPresenter ContentTemplate="{TemplateBinding Content}"
-                               Width="48" Height="48"/>
+                               Width="96" Height="96"/>
         </Border>
     </ControlTemplate>
 

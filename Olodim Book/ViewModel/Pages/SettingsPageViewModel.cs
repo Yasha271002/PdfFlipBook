@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Core;
 using PdfFlipBook.Helper;
+using PdfFlipBook.Helper.Singleton;
 using PdfFlipBook.Models;
 
 namespace PdfFlipBook.ViewModel.Pages
@@ -45,6 +46,12 @@ namespace PdfFlipBook.ViewModel.Pages
         public ICommand ShowPasswordCommand => GetOrCreate(new RelayCommand(f =>
         {
             PageSettings.ShowPassword = !PageSettings.ShowPassword;
+        }));
+
+        public ICommand DraggingCommand => GetOrCreate(new RelayCommand(f =>
+        {
+            SettingsModel.DraggingVisibleButtonCommand =
+                !SettingsModel.DraggingVisibleButtonCommand;
         }));
 
         public ICommand ButtonPinPadCommand => GetOrCreate(new RelayCommand(OnPinPadButtonPressed));

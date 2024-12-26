@@ -8,6 +8,7 @@
       xmlns:pages="clr-namespace:PdfFlipBook.ViewModel.Pages"
       xmlns:helper="clr-namespace:PdfFlipBook.Helper"
       xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:singleton="clr-namespace:PdfFlipBook.Helper.Singleton"
       mc:Ignorable="d"
       d:DesignHeight="2160" d:DesignWidth="3840"
       Title="SettingsPage"
@@ -15,16 +16,41 @@
     <Viewbox>
         <ScrollViewer>
             <Grid Width="3840" Height="2160">
-                <Button Width="400" Height="120"
-                        Margin="157 60"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Left"
-                        Background="{DynamicResource BackgroundBorder}"
-                        FontSize="50"
-                        Foreground="{DynamicResource ForegroundTextBlock}"
-                        Command="{Binding WriteJsonFileAndBackCommand}"
-                        Template="{DynamicResource SettingButtonBack}"
-                        Content="На главную" />
+                <StackPanel Margin="157 60"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left">
+                    <Button Width="400" Height="120"
+                            Background="{DynamicResource BackgroundBorder}"
+                            FontSize="50"
+                            Foreground="{DynamicResource ForegroundTextBlock}"
+                            Command="{Binding WriteJsonFileAndBackCommand}"
+                            Template="{DynamicResource SettingButtonBack}"
+                            Content="На главную" />
+                    <Button Width="400" Height="120"
+                            Background="{DynamicResource BackgroundBorder}"
+                            FontSize="25"
+                            Visibility="{Binding PageSettings.ShowSettings, Mode=TwoWay, 
+UpdateSourceTrigger=PropertyChanged,
+Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Foreground="{DynamicResource ForegroundTextBlock}"
+                            Command="{Binding DraggingCommand}"
+                            Template="{DynamicResource SettingButtonBack}"
+                            Margin="0 20 0 0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Content" Value="Включить перемещение" />
+                                <Style.Triggers>
+                                    <DataTrigger
+                                        Binding="{Binding Settings.DraggingVisibleButtonCommand
+                                        ,Source={x:Static singleton:GlobalSettings.Instance}}"
+                                        Value="True">
+                                        <Setter Property="Content" Value="Выключить перемещение" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
 
                 <controls:SettingsControl
                     Visibility="{Binding PageSettings.ShowSettings, Mode=TwoWay, 
@@ -36,7 +62,7 @@
                     Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                     <b:Interaction.Triggers>
                         <b:EventTrigger EventName="GotFocus">
-                            <b:InvokeCommandAction Command="{Binding GotFocusCommand}" CommandParameter="Password"/>
+                            <b:InvokeCommandAction Command="{Binding GotFocusCommand}" CommandParameter="Password" />
                         </b:EventTrigger>
                     </b:Interaction.Triggers>
                 </controls:PasswordSettingsControl>
@@ -48,7 +74,7 @@
                         <b:EventTrigger EventName="GotFocus">
                             <b:InvokeCommandAction Command="{Binding GotFocusCommand}" />
                         </b:EventTrigger>
-                        
+
                     </b:Interaction.Triggers>
                 </controls:PainPadControl>
             </Grid>

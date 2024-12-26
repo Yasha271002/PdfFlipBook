@@ -399,6 +399,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void PlaySound()
         {
+            if(!SettingsModel.SwitchPageSoundOff) return;
             if (_audioHelper.IsPlaying)
                 _audioHelper.Stop();
 
@@ -407,6 +408,7 @@ namespace PdfFlipBook.Views.Pages
 
         private void StopSound()
         {
+            if (!SettingsModel.SwitchPageSoundOff) return;
             if (!_audioHelper.IsPlaying)
                 return;
 

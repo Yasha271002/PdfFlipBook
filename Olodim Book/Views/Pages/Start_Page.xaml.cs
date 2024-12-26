@@ -751,6 +751,8 @@ namespace PdfFlipBook.Views.Pages
                 SettingsModel.JsonBrightness = SettingsModel.Brightness;
                 SettingsModel.JsonHueBrush = SettingsModel.HueBrush;
                 SettingsModel.JsonSaturation = SettingsModel.Saturation;
+
+                helper.WriteJsonToFile(jsonPath, settings, false);
             }
 
             GlobalSettings.Instance.Settings = SettingsModel;
@@ -937,6 +939,7 @@ namespace PdfFlipBook.Views.Pages
         public ICommand EnableDraggingCommand => _enableDraggingCommand ??= new Command(f =>
         {
             IsDragging = !IsDragging;
+            GlobalSettings.Instance.Settings.DraggingVisibleButtonCommand = false;
         });
 
 
@@ -946,6 +949,7 @@ namespace PdfFlipBook.Views.Pages
         {
             IsDragging = !IsDragging;
             LoadFoldersOrder();
+            GlobalSettings.Instance.Settings.DraggingVisibleButtonCommand = true;
         });
 
         private ICommand _saveDraggingCommand;
@@ -954,6 +958,7 @@ namespace PdfFlipBook.Views.Pages
         {
             IsDragging = !IsDragging;
             SaveFoldersOrder();
+            GlobalSettings.Instance.Settings.DraggingVisibleButtonCommand = true;
         });
 
         #endregion

@@ -23,15 +23,15 @@
             <wpfMitsuControls:Book ItemsSource="{Binding AllPages,IsAsync=True}"
                                    Height="1944"
                                    Width="3000"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Top"
-                               Name="Book"
-                               MouseLeftButtonUp="Book_OnMouseLeftButtonUp"
-                               MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Top"
+                                   Name="Book"
+                                   MouseLeftButtonUp="Book_OnMouseLeftButtonUp"
+                                   MouseLeftButtonDown="Book_OnMouseLeftButtonDown">
                 <wpfMitsuControls:Book.ItemTemplate>
                     <DataTemplate>
                         <Border BorderThickness="4"
-                            Background="{Binding SelectRazdel.Background, RelativeSource={RelativeSource AncestorType=Page}, UpdateSourceTrigger=PropertyChanged}">
+                                Background="{Binding SelectRazdel.Background, RelativeSource={RelativeSource AncestorType=Page}, UpdateSourceTrigger=PropertyChanged}">
                             <ContentControl HorizontalAlignment="Center">
                                 <ContentControl.Content>
                                     <Image Source="{Binding Converter={StaticResource ImageConverter}}"></Image>
@@ -45,17 +45,20 @@
             <Border Background="Transparent">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="IsHitTestVisible" Value="False"/>
+                        <Setter Property="IsHitTestVisible" Value="False" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
                                          Value="True">
-                                <Setter Property="IsHitTestVisible" Value="True"/>
+                                <Setter Property="IsHitTestVisible" Value="True" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
         </Grid>
+
+        
+
 
         <Button Height="180"
                 Width="180"
@@ -68,7 +71,7 @@
                 <ControlTemplate>
                     <Border Background="{DynamicResource BackgroundBorder}" CornerRadius="15">
                         <ContentPresenter ContentTemplate="{StaticResource PinPadClose}"
-                                          Width="70"/>
+                                          Width="70" />
                     </Border>
                 </ControlTemplate>
             </Button.Template>
@@ -81,14 +84,14 @@
                     Content="{DynamicResource LeftArrow}"
                     Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="-" >
+                    CommandParameter="-">
                 <Button.Style>
                     <Style TargetType="Button">
-                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
                                          Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -103,14 +106,14 @@
                     Content="{DynamicResource RightArrow}"
                     Foreground="{DynamicResource ForegroundTextBlock}"
                     Command="{Binding SwitchPageCommand}"
-                    CommandParameter="+" >
+                    CommandParameter="+">
                 <Button.Style>
                     <Style TargetType="Button">
-                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
                                          Value="True">
-                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -126,7 +129,7 @@
                 <Grid.Effect>
                     <BlurEffect Radius="50"
                                 KernelType="Gaussian"
-                                RenderingBias="Performance"/>
+                                RenderingBias="Performance" />
                 </Grid.Effect>
             </Grid>
             <Button Height="64" Margin="0 0 0 32"
@@ -138,22 +141,21 @@
                     <ControlTemplate>
                         <Border CornerRadius="32" Background="{DynamicResource BackgroundBorder}">
                             <ContentPresenter ContentTemplate="{DynamicResource PinPadClose}"
-                                              Width="32" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                              Width="32" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            
+
             <TextBox Name="KK" Margin="20" VerticalAlignment="Top" FontSize="80" TextAlignment="Center"
-                     Text="{Binding Text, ElementName=onScreenKeyboard}" 
-                     Width="806" Template="{DynamicResource BlueBox}" 
-                     Foreground="{DynamicResource ForegroundTextBlock}"/>
+                     Text="{Binding Text, ElementName=onScreenKeyboard}"
+                     Width="806" Template="{DynamicResource BlueBox}"
+                     Foreground="{DynamicResource ForegroundTextBlock}" />
             <Grid
                 Panel.ZIndex="1"
                 Width="440"
                 Height="544"
-                Margin="0 58 0 0"
-                >
+                Margin="0 58 0 0">
                 <Grid
                     Margin="24">
                     <Grid.RowDefinitions>
@@ -189,8 +191,8 @@
                             Command="{Binding ButtonClickCommand}" CommandParameter="0" />
                     <Button Grid.Column="0" Grid.Row="3"
                             Template="{DynamicResource PinPadBackButton}"
-                            Content="Back" Command="{Binding DeleteCommand}" 
-                            Foreground="{DynamicResource ForegroundTextBlock}"/>
+                            Content="Back" Command="{Binding DeleteCommand}"
+                            Foreground="{DynamicResource ForegroundTextBlock}" />
                     <Button Grid.Row="3" Grid.Column="2" Template="{DynamicResource PinPadEnterButton}"
                             Command="{Binding ToPageCommand}"
                             Foreground="{DynamicResource ForegroundTextBlock}">
@@ -198,5 +200,51 @@
                 </Grid>
             </Grid>
         </Grid>
+        <Button
+            Width="300" Height="1920"
+            Command="{Binding SwitchPageCommand}"
+            CommandParameter="-" HorizontalAlignment="Left">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" Width="200"></Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button
+            Width="300" Height="1920"
+            Command="{Binding SwitchPageCommand}"
+            CommandParameter="+" HorizontalAlignment="Right">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" Width="200"></Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SettingsModel.OnTapSwitchPage}"
+                                     Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Page>
